@@ -9,23 +9,14 @@ All help is appreciated
 
 ### Composer
 
-To install using [Composer](http://getcomposer.org/), add the following to `composer.json`:
+To install using [Composer](http://getcomposer.org/)
 
-```
-{
-  "repositories": [
-    {
-      "type": "git",
-      "url": "https://github.com/deployhuman/kivra-client"
-    }
-  ],
-  "require": {
-    "deployhuman/kivra-client": "*@dev"
-  }
-}
-```
+Just type 
 
-Then run `composer install`
+`composer require deployhuman/kivra-client dev-main`
+
+And you are good!
+
 
 ## Getting Started
 
