@@ -1,0 +1,24 @@
+{
+    "name": "deployhuman/kivra-client",
+    "license": "MIT",
+    "description": "Client to access kivra API",
+    "type": "library",
+    "keywords": [
+        "Kivra",
+        "php",
+        "sdk",
+        "api"
+    ],
+    "require": {
+        "php": "^8.0",
+        "ext-curl": "*",
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "guzzlehttp/guzzle": "^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "DeployHuman\\kivra\\": "src/"
+        }
+    }
+}
