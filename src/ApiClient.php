@@ -4,6 +4,7 @@ namespace DeployHuman\kivra;
 
 use DateTime;
 use DeployHuman\kivra\Api\Authentication;
+use DeployHuman\kivra\Api\TenantContent;
 use DeployHuman\kivra\Api\TenantManagement;
 use \GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Client as GuzzleClient;
@@ -148,5 +149,19 @@ class ApiClient
     public function Authentication(): Authentication
     {
         return new Authentication($this->config);
+    }
+
+
+    /**
+     * API - Content.
+     * 
+     * Endpoints for matching users and sending content
+     * @documentation http://developer.kivra.com/#tag/Tenant-API-Content
+     * 
+     * @return TenantContent
+     */
+    public function TenantContent(): TenantContent
+    {
+        return new TenantContent($this->config);
     }
 }

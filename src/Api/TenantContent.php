@@ -9,29 +9,33 @@ use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Psr7\Message;
 
 
-class TenantManagement extends ApiClient
+class TenantContent extends ApiClient
 {
 
     /**
-     * List Tenants
-     * Lists all tenants that are manageable by the current client
-     * @url /v2/tenant[?orgnnr=SE556840226601]
-     * @documentation http://developer.kivra.com/#operation/List%20all%20tenants%20accessible%20to%20the%20client
+     * List available recipient users for a tenant.
+     * This resource is used to list all or search for users that are eligible for receiving Content from the specific Tenant. The response is a JSON list of Objects containing the User's key and SSN. The diffId contained in the response header can be used to fetch added/removed users in subsequent requests to the /v1/tenant/{tenantKey}/user/diff/{diffId} endpoint.
+     * If a search is done with a query string and the user doesn´t exist or has Opt-ed out from receiving Content from the Tenant, an empty list is returned.
+     * Access to this resource might be enabled or disabled via agreement. To match a given list of users, please use the `usermatch` resource.
+     * @url /v1/tenant/{tenantKey}/user //missmatch in documentation
+     * @documentation http://developer.kivra.com/#operation/List%20Users
      * 
-     * @param ?string $QueryParamOrgnr Optional Perform a search to see if a specific Company is available
+     * @param ?string $ssn Example: ssn=191212121212 - Perform a search to see if specific Users are available
+     * @param ?string $include Value: "ssn" Example: include=ssn - List of fields that are returned for each user object
      * @return array|false
      */
-    public function callAPIListAllTenantsAccessibleToTheClient(string $QueryParamOrgnr = null): array|false
+    public function callAPIListUsers(string $tenantKey, string $ssn = null, string $include = null): array|false
     {
-        $scopeNeeded = "get:kivra.v2.tenant";
+        $scopeNeeded = "get:kivra.v1.tenant.{tenantKey}.user";
         $this->basicTokenCheck($scopeNeeded);
-        $querys = isset($QueryParamOrgnr) ? ['orgnr' => $QueryParamOrgnr] : [];
-
+        $querys = [];
+        $querys = isset($ssn) ? array_merge($querys, ['ssn' => $ssn]) : $querys;
+        $querys = isset($include) ? array_merge($querys, ['include' => $include]) : $querys;
         $client = new GuzzleClient(["base_uri" => $this->config->getBaseUrl(), 'debug' => $this->config->getDebug()]);
         try {
             $response = $client->request(
                 "GET",
-                '/v2/tenant',
+                '/v1/tenant/' . $tenantKey . '/user',
                 [
                     'headers' => [
                         'Authorization' => 'Bearer ' . $this->getAccessToken(),
@@ -44,6 +48,7 @@ class TenantManagement extends ApiClient
             $this->setAPIError('ClientException', $desc);
             return false;
         }
+
         $AcceptedStatus = [200];
         if (!in_array($response->getStatusCode(), $AcceptedStatus)) {
             $this->setAPIError('Non Accepted StatusCode `' . $response->getStatusCode() . '`',  Message::toString($response));
@@ -54,82 +59,34 @@ class TenantManagement extends ApiClient
     }
 
 
+
     /**
-     * Request access to a tenant.
-     * Request access to an existing tenant that is outside the client scope. Typically this request follows an unsuccessful attempt to create a tenant that resulted in a conflict error (error 409).
-     * The meaning of the conflict error is that a tenant is already associated to a company_id including the same orgnr as in the tenant that the client attempted to post, and the tenant who owns the orgnr is outside the scope for the client.
-     * In Kivra it is allowed to have several different flows on the same tenant, as for instance one flow for invoices and one flow for payment slips. As this flows could be managed by different clients, we need a mechanism to allow sharing a tenant between clients. The request_access endpoint provide this functionality. As the request may be granted (or denied) asynchronously, after a successfull call to request_access the client will need to poll the request until it becomes accepted or rejected.
-     * As allowing access to a new tenant requires modification of the scope for the client, an authorization must be performed once the request has been accepted, to retrieve an access token with the new scope.
-     * `If the client posts a new identical request (requesting the same OrgNr for the same client), the same object will be returned with an updated status.`
-     * @url /v2/tenant/request_access
-     * @documentation http://developer.kivra.com/#operation/Request%20access
+     * Match a list of recipient users for a specific tenant.
+     * This resource is used to match a list of users to check that they are eligible for receiving Content from the specific Tenant. The request contains a list of SSNs to be matched, and the response is a filtered list containing only the SSNs that are eligible to receive content from the tenant.
+     * If none of the provided SSNs are eligible to receive content from this tenant, an empty list will be returned.
+     * @url /v2/tenant/{tenantKey}/usermatch
+     * @documentation http://developer.kivra.com/#operation/Match%20Users
      * 
      * @param string $tenantkey The unique Key for a Tenant
-     * @param string $vat_number the VAT number of the company you want Tenant Access to
+     * @param array $ssns A list of SSNs to be matched, in string format
      * @return array|false
      */
-    public function callAPIRequestAccess(string $vat_number): array|false
+    public function callAPIMatchUsers(string $tenantkey, array $ssns): array|false
     {
-        $scopeNeeded = "post:kivra.v2.tenant.request_access";
+        $scopeNeeded = "get:kivra.v1.tenant.{tenantKey}.usermatch";
         $this->basicTokenCheck($scopeNeeded);
 
         $client = new GuzzleClient(["base_uri" => $this->config->getBaseUrl(), 'debug' => $this->config->getDebug()]);
         try {
             $response = $client->request(
                 "POST",
-                '/v2/tenant/request_access',
+                '/v1/tenant/' . $tenantkey . '/usermatch',
                 [
                     'headers' => [
                         'Authorization' => 'Bearer ' . $this->getAccessToken(),
                     ],
                     'json' => [
-                        'vat_number' => $vat_number
-                    ]
-
-                ]
-            );
-        } catch (ClientException $e) {
-            $desc = ($e->hasResponse()) ? Message::toString($e->getResponse()) : Message::toString($e->getRequest());
-            $this->setAPIError('ClientException', $desc);
-            return false;
-        }
-        $AcceptedStatus = [201];
-        if (!in_array($response->getStatusCode(), $AcceptedStatus)) {
-            $this->setAPIError('Non Accepted StatusCode `' . $response->getStatusCode() . '`',  Message::toString($response));
-            return false;
-        }
-        $returnarray = (array) $this->cleanUpEmptyFields(json_decode($response->getBody()->getContents(), true));
-        // ["kivra-objkey"]=> array(1) { [0]=> string(42) "1631171803455ef65506fc41959bf684bc0809a2bc" }
-        // ["location"]=> array(1) { [0]=> string(104) "https://sender.sandbox-api.kivra.com/v2/tenant/request_access/1631171803455ef65506fc41959bf684bc0809a2bc"
-        $returnarray['requestKey'] = $response->getHeader('kivra-objkey'); //This is so we dont need to return the whole response obj
-        return $returnarray;
-        //returns the field 'client_id' too which is not in the documentation
-    }
-
-
-    /**
-     * Status of an access request.
-     * Gets the updated status for a request generate using the request_access endpoint.
-     * @url /v2/tenant/request_access/{requestKey}
-     * @documentation http://developer.kivra.com/#operation/Request%20access%20status
-     * 
-     * @param string $tenantkey The unique Key for a Tenant
-     * @param string $requestKey 
-     * @return array|false
-     */
-    public function callAPIRequestAccessStatus(string $requestKey): array|false
-    {
-        $scopeNeeded = "get:kivra.v2.tenant.request_access.{requestKey}";
-        $this->basicTokenCheck($scopeNeeded);
-
-        $client = new GuzzleClient(["base_uri" => $this->config->getBaseUrl(), 'debug' => $this->config->getDebug()]);
-        try {
-            $response = $client->request(
-                "GET",
-                '/v2/tenant/request_access/' . $requestKey,
-                [
-                    'headers' => [
-                        'Authorization' => 'Bearer ' . $this->getAccessToken(),
+                        'ssns' => $ssns
                     ]
                 ]
             );
@@ -145,30 +102,35 @@ class TenantManagement extends ApiClient
         }
         return (array) $this->cleanUpEmptyFields(json_decode($response->getBody()->getContents(), true));
     }
-    //https://sender.sandbox-api.kivra.com/v2/tenant/request_access/1631171803455ef65506fc41959bf684bc0809a2bc
+
 
     /**
-     * Tenant information
-     * Get detailed information on a tenant
-     * @url /v2/tenant/{tenantKey}
-     * @documentation http://developer.kivra.com/#operation/Get%20information%20on%20tenant
+     * List available recipient companies for a tenant.
+     * This resource is used to list all or search for companies that eligible for receiving Content from the specific Tenant. The response is a JSON list of Objects containing the Companies key and Vat Number.
+     * If a search is done and the Company doesn´t exist or have Opt-ed out of receiving Content from the Tenant an empty list will be returned.
+     * @url /v1/tenant/{tenantKey}/company
+     * @documentation http://developer.kivra.com/#operation/List%20Companies
      * 
      * @param string $tenantkey The unique Key for a Tenant
      * @return array|false
      */
-    public function callAPIGetInformationOnTenant(string $tenantkey): array|false
+    public function callAPIListCompanies(string $tenantkey, string $vat_number = null): array|false
     {
-        $scopeNeeded = "get:kivra.v2.tenant.{tenantKey}";
+        $scopeNeeded = "get:kivra.v1.tenant.{tenantKey}.company";
         $this->basicTokenCheck($scopeNeeded);
+        $querys = [];
+        $querys = isset($vat_number) ? array_merge($querys, ['vat_number' => $vat_number]) : $querys;
         $client = new GuzzleClient(["base_uri" => $this->config->getBaseUrl(), 'debug' => $this->config->getDebug()]);
         try {
             $response = $client->request(
-                "GET",
-                '/v2/tenant/' . $tenantkey,
+                "POST",
+                '/v1/tenant/' . $tenantkey . '/company',
                 [
                     'headers' => [
                         'Authorization' => 'Bearer ' . $this->getAccessToken(),
                     ],
+                    'query' => $querys
+
                 ]
             );
         } catch (ClientException $e) {
@@ -179,7 +141,48 @@ class TenantManagement extends ApiClient
         $AcceptedStatus = [200];
         if (!in_array($response->getStatusCode(), $AcceptedStatus)) {
             $this->setAPIError('Non Accepted StatusCode `' . $response->getStatusCode() . '`',  Message::toString($response));
-            if ($this->config->getDebug()) echo "<br>Got non Accepted StatusCode `" . $response->getStatusCode() .  "` From Kivra Api: " . Message::toString($response);
+            return false;
+        }
+        return (array) $this->cleanUpEmptyFields(json_decode($response->getBody()->getContents(), true));
+    }
+
+
+    /**
+     * Send content to a recipient (user or company).
+     * Metadata is data that Kivra needs to send the Content to the right User. It may also determine how a User can interact with the Content.
+     * @url /v1/tenant/{tenantKey}/company
+     * @documentation http://developer.kivra.com/#operation/Send%20content
+     * 
+     * @param string $tenantkey The unique Key for a Tenant
+     * @return array|false
+     */
+    public function callAPISendContent(string $tenantkey, $contentData): array|false
+    {
+        $scopeNeeded = "post:kivra.v1.tenant.{tenantKey}.content";
+        $this->basicTokenCheck($scopeNeeded);
+        $querys = [];
+        $querys = isset($vat_number) ? array_merge($querys, ['vat_number' => $vat_number]) : $querys;
+        $client = new GuzzleClient(["base_uri" => $this->config->getBaseUrl(), 'debug' => $this->config->getDebug()]);
+        try {
+            $response = $client->request(
+                "POST",
+                '/v1/tenant/' . $tenantkey . '/content',
+                [
+                    'headers' => [
+                        'Authorization' => 'Bearer ' . $this->getAccessToken(),
+                    ],
+                    'json' => $contentData
+
+                ]
+            );
+        } catch (ClientException $e) {
+            $desc = ($e->hasResponse()) ? Message::toString($e->getResponse()) : Message::toString($e->getRequest());
+            $this->setAPIError('ClientException', $desc);
+            return false;
+        }
+        $AcceptedStatus = [200];
+        if (!in_array($response->getStatusCode(), $AcceptedStatus)) {
+            $this->setAPIError('Non Accepted StatusCode `' . $response->getStatusCode() . '`',  Message::toString($response));
             return false;
         }
         return (array) $this->cleanUpEmptyFields(json_decode($response->getBody()->getContents(), true));
