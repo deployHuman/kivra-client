@@ -182,7 +182,7 @@ class Content
         ) {
             return false;
         }
-        
+        return true;
     }
 
     public function toArray(): array
