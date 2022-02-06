@@ -1,0 +1,132 @@
+<?php
+
+namespace DeployHuman\kivra\Dataclass;
+
+use DeployHuman\kivra\Dataclass\PaymentOption as DataclassPaymentOption;
+use DeployHuman\kivra\Enum\BankPaymentType;
+use DeployHuman\kivra\Enum\PaymentOptionType;
+use DeployHuman\kivra\Validation;
+
+class PaymentOption
+
+{
+
+
+    protected bool $payable;
+    protected BankPaymentType $method;
+    protected string $account;
+    protected string $currency;
+    protected array $options;
+
+    /**
+     * This is a class which is used to create multiple payment option under the PaymentMultipleOptions class
+     */
+    public function __construct()
+    {
+    }
+
+
+    public function setPayable(bool $payable): self
+    {
+        $this->payable = $payable;
+        return $this;
+    }
+
+    public function getPayable(): bool|null
+    {
+        return $this->payable ?? null;
+    }
+
+    /**
+     * The payment method for this option.
+     *
+     * @param BankPaymentType $method
+     * @return PaymentOption
+     */
+    public function setMethod(BankPaymentType $method): self
+    {
+        $this->method = $method;
+        return $this;
+    }
+
+    public function getMethod(): BankPaymentType|null
+    {
+        return $this->method ?? null;
+    }
+
+    /**
+     * The account number for this option.
+     *
+     * @param string $account
+     * @return PaymentOption
+     */
+    public function setAccount(string $account): self
+    {
+        $this->account = $account;
+        return $this;
+    }
+
+    public function getAccount(): string|null
+    {
+        return $this->account ?? null;
+    }
+
+    /**
+     * The currency for this option.
+     *
+     * @param string $currency
+     * @return PaymentOption
+     */
+    public function setCurrency(string $currency): self
+    {
+        $this->currency = $currency;
+        return $this;
+    }
+
+    public function getCurrency(): string|null
+    {
+        return $this->currency ?? null;
+    }
+
+    public function addOption(DataclassPaymentOption $option): self
+    {
+        if ($option->isValid()) $this->options[] = $option;
+        return $this;
+    }
+
+    /**
+     * Checks both this and all options and subsets to see if they are valid.
+     *
+     * @return boolean
+     */
+    public function isValid(): bool
+    {
+
+        if (isset($this->options)) {
+            foreach ($this->options as $key => $value) {
+                if (!$value->isValid()) {
+                    return false;
+                }
+            }
+        }
+        return !in_array(null, array_values($this->toArray()));
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'due_date' => $this->due_date ?? null,
+            'amount' => $this->amount ?? null,
+            'type' => $this->type ?? null,
+            'reference' => $this->reference ?? null,
+            'title' => $this->title ?? null,
+            'description' => $this->description ?? null,
+            'icon' => $this->icon ?? null,
+        ];
+    }
+
+    public function __toString()
+    {
+        return json_encode($this->toArray());
+    }
+}
