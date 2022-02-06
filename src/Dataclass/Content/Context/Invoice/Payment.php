@@ -1,12 +1,11 @@
 <?php
 
-namespace DeployHuman\kivra\Dataclass;
+namespace DeployHuman\kivra\Dataclass\Content\Context\Invoice;
 
 use DeployHuman\kivra\Enum\BankPaymentType;
 use DeployHuman\kivra\Enum\PaymentOptionType;
-use DeployHuman\kivra\Validation;
 
-class PaymentOption
+class Payment
 
 {
     protected bool $payable;
@@ -27,7 +26,6 @@ class PaymentOption
     public function __construct()
     {
     }
-
 
     /**
      * Toggles whether this content should be payable through Kivra´s payment platform
@@ -68,7 +66,7 @@ class PaymentOption
      * Date when this Invoice is due
      *
      * @param string $due_date
-     * @return PaymentOption
+     * @return Payment
      */
     public function setDueDate(string $due_date): self
     {
@@ -104,7 +102,7 @@ class PaymentOption
      * Type of format for the reference
      *
      * @param PaymentOptionType $type
-     * @return PaymentOption
+     * @return Payment
      */
     public function setType(PaymentOptionType $type): self
     {
@@ -122,7 +120,7 @@ class PaymentOption
      * 1 = BG and 2 = PG
      *
      * @param BankPaymentType $method
-     * @return PaymentOption
+     * @return Payment
      */
     public function setMethod(BankPaymentType $method): self
     {
@@ -140,7 +138,7 @@ class PaymentOption
      * where to transfer money
      *
      * @param string $account
-     * @return PaymentOption
+     * @return Payment
      */
     public function setAccount(string $account): self
     {
@@ -158,7 +156,7 @@ class PaymentOption
      * This can be maximum 25 characters long.
      *
      * @param string $reference
-     * @return PaymentOption
+     * @return Payment
      */
     public function setReference(string $reference): self
     {

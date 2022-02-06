@@ -2,15 +2,13 @@
 
 namespace DeployHuman\kivra\Dataclass;
 
-use DeployHuman\kivra\Dataclass\PaymentOption as DataclassPaymentOption;
+use DeployHuman\kivra\Dataclass\Content\Context\Invoice\Options\Option;
 use DeployHuman\kivra\Enum\BankPaymentType;
-use DeployHuman\kivra\Enum\PaymentOptionType;
-use DeployHuman\kivra\Validation;
 
-class PaymentOption
+
+class PaymentMultipleOptions
 
 {
-
 
     protected bool $payable;
     protected BankPaymentType $method;
@@ -41,7 +39,7 @@ class PaymentOption
      * The payment method for this option.
      *
      * @param BankPaymentType $method
-     * @return PaymentOption
+     * @return PaymentMultipleOptions
      */
     public function setMethod(BankPaymentType $method): self
     {
@@ -58,7 +56,7 @@ class PaymentOption
      * The account number for this option.
      *
      * @param string $account
-     * @return PaymentOption
+     * @return PaymentMultipleOptions
      */
     public function setAccount(string $account): self
     {
@@ -75,7 +73,7 @@ class PaymentOption
      * The currency for this option.
      *
      * @param string $currency
-     * @return PaymentOption
+     * @return PaymentMultipleOptions
      */
     public function setCurrency(string $currency): self
     {
@@ -88,7 +86,7 @@ class PaymentOption
         return $this->currency ?? null;
     }
 
-    public function addOption(DataclassPaymentOption $option): self
+    public function addOption(Option $option): self
     {
         if ($option->isValid()) $this->options[] = $option;
         return $this;
@@ -115,6 +113,7 @@ class PaymentOption
     public function toArray(): array
     {
         return [
+            'payable' => $this->payable ?? null,
             'due_date' => $this->due_date ?? null,
             'amount' => $this->amount ?? null,
             'type' => $this->type ?? null,

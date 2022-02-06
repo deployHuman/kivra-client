@@ -3,7 +3,7 @@
 namespace DeployHuman\kivra\Enum;
 
 
-enum Content_Type: string
+enum User_Content_Type: string
 {
     /**
      * indicating that the content is an information letter. This is the default type for all non-payable content

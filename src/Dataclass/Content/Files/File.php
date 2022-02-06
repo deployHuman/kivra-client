@@ -1,9 +1,9 @@
 <?php
 
-namespace DeployHuman\kivra\Dataclass;
+namespace DeployHuman\kivra\Dataclass\Content\Files;
 
 
-class Content_File
+class File
 {
     protected string $name;
     protected string $data;

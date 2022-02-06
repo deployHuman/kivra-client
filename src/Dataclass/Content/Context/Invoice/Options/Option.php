@@ -1,11 +1,10 @@
 <?php
 
-namespace DeployHuman\kivra\Dataclass;
+namespace DeployHuman\kivra\Dataclass\Content\Context\Invoice\Options;
 
 use DeployHuman\kivra\Enum\PaymentOptionType;
-use DeployHuman\kivra\Validation;
 
-class PaymentOption
+class Option
 
 {
 
@@ -28,7 +27,7 @@ class PaymentOption
      * Date when this option is due.
      *
      * @param string $due_date
-     * @return PaymentOption
+     * @return Option
      */
     public function setDueDate(string $due_date): self
     {
@@ -45,7 +44,7 @@ class PaymentOption
      * The payment amount for this option. A positive number.
      *
      * @param float $amount
-     * @return PaymentOption
+     * @return Option
      */
     public function setAmount(float $amount): self
     {
@@ -62,7 +61,7 @@ class PaymentOption
      * Type of format for the reference
      *
      * @param PaymentOptionType $type
-     * @return PaymentOption
+     * @return Option
      */
     public function setType(PaymentOptionType $type): self
     {
@@ -79,7 +78,7 @@ class PaymentOption
      * The reference number used for paying. This can be maximum 25 characters long.
      *
      * @param string $reference
-     * @return PaymentOption
+     * @return Option
      */
     public function setReference(string $reference): self
     {
@@ -96,7 +95,7 @@ class PaymentOption
      * Title for this option
      *
      * @param string $title
-     * @return PaymentOption
+     * @return Option
      */
     public function setTitle(string $title): self
     {
@@ -113,7 +112,7 @@ class PaymentOption
      * Optional description for this option
      *
      * @param string $description
-     * @return PaymentOption
+     * @return Option
      */
     public function setDescription(string $description): self
     {
@@ -130,7 +129,7 @@ class PaymentOption
      * Optional icon for this option
      *
      * @param Icon $icon
-     * @return PaymentOption
+     * @return Option
      */
     public function setIcon(Icon $icon): self
     {
