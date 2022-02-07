@@ -2,7 +2,7 @@
 
 namespace DeployHuman\kivra\Dataclass\Content\Content_Company;
 
-use DeployHuman\kivra\Dataclass\Content\Content_Company\Context\Invoice\Invoice;
+use DeployHuman\kivra\Dataclass\Content\Content_Company\Context\Invoice;
 use DeployHuman\kivra\Dataclass\Content\Files\File;
 use DeployHuman\kivra\Enum\Company_Content_Type;
 use DeployHuman\kivra\Validation;

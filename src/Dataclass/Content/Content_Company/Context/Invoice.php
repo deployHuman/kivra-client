@@ -1,7 +1,8 @@
 <?php
 
-namespace DeployHuman\kivra\Dataclass\Content\Content_Company\Context\Invoice;
+namespace DeployHuman\kivra\Dataclass\Content\Content_Company\Context;
 
+use DeployHuman\kivra\Dataclass\Content\Content_Company\Context\Invoice\Payment;
 
 class Invoice
 {
