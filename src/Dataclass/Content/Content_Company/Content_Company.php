@@ -20,7 +20,7 @@ class Content_Company
 
 
     /**
-     * Undocumented function
+     * Content that can be sent to a Company, See `Company_Content_Type` for more information
      */
     public function __construct()
     {
