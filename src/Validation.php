@@ -26,13 +26,15 @@ class Validation
     }
 
     /**
-     * Validate Organisation number
+     * Validate Organisation number in the form of SE[xxxxxxxxxx]01
      *
-     * @param string $orgnumber 10 digit
+     * @param string $vatnumber 10 digit
      * @return bool
      */
-    public static function orgnumber($orgnumber): bool
+    public static function vatnumber($vatnumber): bool
     {
+        if (!mb_ereg_match('^SE[0-9]{10}01$', $vatnumber)) return false;
+        $orgnumber = mb_substr($vatnumber, 2, 10);
         $orgnumber = trim(strval($orgnumber));
         if (!mb_ereg_match("^[0-9]{10}$", $orgnumber)) return false;
         $presetchecknum = intval(mb_substr($orgnumber, mb_strlen($orgnumber) - 1));

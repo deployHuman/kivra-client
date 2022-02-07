@@ -19,28 +19,32 @@ class Content_Company
     protected Invoice $context;
 
 
+    /**
+     * Undocumented function
+     */
     public function __construct()
     {
     }
-
 
     /**
      * Unique Value of the reciver of this content.
      * 
      * A valid VAT-identifier, Swedish format: SE[xxxxxxxxxx]01
+     * Will not set vat number if not valid.
      *
      * @param string $vat_number
      * @return self
      */
     public function setVatNumber(string $vat_number): self
     {
+        if (!Validation::vatnumber($vat_number)) return $this;
         $this->vat_number =  $vat_number;
         return $this;
     }
 
-    public function getVatNumber()
+    public function getVatNumber(): string|null
     {
-        return $this->vat_number;
+        return $this->vat_number ?? null;
     }
 
 
@@ -56,9 +60,9 @@ class Content_Company
         return $this;
     }
 
-    public function getSubject()
+    public function getSubject(): string|null
     {
-        return $this->subject;
+        return $this->subject ?? null;
     }
 
 
@@ -93,9 +97,9 @@ class Content_Company
     }
 
 
-    public function getTenant_Info()
+    public function getTenant_Info(): string|null
     {
-        return $this->tenant_info;
+        return $this->tenant_info ?? null;
     }
 
 
@@ -111,9 +115,9 @@ class Content_Company
         return $this;
     }
 
-    public function getFiles()
+    public function getFiles(): array|null
     {
-        return $this->files;
+        return $this->files ?? null;
     }
 
     public function setContext(Invoice $context): self
@@ -123,18 +127,14 @@ class Content_Company
     }
 
 
-    public function getContext()
+    public function getContext(): string|null
     {
-        return $this->context;
+        return $this->context ?? null;
     }
-
-
-
-
 
     public function isValid(): bool
     {
-        if (!Validation::orgnumber($this->vat_number)) {
+        if (!Validation::vatnumber($this->vat_number)) {
             return false;
         }
         if (isset($this->context)) {
@@ -169,7 +169,7 @@ class Content_Company
         ];
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return json_encode($this->toArray());
     }
