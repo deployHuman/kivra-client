@@ -139,14 +139,15 @@ class Booking
 
     public function toArray(): array
     {
-
         return [
-            'title' => $this->title,
-            'start_time' => $this->start_time,
-            'end_time' => $this->end_time,
-            'location' => $this->location,
-            'description' => $this->description,
-            'info_url' => $this->info_url
+            'booking' => [
+                'title' => $this->title,
+                'start_time' => $this->start_time,
+                'end_time' => $this->end_time,
+                'location' => $this->location,
+                'description' => $this->description,
+                'info_url' => $this->info_url
+            ]
         ];
     }
 
