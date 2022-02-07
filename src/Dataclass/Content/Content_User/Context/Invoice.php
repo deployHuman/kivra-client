@@ -1,8 +1,8 @@
 <?php
 
-namespace DeployHuman\kivra\Dataclass\Content\Context;
+namespace DeployHuman\kivra\Dataclass\Content\Content_User\Context;
 
-use DeployHuman\kivra\Dataclass\Content\Context\Invoice\Payment;
+use DeployHuman\kivra\Dataclass\Content\Content_User\Context\Invoice\Payment;
 use DeployHuman\kivra\Dataclass\PaymentMultipleOptions;
 
 class Invoice

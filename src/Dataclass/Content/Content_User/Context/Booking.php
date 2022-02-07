@@ -1,6 +1,6 @@
 <?php
 
-namespace DeployHuman\kivra\Dataclass\Content\Context;
+namespace DeployHuman\kivra\Dataclass\Content\Content_User\Context;
 
 
 class Booking

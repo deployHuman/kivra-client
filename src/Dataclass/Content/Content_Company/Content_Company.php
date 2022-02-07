@@ -1,8 +1,8 @@
 <?php
 
-namespace DeployHuman\kivra\Dataclass\Content;
+namespace DeployHuman\kivra\Dataclass\Content\Content_Company;
 
-use DeployHuman\kivra\Dataclass\Content\Context\Invoice;
+use DeployHuman\kivra\Dataclass\Content\Content_Company\Context\Invoice\Invoice;
 use DeployHuman\kivra\Dataclass\Content\Files\File;
 use DeployHuman\kivra\Enum\Company_Content_Type;
 use DeployHuman\kivra\Validation;
@@ -152,14 +152,20 @@ class Content_Company
 
     public function toArray(): array
     {
+        if (isset($this->files)) {
+            $files = [];
+            foreach ($this->files as $file) {
+                $files[] = $file->toArray();
+            }
+        }
         return [
-            'vat_number' => $this->vat_number,
-            'subject' => $this->subject,
-            'generated_at' => $this->generated_at,
-            'type' => $this->type,
-            'tenant_info' => $this->tenant_info,
-            'files' => $this->files,
-            'context' => $this->context,
+            'vat_number' => $this->vat_number ?? null,
+            'subject' => $this->subject ?? null,
+            'generated_at' => $this->generated_at ?? null,
+            'type' => $this->type ?? null,
+            'files' => $files ?? null,
+            'tenant_info' => $this->tenant_info ?? null,
+            'context' => isset($this->context) ? $this->context->toArray() : null,
         ];
     }
 

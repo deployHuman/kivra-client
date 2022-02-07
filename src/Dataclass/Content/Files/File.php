@@ -75,9 +75,9 @@ class File
     public function toArray(): array
     {
         return [
-            'name' => $this->name,
-            'data' => $this->data,
-            'content_type' => $this->content_type
+            'name' => $this->name ?? null,
+            'data' => $this->data ?? null,
+            'content_type' => $this->content_type ?? null
         ];
     }
 

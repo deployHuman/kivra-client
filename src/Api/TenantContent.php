@@ -2,8 +2,9 @@
 
 namespace DeployHuman\kivra\Api;
 
-use DateTime;
 use DeployHuman\kivra\ApiClient;
+use DeployHuman\kivra\Dataclass\Content\Content_Company\Content_Company;
+use DeployHuman\kivra\Dataclass\Content\Content_User\Content_User;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Psr7\Message;
@@ -154,10 +155,12 @@ class TenantContent extends ApiClient
      * @documentation http://developer.kivra.com/#operation/Send%20content
      * 
      * @param string $tenantkey The unique Key for a Tenant
+     * @param Content_Company|Content_User $content
      * @return array|false
      */
-    public function callAPISendContent(string $tenantkey, $contentData): array|false
+    public function callAPISendContent(string $tenantkey, Content_User|Content_Company $contentData): array|false
     {
+
         $scopeNeeded = "post:kivra.v1.tenant.{tenantKey}.content";
         $this->basicTokenCheck($scopeNeeded);
         $querys = [];
@@ -171,7 +174,7 @@ class TenantContent extends ApiClient
                     'headers' => [
                         'Authorization' => 'Bearer ' . $this->getAccessToken(),
                     ],
-                    'json' => $contentData
+                    'json' => $contentData->toArray()
 
                 ]
             );

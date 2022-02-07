@@ -1,15 +1,15 @@
 <?php
 
-namespace DeployHuman\kivra\Dataclass\Content;
+namespace DeployHuman\kivra\Dataclass\Content\Content_User;
 
-use DeployHuman\kivra\Dataclass\Content\Context\Booking;
-use DeployHuman\kivra\Dataclass\Content\Context\Invoice;
+use DeployHuman\kivra\Dataclass\Content\Content_User\Context\Invoice;
+use DeployHuman\kivra\Dataclass\Content\Content_User\Context\Booking;
 use DeployHuman\kivra\Dataclass\Content\Files\File;
 use DeployHuman\kivra\Enum\Content_Retention_Time;
 use DeployHuman\kivra\Enum\User_Content_Type;
 use DeployHuman\kivra\Validation;
 
-class Content
+class Content_User
 {
     protected string $ssn;
     protected string $subject;
@@ -203,16 +203,22 @@ class Content
 
     public function toArray(): array
     {
+        if (isset($this->files)) {
+            $files = [];
+            foreach ($this->files as $file) {
+                $files[] = $file->toArray();
+            }
+        }
         return [
-            'ssn' => $this->ssn,
-            'subject' => $this->subject,
-            'generated_at' => $this->generated_at,
-            'type' => $this->type,
-            'retain' => $this->retain,
-            'retention_time' => $this->retention_time,
-            'tenant_info' => $this->tenant_info,
-            'files' => $this->files,
-            'context' => $this->context
+            'ssn' => $this->ssn  ?? null,
+            'subject' => $this->subject ?? null,
+            'generated_at' => $this->generated_at ?? null,
+            'type' => $this->type ?? null,
+            'retain' => $this->retain ?? null,
+            'retention_time' => $this->retention_time ?? null,
+            'tenant_info' => $this->tenant_info ?? null,
+            'files' => $files ?? null,
+            'context' => isset($this->context) ? $this->context->toArray() : null,
         ];
     }
 

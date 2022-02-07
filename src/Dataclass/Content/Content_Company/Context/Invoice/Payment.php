@@ -1,6 +1,6 @@
 <?php
 
-namespace DeployHuman\kivra\Dataclass\Content\Context\Invoice;
+namespace DeployHuman\kivra\Dataclass\Content\Content_Company\Context\Invoice;
 
 use DeployHuman\kivra\Enum\BankPaymentType;
 use DeployHuman\kivra\Enum\PaymentOptionType;

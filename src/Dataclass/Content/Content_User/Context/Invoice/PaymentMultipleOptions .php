@@ -1,8 +1,8 @@
 <?php
 
-namespace DeployHuman\kivra\Dataclass;
+namespace DeployHuman\kivra\Dataclass\Content\Content_User\Context\Invoice;
 
-use DeployHuman\kivra\Dataclass\Content\Context\Invoice\Options\Option;
+use DeployHuman\kivra\Dataclass\Content\Content_User\Context\Invoice\Options\Option;
 use DeployHuman\kivra\Enum\BankPaymentType;
 
 

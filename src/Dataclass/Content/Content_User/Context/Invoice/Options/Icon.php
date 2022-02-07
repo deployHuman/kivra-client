@@ -1,6 +1,6 @@
 <?php
 
-namespace DeployHuman\kivra\Dataclass\Content\Context\Invoice\Options;
+namespace DeployHuman\kivra\Dataclass\Content\Content_User\Context\Invoice\Options;
 
 use DeployHuman\kivra\Validation;
 
