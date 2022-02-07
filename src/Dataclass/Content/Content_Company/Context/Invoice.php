@@ -26,6 +26,11 @@ class Invoice
         return $this->payment_options ?? null;
     }
 
+    /**
+     * Tenant´s own Invoice Reference
+     *
+     * @return Payment|null
+     */
     public function setInvoiceReference(string $invoice_reference): self
     {
         $this->invoice_reference = $invoice_reference;

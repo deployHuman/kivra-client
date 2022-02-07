@@ -22,6 +22,11 @@ class Invoice
         return $this;
     }
 
+    /**
+     * Tenant´s own Invoice Reference
+     *
+     * @return PaymentMultipleOptions|Payment|null
+     */
     public function getPaymentOptions(): PaymentMultipleOptions|Payment|null
     {
         return $this->payment_options ?? null;
