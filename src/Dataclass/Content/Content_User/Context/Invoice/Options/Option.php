@@ -9,7 +9,7 @@ class Option
 {
 
     protected string $due_date;
-    protected float $amount;
+    protected string $amount;
     protected PaymentOptionType $type;
     protected string $reference;
     protected string $title;
@@ -43,16 +43,16 @@ class Option
     /**
      * The payment amount for this option. A positive number.
      *
-     * @param float $amount
+     * @param string $amount
      * @return Option
      */
-    public function setAmount(float $amount): self
+    public function setAmount(string $amount): self
     {
         $this->amount = $amount;
         return $this;
     }
 
-    public function getAmount(): float|null
+    public function getAmount(): string|null
     {
         return $this->amount ?? null;
     }

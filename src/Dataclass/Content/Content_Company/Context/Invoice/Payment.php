@@ -11,13 +11,13 @@ class Payment
     protected bool $payable;
     protected string $currency;
     protected string $due_date;
-    protected float $total_owed;
+    protected string $total_owed;
     protected PaymentOptionType $type;
     protected BankPaymentType $method;
     protected string $account;
     protected string $reference;
     protected bool $variable_amount = false;
-    protected float $min_amount;
+    protected string $min_amount;
 
 
     /**
