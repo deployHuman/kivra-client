@@ -83,16 +83,16 @@ class Payment
      * The total amount owed according to the invoice. 
      * If payable equals true this must be a non negative number that`s greater than "0"
      *
-     * @param float $total_owed
+     * @param string $total_owed
      * @return self
      */
-    public function setTotal_owed(float $total_owed): self
+    public function setTotal_owed(string $total_owed): self
     {
         $this->total_owed = $total_owed;
         return $this;
     }
 
-    public function getTotal_owed(): float|null
+    public function getTotal_owed(): string|null
     {
         return $this->total_owed ?? null;
     }
@@ -195,16 +195,16 @@ class Payment
      *  but it may be warned if the amount paid is inferior to min_amount.
      *  min_amount must be greater than "0" and less than "total_owed".
      *
-     * @param float $min_amount
+     * @param string $min_amount
      * @return self
      */
-    public function setMinAmount(float $min_amount): self
+    public function setMinAmount(string $min_amount): self
     {
         $this->min_amount = $min_amount;
         return $this;
     }
 
-    public function getMinAmount(): float|null
+    public function getMinAmount(): string|null
     {
         return $this->min_amount ?? null;
     }
