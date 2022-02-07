@@ -55,8 +55,10 @@ class Invoice
     public function toArray(): array
     {
         return [
-            'invoice' => $this->payment_options->toArray() ?? null,
-            'invoice_reference' => $this->getInvoiceReference()
+            'invoice' => [
+                'payment' => $this->payment_options->toArray(),
+                'invoice_reference' => $this->getInvoiceReference() ?? null,
+            ]
         ];
     }
 

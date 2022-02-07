@@ -158,15 +158,15 @@ class Content_Company
                 $files[] = $file->toArray();
             }
         }
-        return [
-            'vat_number' => $this->vat_number ?? null,
-            'subject' => $this->subject ?? null,
-            'generated_at' => $this->generated_at ?? null,
-            'type' => $this->type ?? null,
-            'files' => $files ?? null,
-            'tenant_info' => $this->tenant_info ?? null,
-            'context' => isset($this->context) ? $this->context->toArray() : null,
-        ];
+        $returnarray = [];
+        (isset($this->vat_number)) ? $returnarray['vat_number'] = $this->vat_number : null;
+        (isset($this->subject)) ? $returnarray['subject'] = $this->subject : null;
+        (isset($this->generated_at)) ? $returnarray['generated_at'] = $this->generated_at : null;
+        (isset($this->type)) ? $returnarray['type'] = $this->type : null;
+        (isset($this->tenant_info)) ? $returnarray['tenant_info'] = $this->tenant_info : null;
+        (isset($this->files)) ? $returnarray['files'] = $files : null;
+        (isset($this->context)) ? $returnarray['context'] = $this->context->toArray() : null;
+        return $returnarray;
     }
 
     public function __toString(): string
