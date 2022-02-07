@@ -8,7 +8,7 @@ use DeployHuman\kivra\Dataclass\Content\Content_User\Content_User;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Psr7\Message;
-
+use GuzzleHttp\Psr7\Response;
 
 class TenantContent extends ApiClient
 {
@@ -156,9 +156,9 @@ class TenantContent extends ApiClient
      * 
      * @param string $tenantkey The unique Key for a Tenant
      * @param Content_Company|Content_User $content
-     * @return array|false
+     * @return Response|false
      */
-    public function callAPISendContent(string $tenantkey, Content_User|Content_Company $contentData): array|false
+    public function callAPISendContent(string $tenantkey, Content_User|Content_Company $contentData): Response|false
     {
 
         $scopeNeeded = "post:kivra.v1.tenant.{tenantKey}.content";
@@ -183,11 +183,6 @@ class TenantContent extends ApiClient
             $this->setAPIError('ClientException', $desc);
             return false;
         }
-        $AcceptedStatus = [200];
-        if (!in_array($response->getStatusCode(), $AcceptedStatus)) {
-            $this->setAPIError('Non Accepted StatusCode `' . $response->getStatusCode() . '`',  Message::toString($response));
-            return false;
-        }
-        return (array) $this->cleanUpEmptyFields(json_decode($response->getBody()->getContents(), true));
+        return $response;
     }
 }
