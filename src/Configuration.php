@@ -210,7 +210,7 @@ class Configuration
     {
         $this->saveToStorage(
             [
-                'baseurl' => $this->getAPIversion(),
+                'baseurl' => $this->getBaseUrl(),
                 'user_agent' => $this->getUserAgent(),
                 'debug' => $this->getDebug(),
                 'apiversion' => $this->getAPIversion()

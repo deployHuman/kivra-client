@@ -23,9 +23,10 @@ class ApiClient
         if (!isset($this->config)) {
             $this->config = $config ?? new Configuration();
         }
-        if (get_called_class() == 'ApiClient') {
+        if (get_called_class() == 'DeployHuman\kivra\ApiClient') {
             //If this is the base class, we need to check if the client is authenticated, But only in base otherwise we will get an infinite loop
             if ($this->config->isClientAuthSet() && $this->config->getConnectDirectly()) $this->refreshAccessToken($this->config->getForceRefreshToken());
+            if (!$this->isTokenValid($this->config->getStorage())) $this->refreshAccessToken(true);
         }
     }
 
@@ -109,7 +110,7 @@ class ApiClient
         return true;
     }
 
-    protected function getAccessToken(): string
+    public function getAccessToken(): string
     {
         return $this->config->getStorage()['access_token'];
     }
