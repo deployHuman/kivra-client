@@ -23,9 +23,9 @@ class TenantContent extends ApiClient
      * 
      * @param ?string $ssn Example: ssn=191212121212 - Perform a search to see if specific Users are available
      * @param ?string $include Value: "ssn" Example: include=ssn - List of fields that are returned for each user object
-     * @return array|false
+     * @return response|false
      */
-    public function callAPIListUsers(string $tenantKey, string $ssn = null, string $include = null): array|false
+    public function callAPIListUsers(string $tenantKey, string $ssn = null, string $include = null): response|false
     {
         $scopeNeeded = "get:kivra.v1.tenant.{tenantKey}.user";
         $this->basicTokenCheck($scopeNeeded);
@@ -50,14 +50,7 @@ class TenantContent extends ApiClient
             $this->setAPIError('ClientException', 'Description: ' . $desc . ' Request: ' . $SentRequest);
             return false;
         }
-
-        $AcceptedStatus = [200];
-        if (!in_array($response->getStatusCode(), $AcceptedStatus)) {
-            $this->setAPIError('Non Accepted StatusCode `' . $response->getStatusCode() . '`',  Message::toString($response));
-            if ($this->config->getDebug()) echo "<br>Got non Accepted StatusCode `" . $response->getStatusCode() .  "` From Kivra Api: " . Message::toString($response);
-            return false;
-        }
-        return (array) json_decode($response->getBody()->getContents(), true);
+        return $response;
     }
 
 
