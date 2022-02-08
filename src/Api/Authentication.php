@@ -36,8 +36,9 @@ class Authentication extends ApiClient
                 ]
             );
         } catch (ClientException $e) {
-            $desc = ($e->hasResponse()) ? Message::toString($e->getResponse()) : Message::toString($e->getRequest());
-            $this->setAPIError('ClientException', $desc);
+            $SentRequest = $e->getRequest() ? Message::toString($e->getRequest()) : '';
+            $desc = $e->hasResponse() ? Message::toString($e->getResponse()) : '';
+            $this->setAPIError('ClientException', 'Description: ' . $desc . ' Request: ' . $SentRequest);
             return false;
         }
         $AcceptedStatus = [200];

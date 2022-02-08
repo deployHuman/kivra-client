@@ -7,7 +7,7 @@ use DeployHuman\kivra\ApiClient;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Psr7\Message;
-
+use GuzzleHttp\Psr7\Response;
 
 class TenantManagement extends ApiClient
 {
@@ -19,9 +19,9 @@ class TenantManagement extends ApiClient
      * @documentation http://developer.kivra.com/#operation/List%20all%20tenants%20accessible%20to%20the%20client
      * 
      * @param ?string $QueryParamOrgnr Optional Perform a search to see if a specific Company is available
-     * @return array|false
+     * @return Response|false
      */
-    public function callAPIListAllTenantsAccessibleToTheClient(string $QueryParamOrgnr = null): array|false
+    public function callAPIListAllTenantsAccessibleToTheClient(string $QueryParamOrgnr = null): Response|false
     {
         $scopeNeeded = "get:kivra.v2.tenant";
         $this->basicTokenCheck($scopeNeeded);
@@ -40,17 +40,12 @@ class TenantManagement extends ApiClient
                 ]
             );
         } catch (ClientException $e) {
-            $desc = ($e->hasResponse()) ? Message::toString($e->getResponse()) : Message::toString($e->getRequest());
-            $this->setAPIError('ClientException', $desc);
+            $SentRequest = $e->getRequest() ? Message::toString($e->getRequest()) : '';
+            $desc = $e->hasResponse() ? Message::toString($e->getResponse()) : '';
+            $this->setAPIError('ClientException', 'Description: ' . $desc . ' Request: ' . $SentRequest);
             return false;
         }
-        $AcceptedStatus = [200];
-        if (!in_array($response->getStatusCode(), $AcceptedStatus)) {
-            $this->setAPIError('Non Accepted StatusCode `' . $response->getStatusCode() . '`',  Message::toString($response));
-            if ($this->config->getDebug()) echo "<br>Got non Accepted StatusCode `" . $response->getStatusCode() .  "` From Kivra Api: " . Message::toString($response);
-            return false;
-        }
-        return (array) json_decode($response->getBody()->getContents(), true);
+        return $response;
     }
 
 
@@ -64,11 +59,10 @@ class TenantManagement extends ApiClient
      * @url /v2/tenant/request_access
      * @documentation http://developer.kivra.com/#operation/Request%20access
      * 
-     * @param string $tenantkey The unique Key for a Tenant
      * @param string $vat_number the VAT number of the company you want Tenant Access to
-     * @return array|false
+     * @return Response|false
      */
-    public function callAPIRequestAccess(string $vat_number): array|false
+    public function callAPIRequestAccess(string $vat_number): Response|false
     {
         $scopeNeeded = "post:kivra.v2.tenant.request_access";
         $this->basicTokenCheck($scopeNeeded);
@@ -89,21 +83,12 @@ class TenantManagement extends ApiClient
                 ]
             );
         } catch (ClientException $e) {
-            $desc = ($e->hasResponse()) ? Message::toString($e->getResponse()) : Message::toString($e->getRequest());
-            $this->setAPIError('ClientException', $desc);
+            $SentRequest = $e->getRequest() ? Message::toString($e->getRequest()) : '';
+            $desc = $e->hasResponse() ? Message::toString($e->getResponse()) : '';
+            $this->setAPIError('ClientException', 'Description: ' . $desc . ' Request: ' . $SentRequest);
             return false;
         }
-        $AcceptedStatus = [201];
-        if (!in_array($response->getStatusCode(), $AcceptedStatus)) {
-            $this->setAPIError('Non Accepted StatusCode `' . $response->getStatusCode() . '`',  Message::toString($response));
-            return false;
-        }
-        $returnarray = (array) $this->cleanUpEmptyFields(json_decode($response->getBody()->getContents(), true));
-        // ["kivra-objkey"]=> array(1) { [0]=> string(42) "1631171803455ef65506fc41959bf684bc0809a2bc" }
-        // ["location"]=> array(1) { [0]=> string(104) "https://sender.sandbox-api.kivra.com/v2/tenant/request_access/1631171803455ef65506fc41959bf684bc0809a2bc"
-        $returnarray['requestKey'] = $response->getHeader('kivra-objkey'); //This is so we dont need to return the whole response obj
-        return $returnarray;
-        //returns the field 'client_id' too which is not in the documentation
+        return $response;
     }
 
 
@@ -134,8 +119,9 @@ class TenantManagement extends ApiClient
                 ]
             );
         } catch (ClientException $e) {
-            $desc = ($e->hasResponse()) ? Message::toString($e->getResponse()) : Message::toString($e->getRequest());
-            $this->setAPIError('ClientException', $desc);
+            $SentRequest = $e->getRequest() ? Message::toString($e->getRequest()) : '';
+            $desc = $e->hasResponse() ? Message::toString($e->getResponse()) : '';
+            $this->setAPIError('ClientException', 'Description: ' . $desc . ' Request: ' . $SentRequest);
             return false;
         }
         $AcceptedStatus = [200];
@@ -154,9 +140,9 @@ class TenantManagement extends ApiClient
      * @documentation http://developer.kivra.com/#operation/Get%20information%20on%20tenant
      * 
      * @param string $tenantkey The unique Key for a Tenant
-     * @return array|false
+     * @return Response|false
      */
-    public function callAPIGetInformationOnTenant(string $tenantkey): array|false
+    public function callAPIGetInformationOnTenant(string $tenantkey): Response|false
     {
         $scopeNeeded = "get:kivra.v2.tenant.{tenantKey}";
         $this->basicTokenCheck($scopeNeeded);
@@ -164,7 +150,7 @@ class TenantManagement extends ApiClient
         try {
             $response = $client->request(
                 "GET",
-                '/v2/tenant/' . $tenantkey,
+                '/v1/tenant/' . $tenantkey,
                 [
                     'headers' => [
                         'Authorization' => 'Bearer ' . $this->getAccessToken(),
@@ -172,10 +158,12 @@ class TenantManagement extends ApiClient
                 ]
             );
         } catch (ClientException $e) {
-            $desc = ($e->hasResponse()) ? Message::toString($e->getResponse()) : Message::toString($e->getRequest());
-            $this->setAPIError('ClientException', $desc);
+            $SentRequest = $e->getRequest() ? Message::toString($e->getRequest()) : '';
+            $desc = $e->hasResponse() ? Message::toString($e->getResponse()) : '';
+            $this->setAPIError('ClientException', 'Description: ' . $desc . ' Request: ' . $SentRequest);
             return false;
         }
+        return $response;
         $AcceptedStatus = [200];
         if (!in_array($response->getStatusCode(), $AcceptedStatus)) {
             $this->setAPIError('Non Accepted StatusCode `' . $response->getStatusCode() . '`',  Message::toString($response));
