@@ -19,10 +19,10 @@ class Configuration
     protected string $apiVersion = 'v2';
     protected string $BaseUrl = 'https://sender.api.kivra.com';
     protected string $userAgent = 'DeployHuman/Kivra-PHP-Client/1.0.0';
-    protected string $debugFile = 'php://output';
     protected string $tempFolderPath;
     protected string $storage_Default_name = 'kivra_auth';
     protected string $storage_name;
+    protected array $storage;
     protected bool $debug = false;
     protected bool $ErrorPrintOut = false;
     protected bool $ConnectDirectly = true;
@@ -174,14 +174,14 @@ class Configuration
 
     public function saveToStorage(array $params): self
     {
-        $_SESSION[$this->storage_name] = array_merge($_SESSION[$this->storage_name], $params);
+        $this->storage[$this->storage_name] = array_merge($this->storage[$this->storage_name], $params);
         return $this;
     }
 
     public function unsetFromStorage(array $UnsetKeys): self
     {
         foreach ($UnsetKeys as $key) {
-            unset($_SESSION[$this->storage_name][$key]);
+            unset($this->storage[$this->storage_name][$key]);
         }
         return $this;
     }
@@ -193,24 +193,39 @@ class Configuration
 
     public function getStorage(): array
     {
-        if (!isset($_SESSION[$this->storage_name])) {
+        if (!isset($this->storage[$this->storage_name])) {
             $this->initateStorage();
         }
-        return $_SESSION[$this->storage_name];
+        return $this->storage[$this->storage_name];
+    }
+
+    private function isDebug(): bool
+    {
+        if (isset($this->debug) && $this->debug === true) {
+            return true;
+        }
+        return false;
     }
 
     public function initateStorage(): bool|Exception
     {
-        if (session_status() !== PHP_SESSION_ACTIVE) {
+        if (isset($this->storage)) {
+            if (isset($this->storage[$this->storage_name])) {
+                return true;
+            }
+        }
+        if (session_status() !== PHP_SESSION_ACTIVE && !$this->isDebug()) {
             throw new Exception('Invalid AUTH storage. Use session_start() before instantiating Kivra');
         }
-        if ($this->storage_name == null) {
-            $this->storage_name = clone $this->storage_Default_name;
+        if ($this->storage_name == null) $this->storage_name = clone $this->storage_Default_name;
+        $this->storage[$this->storage_name] = [];
+        if ($this->isDebug()) {
+            return true;
         }
         if (!array_key_exists($this->storage_name, $_SESSION) || !is_array($_SESSION[$this->storage_name])) {
             $_SESSION[$this->storage_name] = [];
+            $this->storage = &$_SESSION[$this->storage_name];
         }
-
         return true;
     }
 
