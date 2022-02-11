@@ -4,6 +4,11 @@ namespace DeployHuman\kivra;
 
 use DateInterval;
 use DateTime;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\MessageFormatter;
+use GuzzleHttp\Middleware;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 
 class Configuration
 {
@@ -21,7 +26,7 @@ class Configuration
     protected bool $debug = false;
     protected bool $ErrorPrintOut = false;
     protected bool $ConnectDirectly = true;
-
+    protected string $logpath = './';
 
     public function __construct(string $storagename = null, bool $ConnectDirectly = true)
     {
@@ -36,6 +41,34 @@ class Configuration
         $this->ConnectDirectly = $ConnectDirectly;
         return $this;
     }
+
+    public function getDebugHandler(): HandlerStack
+    {
+        $log = new Logger('API');
+        $log->pushHandler(new StreamHandler($this->logpath));
+        $stack = HandlerStack::create();
+
+        $stack->push(
+            Middleware::log(
+                $log,
+                new MessageFormatter('{uri} - {code} -  request Headers: {req_headers} - Response Headers {res_headers}')
+            )
+        );
+
+        return $stack;
+    }
+
+    public function setLogPath(string $path): self
+    {
+        $this->logpath = $path;
+        return $this;
+    }
+
+    public function getLogPath(): bool
+    {
+        return $this->logpath;
+    }
+
 
     public function getConnectDirectly(): bool
     {

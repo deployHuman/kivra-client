@@ -2,13 +2,11 @@
 
 namespace DeployHuman\kivra\Api;
 
-use DateTime;
 use DeployHuman\kivra\ApiClient;
 use DeployHuman\kivra\Exception;
 use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Psr7\Message;
-
+use GuzzleHttp\Psr7\Response;
 
 class Authentication extends ApiClient
 {
@@ -17,13 +15,13 @@ class Authentication extends ApiClient
      * @url /v1/auth
      * @Documentation http://developer.kivra.com/#section/API-Authentication
      *
-     * @return array|false
+     * @return response|false
      */
-    public function callAPIAuthToGetAccessToken(): array|false
+    public function callAPIAuthToGetAccessToken(): Response|false
     {
         if (!$this->config->isClientAuthSet()) throw new Exception("Error in Kivra Settings");
 
-        $client = new GuzzleClient(["base_uri" => $this->config->getBaseUrl(), 'debug' => $this->config->getDebug()]);
+        $client = $this->getClient();
         try {
             $response = $client->request(
                 "POST",
@@ -41,12 +39,6 @@ class Authentication extends ApiClient
             $this->setAPIError('ClientException', 'Description: ' . $desc . ' Request: ' . $SentRequest);
             return false;
         }
-        $AcceptedStatus = [200];
-        if (!in_array($response->getStatusCode(), $AcceptedStatus)) {
-            if ($this->config->getDebug()) echo "<br>Got non Accepted StatusCode `" . $response->getStatusCode() .  "` From Kivra Api: " . Message::toString($response);
-            return false;
-        }
-
-        return (array) json_decode($response->getBody()->getContents(), true);
+        return $response;
     }
 }

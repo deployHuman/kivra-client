@@ -2,10 +2,8 @@
 
 namespace DeployHuman\kivra\Api;
 
-use DateTime;
 use DeployHuman\kivra\ApiClient;
 use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Psr7\Message;
 use GuzzleHttp\Psr7\Response;
 
@@ -26,8 +24,7 @@ class TenantManagement extends ApiClient
         $scopeNeeded = "get:kivra.v2.tenant";
         $this->basicTokenCheck($scopeNeeded);
         $querys = isset($QueryParamOrgnr) ? ['orgnr' => $QueryParamOrgnr] : [];
-
-        $client = new GuzzleClient(["base_uri" => $this->config->getBaseUrl(), 'debug' => $this->config->getDebug()]);
+        $client = $this->getClient();
         try {
             $response = $client->request(
                 "GET",
@@ -67,7 +64,7 @@ class TenantManagement extends ApiClient
         $scopeNeeded = "post:kivra.v2.tenant.request_access";
         $this->basicTokenCheck($scopeNeeded);
 
-        $client = new GuzzleClient(["base_uri" => $this->config->getBaseUrl(), 'debug' => $this->config->getDebug()]);
+        $client = $this->getClient();
         try {
             $response = $client->request(
                 "POST",
@@ -107,7 +104,7 @@ class TenantManagement extends ApiClient
         $scopeNeeded = "get:kivra.v2.tenant.request_access.{requestKey}";
         $this->basicTokenCheck($scopeNeeded);
 
-        $client = new GuzzleClient(["base_uri" => $this->config->getBaseUrl(), 'debug' => $this->config->getDebug()]);
+        $client = $this->getClient();
         try {
             $response = $client->request(
                 "GET",
@@ -146,11 +143,11 @@ class TenantManagement extends ApiClient
     {
         $scopeNeeded = "get:kivra.v2.tenant.{tenantKey}";
         $this->basicTokenCheck($scopeNeeded);
-        $client = new GuzzleClient(["base_uri" => $this->config->getBaseUrl(), 'debug' => $this->config->getDebug()]);
+        $client = $this->getClient();
         try {
             $response = $client->request(
                 "GET",
-                '/v1/tenant/' . $tenantkey,
+                '/v2/tenant/' . $tenantkey,
                 [
                     'headers' => [
                         'Authorization' => 'Bearer ' . $this->getAccessToken(),
@@ -164,12 +161,5 @@ class TenantManagement extends ApiClient
             return false;
         }
         return $response;
-        $AcceptedStatus = [200];
-        if (!in_array($response->getStatusCode(), $AcceptedStatus)) {
-            $this->setAPIError('Non Accepted StatusCode `' . $response->getStatusCode() . '`',  Message::toString($response));
-            if ($this->config->getDebug()) echo "<br>Got non Accepted StatusCode `" . $response->getStatusCode() .  "` From Kivra Api: " . Message::toString($response);
-            return false;
-        }
-        return (array) $this->cleanUpEmptyFields(json_decode($response->getBody()->getContents(), true));
     }
 }

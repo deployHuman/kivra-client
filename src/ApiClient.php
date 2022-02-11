@@ -6,11 +6,7 @@ use DateTime;
 use DeployHuman\kivra\Api\Authentication;
 use DeployHuman\kivra\Api\TenantContent;
 use DeployHuman\kivra\Api\TenantManagement;
-use \GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Client as GuzzleClient;
-use GuzzleHttp\Psr7\Message;
-use Psr\Http\Message\ResponseInterface;
-
+use GuzzleHttp\Client;
 
 class ApiClient
 {
@@ -35,7 +31,11 @@ class ApiClient
         if ($ForceRefreshToken) $this->config->resetAccesToken();
         if ($this->isTokenValid($this->config->getStorage())) return true;
 
-        $body =  $this->Authentication()->callAPIAuthToGetAccessToken();
+        $response =  $this->Authentication()->callAPIAuthToGetAccessToken();
+        $AcceptedStatus = [200];
+        if (!in_array($response->getStatusCode(), $AcceptedStatus)) return false;
+        $body = json_decode($response->getBody()->getContents(), true);
+
         if ($body == false) return false;
 
         if (isset($body["access_token"])) {
@@ -44,6 +44,17 @@ class ApiClient
         }
 
         return false;
+    }
+
+    /**
+     * gets an API Client with all configuration set
+     *
+     * @return Client
+     */
+    protected function getClient(): Client
+    {
+        $client = new Client(["base_uri" => $this->config->getBaseUrl(), 'debug' => $this->config->getDebug(), 'handler' => $this->config->getDebugHandler()]);
+        return $client;
     }
 
     protected function setAPIError(string $error, string $error_description): void

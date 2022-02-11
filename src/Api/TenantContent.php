@@ -6,7 +6,6 @@ use DeployHuman\kivra\ApiClient;
 use DeployHuman\kivra\Dataclass\Content\Content_Company\Content_Company;
 use DeployHuman\kivra\Dataclass\Content\Content_User\Content_User;
 use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Psr7\Message;
 use GuzzleHttp\Psr7\Response;
 
@@ -32,7 +31,7 @@ class TenantContent extends ApiClient
         $querys = [];
         $querys = isset($ssn) ? array_merge($querys, ['ssn' => $ssn]) : $querys;
         $querys = isset($include) ? array_merge($querys, ['include' => $include]) : $querys;
-        $client = new GuzzleClient(["base_uri" => $this->config->getBaseUrl(), 'debug' => $this->config->getDebug()]);
+        $client = $this->getClient();
         try {
             $response = $client->request(
                 "GET",
@@ -71,7 +70,7 @@ class TenantContent extends ApiClient
         $scopeNeeded = "get:kivra.v1.tenant.{tenantKey}.usermatch";
         $this->basicTokenCheck($scopeNeeded);
 
-        $client = new GuzzleClient(["base_uri" => $this->config->getBaseUrl(), 'debug' => $this->config->getDebug()]);
+        $client = $this->getClient();
         try {
             $response = $client->request(
                 "POST",
@@ -111,7 +110,7 @@ class TenantContent extends ApiClient
         $this->basicTokenCheck($scopeNeeded);
         $querys = [];
         $querys = isset($vat_number) ? array_merge($querys, ['vat_number' => $vat_number]) : $querys;
-        $client = new GuzzleClient(["base_uri" => $this->config->getBaseUrl(), 'debug' => $this->config->getDebug()]);
+        $client = $this->getClient();
         try {
             $response = $client->request(
                 "POST",
@@ -149,7 +148,7 @@ class TenantContent extends ApiClient
 
         $scopeNeeded = "post:kivra.v1.tenant.{tenantKey}.content";
         $this->basicTokenCheck($scopeNeeded);
-        $client = new GuzzleClient(["base_uri" => $this->config->getBaseUrl(), 'debug' => $this->config->getDebug()]);
+        $client = $this->getClient();
         try {
             $response = $client->request(
                 "POST",
