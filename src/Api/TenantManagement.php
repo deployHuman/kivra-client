@@ -143,6 +143,8 @@ class TenantManagement extends ApiClient
     {
         $scopeNeeded = "get:kivra.v2.tenant.{tenantKey}";
         $this->basicTokenCheck($scopeNeeded);
+        $logclient = $this->config->getLogger();
+        $logclient->debug(__CLASS__ . "::" . __FUNCTION__);
         $client = $this->getClient();
         try {
             $response = $client->request(
@@ -155,11 +157,13 @@ class TenantManagement extends ApiClient
                 ]
             );
         } catch (ClientException $e) {
+            $logclient->error(__CLASS__ . "::" . __FUNCTION__ . " - ClientException: " . $e->getMessage());
             $SentRequest = $e->getRequest() ? Message::toString($e->getRequest()) : '';
             $desc = $e->hasResponse() ? Message::toString($e->getResponse()) : '';
             $this->setAPIError('ClientException', 'Description: ' . $desc . ' Request: ' . $SentRequest);
             return false;
         }
+        $logclient->debug(__CLASS__ . "::" . __FUNCTION__ . " - Response size: " . $response->getBody()->getSize());
         return $response;
     }
 }

@@ -20,7 +20,8 @@ class Authentication extends ApiClient
     public function callAPIAuthToGetAccessToken(): Response|false
     {
         if (!$this->config->isClientAuthSet()) throw new Exception("Error in Kivra Settings");
-
+        $logclient = $this->config->getLogger();
+        $logclient->debug(__CLASS__ . "::" . __FUNCTION__);
         $client = $this->getClient();
         try {
             $response = $client->request(
@@ -34,11 +35,13 @@ class Authentication extends ApiClient
                 ]
             );
         } catch (ClientException $e) {
+            $logclient->error(__CLASS__ . "::" . __FUNCTION__ . " - ClientException: " . $e->getMessage());
             $SentRequest = $e->getRequest() ? Message::toString($e->getRequest()) : '';
             $desc = $e->hasResponse() ? Message::toString($e->getResponse()) : '';
             $this->setAPIError('ClientException', 'Description: ' . $desc . ' Request: ' . $SentRequest);
             return false;
         }
+        $logclient->debug(__CLASS__ . "::" . __FUNCTION__ . " - Response size: " . $response->getBody()->getSize());
         return $response;
     }
 }

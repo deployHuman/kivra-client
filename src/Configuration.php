@@ -7,8 +7,11 @@ use DateTime;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\MessageFormatter;
 use GuzzleHttp\Middleware;
+use Monolog\ErrorHandler;
+use Monolog\Handler\FirePHPHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use Monolog\Registry;
 
 class Configuration
 {
@@ -24,9 +27,10 @@ class Configuration
     protected string $storage_name;
     protected array $storage;
     protected bool $debug = false;
+    protected logger $logstack;
     protected bool $ErrorPrintOut = false;
     protected bool $ConnectDirectly = true;
-    protected string $logpath = './';
+    protected string $logpath = __DIR__ . './log/';
 
     public function __construct(string $storagename = null, bool $ConnectDirectly = true)
     {
@@ -34,6 +38,31 @@ class Configuration
         $this->initateStorage();
         $this->tempFolderPath = sys_get_temp_dir();
         $this->ConnectDirectly = $ConnectDirectly;
+    }
+
+    private static function setGlobalLogger(Logger $logger = null)
+    {
+        if ($logger == null) {
+            $logger = new Logger('API');
+            $logger->pushHandler(new StreamHandler(__DIR__ . '/log/api.log', Logger::DEBUG));
+            $logger->pushHandler(new FirePHPHandler());
+        }
+        Registry::addLogger($logger);
+        ErrorHandler::register($logger);
+    }
+
+
+    public function getLogger(): Logger
+    {
+        return $this->logstack;
+    }
+
+
+    public function setLogger(Logger $logstack): self
+    {
+        $this->logstack = $logstack;
+        $this->setGlobalLogger($logstack);
+        return $this;
     }
 
     public function setConnectDirectly(bool $ConnectDirectly): self
@@ -44,17 +73,13 @@ class Configuration
 
     public function getDebugHandler(): HandlerStack
     {
-        $log = new Logger('API');
-        $log->pushHandler(new StreamHandler($this->logpath));
         $stack = HandlerStack::create();
-
         $stack->push(
             Middleware::log(
-                $log,
+                $this->logstack,
                 new MessageFormatter('{uri} - {code} -  request Headers: {req_headers} - Response Headers {res_headers}')
             )
         );
-
         return $stack;
     }
 
