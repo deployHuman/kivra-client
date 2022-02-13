@@ -51,9 +51,9 @@ class ApiClient
      *
      * @return Client
      */
-    protected function getClient(): Client
+    public function getClient(): Client
     {
-        $client = new Client(["base_uri" => $this->config->getBaseUrl(), 'debug' => $this->config->getDebug(), 'handler' => $this->config->getDebugHandler()]);
+        $client = new Client(["base_uri" => $this->config->getBaseUrl(), 'handler' => $this->config->getDebugHandler()]);
         return $client;
     }
 

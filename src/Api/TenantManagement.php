@@ -23,6 +23,8 @@ class TenantManagement extends ApiClient
     {
         $scopeNeeded = "get:kivra.v2.tenant";
         $this->basicTokenCheck($scopeNeeded);
+        $logclient = $this->config->getLogger();
+        $logclient->debug(__CLASS__ . "::" . __FUNCTION__);
         $querys = isset($QueryParamOrgnr) ? ['orgnr' => $QueryParamOrgnr] : [];
         $client = $this->getClient();
         try {
@@ -39,8 +41,12 @@ class TenantManagement extends ApiClient
         } catch (ClientException $e) {
             $SentRequest = $e->getRequest() ? Message::toString($e->getRequest()) : '';
             $desc = $e->hasResponse() ? Message::toString($e->getResponse()) : '';
-            $this->setAPIError('ClientException', 'Description: ' . $desc . ' Request: ' . $SentRequest);
+            $logclient->error(__CLASS__ . "::" . __FUNCTION__ . " - ClientException: " . $e->getMessage() . ' Request: ' . $SentRequest . ' Description: ' . $desc);
             return false;
+        }
+        if ($this->config->getDebug()) {
+            $logclient->debug(__CLASS__ . "::" . __FUNCTION__ . " - Response body: " . $response->getBody()->getContents());
+            $response->getBody()->rewind();
         }
         return $response;
     }
@@ -63,7 +69,8 @@ class TenantManagement extends ApiClient
     {
         $scopeNeeded = "post:kivra.v2.tenant.request_access";
         $this->basicTokenCheck($scopeNeeded);
-
+        $logclient = $this->config->getLogger();
+        $logclient->debug(__CLASS__ . "::" . __FUNCTION__);
         $client = $this->getClient();
         try {
             $response = $client->request(
@@ -82,8 +89,12 @@ class TenantManagement extends ApiClient
         } catch (ClientException $e) {
             $SentRequest = $e->getRequest() ? Message::toString($e->getRequest()) : '';
             $desc = $e->hasResponse() ? Message::toString($e->getResponse()) : '';
-            $this->setAPIError('ClientException', 'Description: ' . $desc . ' Request: ' . $SentRequest);
+            $logclient->error(__CLASS__ . "::" . __FUNCTION__ . " - ClientException: " . $e->getMessage() . ' Request: ' . $SentRequest . ' Description: ' . $desc);
             return false;
+        }
+        if ($this->config->getDebug()) {
+            $logclient->debug(__CLASS__ . "::" . __FUNCTION__ . " - Response body: " . $response->getBody()->getContents());
+            $response->getBody()->rewind();
         }
         return $response;
     }
@@ -157,13 +168,15 @@ class TenantManagement extends ApiClient
                 ]
             );
         } catch (ClientException $e) {
-            $logclient->error(__CLASS__ . "::" . __FUNCTION__ . " - ClientException: " . $e->getMessage());
             $SentRequest = $e->getRequest() ? Message::toString($e->getRequest()) : '';
             $desc = $e->hasResponse() ? Message::toString($e->getResponse()) : '';
-            $this->setAPIError('ClientException', 'Description: ' . $desc . ' Request: ' . $SentRequest);
+            $logclient->error(__CLASS__ . "::" . __FUNCTION__ . " - ClientException: " . $e->getMessage() . ' Request: ' . $SentRequest . ' Description: ' . $desc);
             return false;
         }
-        $logclient->debug(__CLASS__ . "::" . __FUNCTION__ . " - Response size: " . $response->getBody()->getSize());
+        if ($this->config->getDebug()) {
+            $logclient->debug(__CLASS__ . "::" . __FUNCTION__ . " - Response body: " . $response->getBody()->getContents());
+            $response->getBody()->rewind();
+        }
         return $response;
     }
 }

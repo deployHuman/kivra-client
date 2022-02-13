@@ -35,13 +35,15 @@ class Authentication extends ApiClient
                 ]
             );
         } catch (ClientException $e) {
-            $logclient->error(__CLASS__ . "::" . __FUNCTION__ . " - ClientException: " . $e->getMessage());
             $SentRequest = $e->getRequest() ? Message::toString($e->getRequest()) : '';
             $desc = $e->hasResponse() ? Message::toString($e->getResponse()) : '';
-            $this->setAPIError('ClientException', 'Description: ' . $desc . ' Request: ' . $SentRequest);
+            $logclient->error(__CLASS__ . "::" . __FUNCTION__ . " - ClientException: " . $e->getMessage() . ' Request: ' . $SentRequest . ' Description: ' . $desc);
             return false;
         }
-        $logclient->debug(__CLASS__ . "::" . __FUNCTION__ . " - Response size: " . $response->getBody()->getSize());
+        if ($this->config->getDebug()) {
+            $logclient->debug(__CLASS__ . "::" . __FUNCTION__ . " - Response body: " . $response->getBody()->getContents());
+            $response->getBody()->rewind();
+        }
         return $response;
     }
 }
