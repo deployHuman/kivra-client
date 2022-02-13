@@ -39,11 +39,11 @@ class Configuration
         $this->ConnectDirectly = $ConnectDirectly;
     }
 
-    private static function setGlobalLogger(Logger $logger = null)
+    private function setGlobalLogger(Logger $logger = null)
     {
         if ($logger == null) {
             $logger = new Logger('API');
-            $logger->pushHandler(new StreamHandler(__DIR__ . '/log/api.log', Logger::DEBUG));
+            $logger->pushHandler(new StreamHandler($this->getLogPath() . '/api.log', Logger::DEBUG));
             $logger->pushHandler(new FirePHPHandler());
         }
         Registry::addLogger($logger);
