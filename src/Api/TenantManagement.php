@@ -110,11 +110,12 @@ class TenantManagement extends ApiClient
      * @param string $requestKey 
      * @return array|false
      */
-    public function callAPIRequestAccessStatus(string $requestKey): array|false
+    public function callAPIRequestAccessStatus(string $requestKey): response|false
     {
         $scopeNeeded = "get:kivra.v2.tenant.request_access.{requestKey}";
         $this->basicTokenCheck($scopeNeeded);
-
+        $logclient = $this->config->getLogger();
+        $logclient->debug(__CLASS__ . "::" . __FUNCTION__);
         $client = $this->getClient();
         try {
             $response = $client->request(
@@ -129,15 +130,14 @@ class TenantManagement extends ApiClient
         } catch (ClientException $e) {
             $SentRequest = $e->getRequest() ? Message::toString($e->getRequest()) : '';
             $desc = $e->hasResponse() ? Message::toString($e->getResponse()) : '';
-            $this->setAPIError('ClientException', 'Description: ' . $desc . ' Request: ' . $SentRequest);
+            $logclient->error(__CLASS__ . "::" . __FUNCTION__ . " - ClientException: " . $e->getMessage() . ' Request: ' . $SentRequest . ' Description: ' . $desc);
             return false;
         }
-        $AcceptedStatus = [200];
-        if (!in_array($response->getStatusCode(), $AcceptedStatus)) {
-            $this->setAPIError('Non Accepted StatusCode `' . $response->getStatusCode() . '`',  Message::toString($response));
-            return false;
+        if ($this->config->getDebug()) {
+            $logclient->debug(__CLASS__ . "::" . __FUNCTION__ . " - Response body: " . $response->getBody()->getContents());
+            $response->getBody()->rewind();
         }
-        return (array) $this->cleanUpEmptyFields(json_decode($response->getBody()->getContents(), true));
+        return $response;
     }
     //https://sender.sandbox-api.kivra.com/v2/tenant/request_access/1631171803455ef65506fc41959bf684bc0809a2bc
 

@@ -28,7 +28,6 @@ class Configuration
     protected array $storage;
     protected bool $debug = false;
     protected logger $logstack;
-    protected bool $ErrorPrintOut = false;
     protected bool $ConnectDirectly = true;
     protected string $logpath = __DIR__ . './log/';
 
@@ -56,7 +55,6 @@ class Configuration
     {
         return $this->logstack;
     }
-
 
     public function setLogger(Logger $logstack): self
     {
@@ -156,17 +154,6 @@ class Configuration
     public function getUserAgent(): string
     {
         return $this->userAgent;
-    }
-
-    public function setErrorPrintOut(bool $ErrorPrintOut): self
-    {
-        $this->ErrorPrintOut = $ErrorPrintOut;
-        return $this;
-    }
-
-    public function getErrorPrintOut(): bool
-    {
-        return $this->ErrorPrintOut;
     }
 
     public function setDebug(bool $debug): self

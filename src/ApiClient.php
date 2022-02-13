@@ -57,18 +57,6 @@ class ApiClient
         return $client;
     }
 
-    protected function setAPIError(string $error, string $error_description): void
-    {
-        $this->APIErrorlog[] = [
-            "error" => $error,
-            "error_description" => $error_description,
-            'time' => (new DateTime())->format('Y-m-d H:i:s')
-        ];
-        if ($this->config->getErrorPrintOut()) {
-            echo "\n<br>Kivra API Error: " . $error . " - " . $error_description . "\n";
-        }
-    }
-
     /**
      * Cleanup of output array from Kivra
      * Seems like they keep sending empty fields in the form of "[]" which will make it as an array and cause conversion to string error 
@@ -121,19 +109,9 @@ class ApiClient
         return true;
     }
 
-    public function getAccessToken(): string
+    protected function getAccessToken(): string
     {
         return $this->config->getStorage()['access_token'];
-    }
-
-    public function getLatestAPIErrorLog(): array
-    {
-        return $this->APIErrorlog;
-        //get the latest error log from the array sorted by the 'time'
-        $latestError = array_reduce($this->APIErrorlog, function ($a, $b) {
-            return ($a['time'] > $b['time']) ? $a : $b;
-        });
-        return $latestError ?? [];
     }
 
 
