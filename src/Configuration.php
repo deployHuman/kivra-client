@@ -42,11 +42,11 @@ class Configuration
     private function setGlobalLogger(Logger $logger = null)
     {
         if ($logger == null) {
-            $logger = new Logger('API');
+            $logger = new Logger('API_Kivra');
             $logger->pushHandler(new StreamHandler($this->getLogPath() . '/api.log', Logger::DEBUG));
             $logger->pushHandler(new FirePHPHandler());
         }
-        Registry::addLogger($logger);
+        Registry::addLogger($logger, 'API_Kivra', true);
         ErrorHandler::register($logger);
     }
 
