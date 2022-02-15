@@ -42,17 +42,19 @@ class Configuration
     private function setGlobalLogger(Logger $logger = null)
     {
         if ($logger == null) {
-            $logger = new Logger('API_Kivra');
+            $logger = new Logger(__CLASS__);
             $logger->pushHandler(new StreamHandler($this->getLogPath() . '/api.log', Logger::DEBUG));
             $logger->pushHandler(new FirePHPHandler());
         }
-        Registry::addLogger($logger, 'API_Kivra', true);
+        $this->logstack = $logger;
+        Registry::addLogger($logger, __CLASS__, true);
         ErrorHandler::register($logger);
     }
 
 
     public function getLogger(): Logger
     {
+        if (!isset($this->logstack)) $this->setGlobalLogger();
         return $this->logstack;
     }
 
@@ -87,7 +89,7 @@ class Configuration
         return $this;
     }
 
-    public function getLogPath(): bool
+    public function getLogPath(): string
     {
         return $this->logpath;
     }
