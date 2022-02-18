@@ -2,12 +2,13 @@
 
 namespace DeployHuman\kivra\Dataclass\Content\Content_User\Context\Invoice;
 
+
+
 use DeployHuman\kivra\Dataclass\Content\Content_User\Context\Invoice\Options\Option;
 use DeployHuman\kivra\Enum\BankPaymentType;
 
 
 class PaymentMultipleOptions
-
 {
 
     protected bool $payable;
