@@ -13,7 +13,7 @@ enum Company_Content_Type: string
     /**
      * indicating that the content is a salary specification.
      */
-    case letter_sallery = 'letter.sallery';
+    case letter_salary = 'letter.salary';
 
     /**
      * indicating that the content is a creditnotice.
