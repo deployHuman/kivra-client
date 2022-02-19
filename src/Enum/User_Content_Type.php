@@ -13,7 +13,7 @@ enum User_Content_Type: string
     /**
      * indicating that the content is a salary specification.
      */
-    case letter_sallery = 'letter.sallery';
+    case letter_salary = 'letter.salary';
 
     /**
      * indicating that the content is a creditnotice.
@@ -40,7 +40,7 @@ enum User_Content_Type: string
      *  A valid "payment" object needs to be provided and the "payable" attribute must be set to "true". 
      *  This content types enables long due dates with a longer notification scheme
      */
-    case invoice_debtcompaign = 'invoice.debtcompaign';
+    case invoice_debtcampaign = 'invoice.debtcampaign';
 
     /**
      * indicating that the content is a booking/appointement.
