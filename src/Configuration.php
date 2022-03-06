@@ -7,61 +7,57 @@ use DateTime;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\MessageFormatter;
 use GuzzleHttp\Middleware;
-use Monolog\ErrorHandler;
-use Monolog\Handler\FirePHPHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
-use Monolog\Registry;
 
 class Configuration
 {
     protected bool $ForceRefreshToken = false;
-    protected string $accessToken = '';
     protected string $Client_id = '';
     protected string $Client_secret = '';
     protected string $apiVersion = 'v2';
     protected string $BaseUrl = 'https://sender.api.kivra.com';
     protected string $userAgent = 'DeployHuman/Kivra-PHP-Client/1.0.0';
-    protected string $tempFolderPath;
     protected string $storage_Default_name = 'kivra_auth';
-    protected string $storage_name;
+    protected string $storage_name = 'kivra_auth';
     protected array $storage;
     protected bool $debug = false;
     protected logger $logstack;
     protected bool $ConnectDirectly = true;
-    protected string $logpath = __DIR__ . './log/';
+    protected string $logpath = __DIR__ . '/../log/';
+    protected bool $Storage_Is_Session = false;
 
-    public function __construct(string $storagename = null, bool $ConnectDirectly = true)
+
+    public function __construct(bool $StorageInSession = true, bool $ConnectDirectly = true)
     {
-        $this->setStorageName($storagename);
-        $this->initateStorage();
-        $this->tempFolderPath = sys_get_temp_dir();
+        $this->setStorageIsSession($StorageInSession);
         $this->ConnectDirectly = $ConnectDirectly;
     }
 
-    private function setGlobalLogger(Logger $logger = null)
+    /**
+     * Making sure there is a Logger set.
+     *
+     * @return void
+     */
+    private function checkLogstack(): void
     {
-        if ($logger == null) {
+        if (empty($this->logstack)) {
             $logger = new Logger(__CLASS__);
-            $logger->pushHandler(new StreamHandler($this->getLogPath() . '/api.log', Logger::DEBUG));
-            $logger->pushHandler(new FirePHPHandler());
+            $logger->pushHandler(new StreamHandler($this->getLogPath() . DIRECTORY_SEPARATOR . 'api.log', Logger::DEBUG));
+            $this->logstack = $logger;
         }
-        $this->logstack = $logger;
-        Registry::addLogger($logger, __CLASS__, true);
-        ErrorHandler::register($logger);
     }
 
 
     public function getLogger(): Logger
     {
-        if (!isset($this->logstack)) $this->setGlobalLogger();
+        $this->checkLogstack();
         return $this->logstack;
     }
 
     public function setLogger(Logger $logstack): self
     {
         $this->logstack = $logstack;
-        $this->setGlobalLogger($logstack);
         return $this;
     }
 
@@ -73,11 +69,13 @@ class Configuration
 
     public function getDebugHandler(): HandlerStack
     {
+        $level = $this->getDebug() ? Logger::DEBUG : Logger::WARNING;
         $stack = HandlerStack::create();
         $stack->push(
             Middleware::log(
-                $this->logstack,
-                new MessageFormatter('{uri} - {code} -  request Headers: {req_headers} - Response Headers {res_headers}')
+                $this->getLogger(),
+                new MessageFormatter('{code}:{method}:{uri} {req_body} Response: {response}'),
+                $level
             )
         );
         return $stack;
@@ -91,7 +89,11 @@ class Configuration
 
     public function getLogPath(): string
     {
-        return $this->logpath;
+        if (!realpath($this->logpath)) {
+            mkdir($this->logpath);
+        }
+
+        return realpath($this->logpath);
     }
 
 
@@ -108,7 +110,7 @@ class Configuration
 
     public function getClient_id(): string
     {
-        return $this->Client_id;
+        return $this->Client_id ?? '';
     }
 
     public function setApiVersion(string $apiVersion): self
@@ -119,10 +121,7 @@ class Configuration
 
     public function getAPIversion(): string
     {
-        if (!isset($this->apiVersion)) {
-            return 'v2';
-        }
-        return $this->apiVersion;
+        return $this->apiVersion ?? 'v2';
     }
 
     public function setClient_secret(string $Client_secret): self
@@ -133,7 +132,7 @@ class Configuration
 
     public function getClient_secret(): string
     {
-        return $this->Client_secret;
+        return $this->Client_secret ?? '';
     }
 
     public function SetBaseUrl(string $BaseUrl): self
@@ -144,7 +143,7 @@ class Configuration
 
     public function getBaseUrl(): string
     {
-        return $this->BaseUrl;
+        return $this->BaseUrl ?? 'https://sender.api.kivra.com';
     }
 
     public function setUserAgent(string $userAgent): self
@@ -155,7 +154,7 @@ class Configuration
 
     public function getUserAgent(): string
     {
-        return $this->userAgent;
+        return $this->userAgent ?? 'DeployHuman/Kivra-PHP-Client/1.0.0';
     }
 
     public function setDebug(bool $debug): self
@@ -186,16 +185,25 @@ class Configuration
         return $this;
     }
 
-    public function saveToStorage(array $params): self
+    public function saveToStorage(array $asocArray): self
     {
-        $this->storage[$this->storage_name] = array_merge($this->storage[$this->storage_name], $params);
+        $this->initateStorage();
+        if ($this->getStorageIsSession()) {
+            $_SESSION[$this->storage_name] = array_merge($_SESSION[$this->storage_name], $asocArray);
+        } else {
+            $this->storage[$this->storage_name] = array_merge($this->storage[$this->storage_name], $asocArray);
+        }
         return $this;
     }
 
     public function unsetFromStorage(array $UnsetKeys): self
     {
         foreach ($UnsetKeys as $key) {
-            unset($this->storage[$this->storage_name][$key]);
+            if ($this->getStorageIsSession()) {
+                unset($_SESSION[$this->storage_name][$key]);
+            } else {
+                unset($this->storage[$this->storage_name][$key]);
+            }
         }
         return $this;
     }
@@ -207,40 +215,48 @@ class Configuration
 
     public function getStorage(): array
     {
-        if (!isset($this->storage[$this->storage_name])) {
-            $this->initateStorage();
+        $this->initateStorage();
+        if ($this->getStorageIsSession()) {
+            return $_SESSION[$this->storage_name] ?? [];
         }
-        return $this->storage[$this->storage_name];
+
+        return $this->storage[$this->storage_name] ?? [];
     }
 
-    private function isDebug(): bool
+    public function getStorageIsSession(): bool
     {
-        if (isset($this->debug) && $this->debug === true) {
-            return true;
-        }
-        return false;
+        return $this->Storage_Is_Session ?? false;
     }
 
-    public function initateStorage(): bool|Exception
+    public function setStorageIsSession(bool $UseSession = true): self
     {
-        if (isset($this->storage)) {
-            if (isset($this->storage[$this->storage_name])) {
-                return true;
+        $this->Storage_Is_Session = $UseSession;
+        return $this;
+    }
+
+    public function initateStorage(): bool
+    {
+        if (!isset($this->storage_name)) $this->storage_name = $this->storage_Default_name;
+
+        if ($this->getStorageIsSession()) {
+            if (session_status() == PHP_SESSION_NONE) {
+                session_start();
             }
-        }
-        if (session_status() !== PHP_SESSION_ACTIVE && !$this->isDebug()) {
-            throw new Exception('Invalid AUTH storage. Use session_start() before instantiating Kivra');
-        }
-        if ($this->storage_name == null) $this->storage_name = clone $this->storage_Default_name;
-        $this->storage[$this->storage_name] = [];
-        if ($this->isDebug()) {
+
+            if (!isset($_SESSION[$this->storage_name])) {
+                $_SESSION[$this->storage_name] = [];
+            }
             return true;
         }
-        if (!array_key_exists($this->storage_name, $_SESSION) || !is_array($_SESSION[$this->storage_name])) {
-            $_SESSION[$this->storage_name] = [];
-            $this->storage = &$_SESSION[$this->storage_name];
+
+        if (!$this->getStorageIsSession()) {
+            if (!isset($this->storage[$this->storage_name])) {
+                $this->storage[$this->storage_name] = [];
+            }
+            return true;
         }
-        return true;
+
+        return false;
     }
 
     public function isClientAuthSet(): bool

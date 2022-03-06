@@ -3,6 +3,7 @@
 namespace DeployHuman\kivra\Api;
 
 use DeployHuman\kivra\ApiClient;
+use DeployHuman\kivra\Dataclass\CompanyId;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Message;
 use GuzzleHttp\Psr7\Response;
@@ -178,5 +179,18 @@ class TenantManagement extends ApiClient
             $response->getBody()->rewind();
         }
         return $response;
+    }
+
+    /**
+     * Create Tenant.
+     * Creation of tenants via API allows clients to create new tenants in an efficient manner. The created tenant is automatically added to the client scope. The client needs to re-authenticate to have the new scope in effect.
+     * Note: Creation of tenants via API is only allowed in certain specific cases and its usage needs to be regulated in the business relationship between the sender party and Kivra.
+     *
+     * @param CompanyId $companyObjects
+     * @return Response
+     */
+    public function apiCreateTenant(CompanyId $companyObjects): Response
+    {
+        return $this->post('/v2/tenant/', $companyObjects->toArray());
     }
 }
