@@ -45,15 +45,3 @@ $fetchArray = $apiInstance->TenantManagement()->callAPIListAllTenantsAccessibleT
 
 All URIs are relative to *https://sender.api.kivra.com
 
-
-| SubClass         | Method                                     | HTTP request                               | Description                                           |
-| ---------------- | ------------------------------------------ | ------------------------------------------ | ----------------------------------------------------- |
-| Authentication   | callAPIAuthToGetAccessToken                | **POST**  /v2/auth                         | Exchange Auth for Bearer Token                        |
-| TenantManagement | callAPIListAllTenantsAccessibleToTheClient | **GET**   /v2/tenant                       | List tenants                                          |
-| TenantManagement | callAPIGetInformationOnTenant              | **GET**   /v2/tenant/{tenantKey}           | Tenant information                                    |
-| TenantManagement | callAPIRequestAccess                       | **POST**  /v2/tenant/request_access        | Request access to a tenant                            |
-| TenantContent    | callAPIMatchUsers                          | **POST**  /v1/tenant/{tenantKey}/usermatch | Match a list of recipient users for a specific tenant |
-| TenantContent    | callAPIListUsers                           | **GET**   /v1/tenant/{tenantKey}/user      | List available recipient users for a tenant           |
-| TenantContent    | callAPIListCompanies                       | **GET**   /v1/tenant/{tenantKey}/company   | List available recipient companies for a tenant       |
-
- 
