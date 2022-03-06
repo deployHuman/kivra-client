@@ -74,7 +74,7 @@ class Configuration
         $stack->push(
             Middleware::log(
                 $this->getLogger(),
-                new MessageFormatter('{code}:{method}:{uri} {req_body} Response: {response}'),
+                new MessageFormatter('{code}:{method}:{uri} {req_body}'),
                 $level
             )
         );
