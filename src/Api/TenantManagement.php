@@ -4,8 +4,6 @@ namespace DeployHuman\kivra\Api;
 
 use DeployHuman\kivra\ApiClient;
 use DeployHuman\kivra\Dataclass\CompanyId;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Psr7\Message;
 use GuzzleHttp\Psr7\Response;
 
 class TenantManagement extends ApiClient
@@ -22,34 +20,8 @@ class TenantManagement extends ApiClient
      */
     public function callAPIListAllTenantsAccessibleToTheClient(string $QueryParamOrgnr = null): Response|false
     {
-        $scopeNeeded = "get:kivra.v2.tenant";
-        $this->basicTokenCheck($scopeNeeded);
-        $logclient = $this->config->getLogger();
-        $logclient->debug(__CLASS__ . "::" . __FUNCTION__);
-        $querys = isset($QueryParamOrgnr) ? ['orgnr' => $QueryParamOrgnr] : [];
-        $client = $this->getClient();
-        try {
-            $response = $client->request(
-                "GET",
-                '/v2/tenant',
-                [
-                    'headers' => [
-                        'Authorization' => 'Bearer ' . $this->getAccessToken(),
-                    ],
-                    'query' => $querys
-                ]
-            );
-        } catch (ClientException $e) {
-            $SentRequest = $e->getRequest() ? Message::toString($e->getRequest()) : '';
-            $desc = $e->hasResponse() ? Message::toString($e->getResponse()) : '';
-            $logclient->error(__CLASS__ . "::" . __FUNCTION__ . " - ClientException: " . $e->getMessage() . ' Request: ' . $SentRequest . ' Description: ' . $desc);
-            return false;
-        }
-        if ($this->config->getDebug()) {
-            $logclient->debug(__CLASS__ . "::" . __FUNCTION__ . " - Response body: " . $response->getBody()->getContents());
-            $response->getBody()->rewind();
-        }
-        return $response;
+        $querys = isset($QueryParamOrgnr) ? ['query' => ['orgnr' => $QueryParamOrgnr]] : [];
+        return $this->get('/v2/tenant', $querys);
     }
 
 
@@ -68,36 +40,7 @@ class TenantManagement extends ApiClient
      */
     public function callAPIRequestAccess(string $vat_number): Response|false
     {
-        $scopeNeeded = "post:kivra.v2.tenant.request_access";
-        $this->basicTokenCheck($scopeNeeded);
-        $logclient = $this->config->getLogger();
-        $logclient->debug(__CLASS__ . "::" . __FUNCTION__);
-        $client = $this->getClient();
-        try {
-            $response = $client->request(
-                "POST",
-                '/v2/tenant/request_access',
-                [
-                    'headers' => [
-                        'Authorization' => 'Bearer ' . $this->getAccessToken(),
-                    ],
-                    'json' => [
-                        'vat_number' => $vat_number
-                    ]
-
-                ]
-            );
-        } catch (ClientException $e) {
-            $SentRequest = $e->getRequest() ? Message::toString($e->getRequest()) : '';
-            $desc = $e->hasResponse() ? Message::toString($e->getResponse()) : '';
-            $logclient->error(__CLASS__ . "::" . __FUNCTION__ . " - ClientException: " . $e->getMessage() . ' Request: ' . $SentRequest . ' Description: ' . $desc);
-            return false;
-        }
-        if ($this->config->getDebug()) {
-            $logclient->debug(__CLASS__ . "::" . __FUNCTION__ . " - Response body: " . $response->getBody()->getContents());
-            $response->getBody()->rewind();
-        }
-        return $response;
+        return $this->post('/v2/tenant/request_access', ['json' => ['vat_number' => $vat_number]]);
     }
 
 
@@ -113,34 +56,8 @@ class TenantManagement extends ApiClient
      */
     public function callAPIRequestAccessStatus(string $requestKey): response|false
     {
-        $scopeNeeded = "get:kivra.v2.tenant.request_access.{requestKey}";
-        $this->basicTokenCheck($scopeNeeded);
-        $logclient = $this->config->getLogger();
-        $logclient->debug(__CLASS__ . "::" . __FUNCTION__);
-        $client = $this->getClient();
-        try {
-            $response = $client->request(
-                "GET",
-                '/v2/tenant/request_access/' . $requestKey,
-                [
-                    'headers' => [
-                        'Authorization' => 'Bearer ' . $this->getAccessToken(),
-                    ]
-                ]
-            );
-        } catch (ClientException $e) {
-            $SentRequest = $e->getRequest() ? Message::toString($e->getRequest()) : '';
-            $desc = $e->hasResponse() ? Message::toString($e->getResponse()) : '';
-            $logclient->error(__CLASS__ . "::" . __FUNCTION__ . " - ClientException: " . $e->getMessage() . ' Request: ' . $SentRequest . ' Description: ' . $desc);
-            return false;
-        }
-        if ($this->config->getDebug()) {
-            $logclient->debug(__CLASS__ . "::" . __FUNCTION__ . " - Response body: " . $response->getBody()->getContents());
-            $response->getBody()->rewind();
-        }
-        return $response;
+        return $this->get('/v2/tenant/request_access/' . $requestKey);
     }
-    //https://sender.sandbox-api.kivra.com/v2/tenant/request_access/1631171803455ef65506fc41959bf684bc0809a2bc
 
     /**
      * Tenant information
@@ -151,34 +68,9 @@ class TenantManagement extends ApiClient
      * @param string $tenantkey The unique Key for a Tenant
      * @return Response|false
      */
-    public function callAPIGetInformationOnTenant(string $tenantkey): Response|false
+    public function apiGetInformationOnTenant(string $tenantkey): Response|false
     {
-        $scopeNeeded = "get:kivra.v2.tenant.{tenantKey}";
-        $this->basicTokenCheck($scopeNeeded);
-        $logclient = $this->config->getLogger();
-        $logclient->debug(__CLASS__ . "::" . __FUNCTION__);
-        $client = $this->getClient();
-        try {
-            $response = $client->request(
-                "GET",
-                '/v2/tenant/' . $tenantkey,
-                [
-                    'headers' => [
-                        'Authorization' => 'Bearer ' . $this->getAccessToken(),
-                    ],
-                ]
-            );
-        } catch (ClientException $e) {
-            $SentRequest = $e->getRequest() ? Message::toString($e->getRequest()) : '';
-            $desc = $e->hasResponse() ? Message::toString($e->getResponse()) : '';
-            $logclient->error(__CLASS__ . "::" . __FUNCTION__ . " - ClientException: " . $e->getMessage() . ' Request: ' . $SentRequest . ' Description: ' . $desc);
-            return false;
-        }
-        if ($this->config->getDebug()) {
-            $logclient->debug(__CLASS__ . "::" . __FUNCTION__ . " - Response body: " . $response->getBody()->getContents());
-            $response->getBody()->rewind();
-        }
-        return $response;
+        return $this->get('/v2/tenant/' . $tenantkey);
     }
 
     /**
@@ -191,6 +83,8 @@ class TenantManagement extends ApiClient
      */
     public function apiCreateTenant(CompanyId $companyObjects): Response
     {
-        return $this->post('/v2/tenant/', $companyObjects->toArray());
+        $response = $this->post('/v2/tenant', $companyObjects->toArray());
+        if (in_array($response->getStatusCode(), [200, 201])) $this->refreshAccessToken(true);
+        return $response;
     }
 }
