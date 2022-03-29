@@ -111,11 +111,11 @@ class ApiClient
     protected function basicTokenCheck(string $ScopeNeeded = null): bool|Exception
     {
         if (!$this->config->isClientAuthSet()) {
-            throw new Exception("Error in Kivra Settings");
+            throw new Exception("Error in Kivra Settings",  $this->config->getLogger()->getName());
         }
-        if (!$this->refreshAccessToken()) throw new Exception("Error in fetching Access Token for basic APi CALL on Kivra");
+        if (!$this->refreshAccessToken()) throw new Exception("Error in fetching Access Token for basic APi CALL on Kivra",  $this->config->getLogger()->getName());
         if ($ScopeNeeded != null && !$this->config->hasScope($ScopeNeeded)) {
-            throw new Exception("Error in fetching Access Token for basic APi CALL on Kivra");
+            throw new Exception("Error in fetching Access Token for basic APi CALL on Kivra",  $this->config->getLogger()->getName());
         }
         return true;
     }
@@ -136,9 +136,11 @@ class ApiClient
      * @param array     $params
      * 
      * @return Response
+     * @throws Exception
      */
     protected function request(ApiMethod $method = ApiMethod::GET, string $uri = '', array $data = [], array $params = []): Response
     {
+        if (!$this->config->isClientAuthSet()) throw new Exception("Error in Kivra Settings",  $this->config->getLogger()->getName());
         if (!$this->isTokenValid($this->config->getStorage())) $this->refreshAccessToken(true);
 
         $optionsarray = [];
