@@ -22,7 +22,7 @@ class ApiClient
         if (!isset($this->config)) {
             $this->config = $config ?? new Configuration();
         }
-        Registry::addLogger($this->config->getLogger(), __CLASS__, true);
+        Registry::addLogger($this->config->getLogger(), $this->config->getLogger()->getName(), true);
 
         $this->client = new Client([
             "base_uri" => $this->config->getBaseUrl(),
@@ -31,9 +31,10 @@ class ApiClient
             'http_errors' => false,
         ]);
 
-        if (get_called_class() != 'DeployHuman\fortnox\ApiClient') return;
-        if (!$this->config->isClientAuthSet()) return;
-        //If this is the base class, we need to check if the client is authenticated, But only in base otherwise we will get an infinite loop
+        if (get_called_class() != 'DeployHuman\fortnox\ApiClient')              return;
+        $this->config->saveToStorage($this->config->getSettingsArray());
+        if (!$this->config->isClientAuthSet()) throw new Exception("Missing Base Creditentials, Check over BaseUrl and Client_id and Client_secret",  $this->config->getLogger()->getName());
+
         if ($this->config->getConnectDirectly()) $this->refreshAccessToken($this->config->getForceRefreshToken());
     }
 
