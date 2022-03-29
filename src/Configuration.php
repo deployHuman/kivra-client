@@ -227,7 +227,7 @@ class Configuration
         if (!isset($this->storage_name)) $this->storage_name = $this->storage_Default_name;
 
         if ($this->getStorageIsSession()) {
-            if (session_status() == PHP_SESSION_NONE) {
+            if (session_status() == PHP_SESSION_NONE && !headers_sent()) {
                 session_start();
             }
 
