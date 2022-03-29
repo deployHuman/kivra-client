@@ -143,7 +143,7 @@ class Configuration
 
     public function getBaseUrl(): string
     {
-        return $this->BaseUrl ?? 'https://sender.api.kivra.com';
+        return $this->BaseUrl;
     }
 
     public function setUserAgent(string $userAgent): self
