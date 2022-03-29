@@ -35,7 +35,6 @@ class ApiClient
         if (!$this->config->isClientAuthSet()) return;
         //If this is the base class, we need to check if the client is authenticated, But only in base otherwise we will get an infinite loop
         if ($this->config->getConnectDirectly()) $this->refreshAccessToken($this->config->getForceRefreshToken());
-        if (!$this->isTokenValid($this->config->getStorage())) $this->refreshAccessToken(true);
     }
 
     protected function refreshAccessToken(bool $ForceRefreshToken = false): bool
