@@ -15,7 +15,6 @@ class Configuration
     protected bool $ForceRefreshToken = false;
     protected string $Client_id = '';
     protected string $Client_secret = '';
-    protected string $apiVersion = 'v2';
     protected string $BaseUrl = 'https://sender.api.kivra.com';
     protected string $userAgent = 'DeployHuman/Kivra-PHP-Client/1.0.0';
     protected string $storage_Default_name = 'kivra_auth';
@@ -111,17 +110,6 @@ class Configuration
     public function getClient_id(): string
     {
         return $this->Client_id ?? '';
-    }
-
-    public function setApiVersion(string $apiVersion): self
-    {
-        $this->apiVersion = $apiVersion;
-        return $this;
-    }
-
-    public function getAPIversion(): string
-    {
-        return $this->apiVersion ?? 'v2';
     }
 
     public function setClient_secret(string $Client_secret): self
