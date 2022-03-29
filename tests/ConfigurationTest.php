@@ -26,20 +26,10 @@ final class ConfigurationTest extends TestCase
     {
     }
 
-    public function testNull_and_no_Session_Init()
-    {
-        $GLOBALS['debug'] = false;
-        session_unset();
-        $this->expectException(Exception::class);
-        $blankConf = new Configuration();
-        $this->assertFalse($blankConf->getDebug());
-    }
-
     public function testStorageName_Init()
     {
-        $blankConf = new Configuration("testing");
+        $blankConf = (new Configuration())->setStorageName('testing');
         $this->assertEquals('testing', $blankConf->getStorageName());
-        $this->assertTrue($blankConf->getDebug());
     }
 
     public function testExcessInit()
@@ -90,12 +80,5 @@ final class ConfigurationTest extends TestCase
         $this->assertFalse($conf->isClientAuthSet());
         $conf->setClient_secret("test_client_secret");
         $this->assertTrue($conf->isClientAuthSet());
-    }
-
-
-
-    public function testSavingAccessToken()
-    {
-        $conf = new Configuration();
     }
 }
