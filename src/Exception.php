@@ -17,7 +17,7 @@ class Exception extends \Exception
             $logger->pushHandler(new StreamHandler(__DIR__ . DIRECTORY_SEPARATOR . 'apiError.log', Logger::DEBUG));
             Registry::addLogger($logger, $loggername, true);
         }
-        Registry::getLogger($loggername)->error("Exception thrown:" . $message);
+        Registry::getInstance($loggername)->error("Exception thrown:" . $message);
         parent::__construct($message);
     }
 }
