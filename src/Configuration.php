@@ -268,21 +268,24 @@ class Configuration
                 'expires_at' => (new DateTime())->add(new DateInterval('PT' . $authBody['expires_in'] . 'S')),
             ]
         );
-        $this->setStorageExtraParams();
+        $this->saveToStorage($this->getSettingsArray());
     }
 
-
-    private function setStorageExtraParams()
+    public function getSettingsArray(): array
     {
-        $this->saveToStorage(
-            [
-                'baseurl' => $this->getBaseUrl(),
-                'user_agent' => $this->getUserAgent(),
-                'debug' => $this->getDebug(),
-                'apiversion' => $this->getAPIversion()
-            ]
-        );
+        return [
+            'Client_id' => $this->getClient_id(),
+            'Client_secret' => $this->getClient_secret(),
+            'BaseUrl' => $this->getBaseUrl(),
+            'UserAgent' => $this->getUserAgent(),
+            'debug' => $this->getDebug(),
+            'ForceRefreshToken' => $this->getForceRefreshToken(),
+            'StorageName' => $this->getStorageName(),
+            'StorageIsSession' => $this->getStorageIsSession(),
+            'LoggerName' => $this->getLogger()->getName(),
+        ];
     }
+
 
     public function hasScope(string $Scope): bool
     {
