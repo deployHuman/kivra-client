@@ -31,7 +31,7 @@ class ApiClient
             'http_errors' => false,
         ]);
 
-        if (get_parent_class() !== false)               return;
+        if (get_parent_class($this) !== false) return;
         $this->config->saveToStorage($this->config->getSettingsArray());
 
         if (!$this->config->isClientAuthSet()) throw new Exception("Missing Base Creditentials, Check over BaseUrl and Client_id and Client_secret",  $this->config->getLogger()->getName());
