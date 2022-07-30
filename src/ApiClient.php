@@ -120,7 +120,7 @@ class ApiClient
         return true;
     }
 
-    protected function getAccessToken(): string
+    protected function getAccessToken(): string|null
     {
         return $this->config->getStorage()['access_token'];
     }
@@ -142,6 +142,7 @@ class ApiClient
     {
         if (!$this->config->isClientAuthSet()) throw new Exception("Error in Kivra Settings",  $this->config->getLogger()->getName());
         if (!$this->isTokenValid($this->config->getStorage())) $this->refreshAccessToken(true);
+        if ($this->getAccessToken() == null) throw new Exception("Error in Kivra Settings");
 
         $optionsarray = [];
         if (!empty($params)) $optionsarray[RequestOptions::QUERY] = $params;
