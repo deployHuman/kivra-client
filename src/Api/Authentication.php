@@ -11,13 +11,13 @@ class Authentication extends ApiClient
 {
     /**
      * To Get Bearer Token from Client ID and Client Secret
-     * @url /v1/auth
+     * @url /v2/auth
      * @Documentation http://developer.kivra.com/#section/API-Authentication
      *
-     * @return response|false
+     * @return response
      * @throws GuzzleException
      */
-    public function callAPIAuthToGetAccessToken(): Response|false
+    public function callAPIAuthToGetAccessToken(): Response
     {
         if (!$this->config->isClientAuthSet()) throw new Exception("Error in Kivra Auth Settings", $this->config->getLogger()->getName());
 
