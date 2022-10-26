@@ -3,7 +3,7 @@
 namespace DeployHuman\kivra;
 
 use DateTime;
-use DeployHuman\fortnox\Enum\ApiMethod;
+use DeployHuman\kivra\Enum\ApiMethod;
 use DeployHuman\kivra\Api\Authentication;
 use DeployHuman\kivra\Api\TenantContent;
 use DeployHuman\kivra\Api\TenantManagement;
@@ -125,7 +125,7 @@ class ApiClient
 
 
     /**
-     * Send a request to the Fortnox API.
+     * Send a request to the Kivra API.
      *
      * @param ApiMethod $method
      * @param string    $uri
@@ -150,7 +150,7 @@ class ApiClient
     }
 
     /**
-     * Send a GET request to the Fortnox API.
+     * Send a GET request to the Kivra API.
      *
      * @param string $uri
      * @param array  $data
@@ -164,7 +164,7 @@ class ApiClient
     }
 
     /**
-     * Send a POST request to the Fortnox API.
+     * Send a POST request to the Kivra API.
      *
      * @param string $uri
      * @param array  $data
@@ -178,7 +178,7 @@ class ApiClient
     }
 
     /**
-     * Send a PUT request to the Fortnox API.
+     * Send a PUT request to the Kivra API.
      *
      * @param string $uri
      * @param array  $data
@@ -192,7 +192,7 @@ class ApiClient
     }
 
     /**
-     * Send a DELETE request to the Fortnox API.
+     * Send a DELETE request to the Kivra API.
      *
      * @param string $uri
      * @param array  $data
@@ -206,7 +206,7 @@ class ApiClient
     }
 
     /**
-     * Send a PATCH request to the Fortnox API.
+     * Send a PATCH request to the Kivra API.
      *
      * @param string $uri
      * @param array  $data
@@ -220,7 +220,7 @@ class ApiClient
     }
 
     /**
-     * Send a OPTIONS request to the Fortnox API.
+     * Send a OPTIONS request to the Kivra API.
      *
      * @param string $uri
      * @param array  $data

@@ -1,6 +1,6 @@
 <?php
 
-namespace DeployHuman\fortnox\Enum;
+namespace DeployHuman\kivra\Enum;
 
 
 enum ApiMethod: string
