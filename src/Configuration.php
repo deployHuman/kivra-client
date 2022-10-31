@@ -179,7 +179,7 @@ class Configuration
         $this->initateStorage();
         if ($this->getStorageIsSession()) {
             if (function_exists('session')) {
-                session([$this->storage_name => $asocArray]);
+                session([$this->storage_name =>  array_merge(session($this->storage_name),  $asocArray)]);
             } else {
                 $_SESSION[$this->storage_name] = array_merge($_SESSION[$this->storage_name], $asocArray);
             }
@@ -194,7 +194,7 @@ class Configuration
         foreach ($UnsetKeys as $key) {
             if ($this->getStorageIsSession()) {
                 if (function_exists('session')) {
-                    session()->forget($key . '.' . $key);
+                    session()->forget($this->storage_name . '.' . $key);
                 } else {
                     unset($_SESSION[$this->storage_name][$key]);
                 }
@@ -204,6 +204,7 @@ class Configuration
         }
         return $this;
     }
+
 
     public function getStorageName(): string
     {
@@ -215,7 +216,7 @@ class Configuration
         $this->initateStorage();
         if ($this->getStorageIsSession()) {
             if (function_exists('session')) {
-                return session()->get($this->storage_name);
+                return session($this->storage_name,[]);
             } else {
                 return $_SESSION[$this->storage_name] ?? [];
             }

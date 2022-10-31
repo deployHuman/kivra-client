@@ -119,7 +119,7 @@ class ApiClient
 
     protected function getAccessToken(): string|null
     {
-        return $this->config->getStorage()['access_token'];
+        return $this->config->getStorage()['access_token'] ?? null;
     }
 
 
