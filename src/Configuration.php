@@ -215,7 +215,7 @@ class Configuration
         $this->initateStorage();
         if ($this->getStorageIsSession()) {
             if (function_exists('session')) {
-                return session()->all();
+                return session()->get($this->storage_name);
             } else {
                 return $_SESSION[$this->storage_name] ?? [];
             }
