@@ -116,8 +116,7 @@ class Payment
     }
 
     /**
-     * Enum: "1" "2"
-     * 1 = BG and 2 = PG
+     * Use Enum, represents int 1 or 2
      *
      * @param BankPaymentType $method
      * @return Payment
