@@ -178,7 +178,11 @@ class Configuration
     {
         $this->initateStorage();
         if ($this->getStorageIsSession()) {
-            $_SESSION[$this->storage_name] = array_merge($_SESSION[$this->storage_name], $asocArray);
+            if (function_exists('session')) {
+                session($asocArray);
+            } else {
+                $_SESSION[$this->storage_name] = array_merge($_SESSION[$this->storage_name], $asocArray);
+            }
         } else {
             $this->storage[$this->storage_name] = array_merge($this->storage[$this->storage_name], $asocArray);
         }
@@ -189,7 +193,11 @@ class Configuration
     {
         foreach ($UnsetKeys as $key) {
             if ($this->getStorageIsSession()) {
-                unset($_SESSION[$this->storage_name][$key]);
+                if (function_exists('session')) {
+                    session()->forget($key);
+                } else {
+                    unset($_SESSION[$this->storage_name][$key]);
+                }
             } else {
                 unset($this->storage[$this->storage_name][$key]);
             }
@@ -206,9 +214,12 @@ class Configuration
     {
         $this->initateStorage();
         if ($this->getStorageIsSession()) {
-            return $_SESSION[$this->storage_name] ?? [];
+            if (function_exists('session')) {
+                return session()->all();
+            } else {
+                return $_SESSION[$this->storage_name] ?? [];
+            }
         }
-
         return $this->storage[$this->storage_name] ?? [];
     }
 
@@ -228,6 +239,9 @@ class Configuration
         if (!isset($this->storage_name)) $this->storage_name = $this->storage_Default_name;
 
         if ($this->getStorageIsSession()) {
+            if (function_exists('session')) {
+                return true;
+            }
             if (session_status() == PHP_SESSION_NONE && !headers_sent()) {
                 session_start();
             }
