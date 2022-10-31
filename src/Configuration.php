@@ -179,7 +179,7 @@ class Configuration
         $this->initateStorage();
         if ($this->getStorageIsSession()) {
             if (function_exists('session')) {
-                session($asocArray);
+                session([$this->storage_name => $asocArray]);
             } else {
                 $_SESSION[$this->storage_name] = array_merge($_SESSION[$this->storage_name], $asocArray);
             }
@@ -194,7 +194,7 @@ class Configuration
         foreach ($UnsetKeys as $key) {
             if ($this->getStorageIsSession()) {
                 if (function_exists('session')) {
-                    session()->forget($key);
+                    session()->forget($key . '.' . $key);
                 } else {
                     unset($_SESSION[$this->storage_name][$key]);
                 }
