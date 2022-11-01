@@ -7,7 +7,9 @@ namespace DeployHuman\kivra\Dataclass\Content\Content_User\Context\Invoice;
 use DeployHuman\kivra\Dataclass\Content\Content_User\Context\Invoice\Options\Option;
 use DeployHuman\kivra\Enum\BankPaymentType;
 
-
+/**
+ * This is a class which is used to create multiple payment option under the PaymentMultipleOptions class
+ */
 class PaymentMultipleOptions
 {
 
@@ -17,12 +19,6 @@ class PaymentMultipleOptions
     protected string $currency;
     protected array $options;
 
-    /**
-     * This is a class which is used to create multiple payment option under the PaymentMultipleOptions class
-     */
-    public function __construct()
-    {
-    }
 
 
     public function setPayable(bool $payable): self

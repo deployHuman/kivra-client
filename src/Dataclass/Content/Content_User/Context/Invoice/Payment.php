@@ -5,8 +5,10 @@ namespace DeployHuman\kivra\Dataclass\Content\Content_User\Context\Invoice;
 use DeployHuman\kivra\Enum\BankPaymentType;
 use DeployHuman\kivra\Enum\PaymentOptionType;
 
+/**
+ * This is a class which is used to create a single payment 
+ */
 class Payment
-
 {
     protected bool $payable;
     protected string $currency;
@@ -19,13 +21,6 @@ class Payment
     protected bool $variable_amount = false;
     protected string $min_amount;
 
-
-    /**
-     * This is a class which is used to create a single payment 
-     */
-    public function __construct()
-    {
-    }
 
     /**
      * Toggles whether this content should be payable through Kivra´s payment platform
