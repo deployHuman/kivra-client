@@ -4,6 +4,7 @@ namespace DeployHuman\kivra\Dataclass\Content\Content_User\Context\Invoice;
 
 use DeployHuman\kivra\Enum\BankPaymentType;
 use DeployHuman\kivra\Enum\PaymentOptionType;
+use DeployHuman\kivra\Validation;
 
 /**
  * This is a class which is used to create a single payment 
@@ -58,9 +59,9 @@ class Payment
 
 
     /**
-     * Date when this Invoice is due
+     * Date when this Invoice is due.
      *
-     * @param string $due_date
+     * @param string $due_date ISO8601 date format
      * @return Payment
      */
     public function setDueDate(string $due_date): self
@@ -209,9 +210,15 @@ class Payment
         if ($this->payable && $this->total_owed < 0) {
             return false;
         }
+
         if ($this->variable_amount && ($this->min_amount < 0 || $this->min_amount > $this->total_owed)) {
             return false;
         }
+
+        if (Validation::ISO8601Date($this->due_date) == false) {
+            return false;
+        }
+
         return !in_array(null, array_values([
             'payable' => $this->payable ?? null,
             'currency' => $this->currency ?? null,

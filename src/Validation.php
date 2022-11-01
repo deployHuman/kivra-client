@@ -113,4 +113,17 @@ class Validation
         }
         return false;
     }
+
+    /**
+     * Validate that a date is in ISO8601 format
+     *
+     * @param string $value
+     * @return bool
+     */
+    public static function ISO8601Date(string $date): bool
+    {
+        $dateTime = \DateTime::createFromFormat(\DateTime::ISO8601, $date);
+
+        return ($dateTime && $dateTime->format(\DateTime::ISO8601) === $date);
+    }
 }
