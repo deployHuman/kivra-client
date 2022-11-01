@@ -122,8 +122,6 @@ class Validation
      */
     public static function ISO8601Date(string $date): bool
     {
-        $dateTime = \DateTime::createFromFormat(\DateTime::ISO8601, $date);
-
-        return ($dateTime && $dateTime->format(\DateTime::ISO8601) === $date);
+        return (\DateTime::createFromFormat(\DateTime::ISO8601, $date) !== false);
     }
 }
