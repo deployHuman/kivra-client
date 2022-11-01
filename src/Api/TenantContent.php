@@ -28,14 +28,11 @@ class TenantContent extends ApiClient
     {
         $scopeNeeded = "get:kivra.v1.tenant.{tenantKey}.user";
         $this->basicTokenCheck($scopeNeeded);
-        $logclient = $this->config->getLogger();
-        $logclient->debug(__CLASS__ . "::" . __FUNCTION__);
         $querys = [];
         $querys = isset($ssn) ? array_merge($querys, ['ssn' => $ssn]) : $querys;
         $querys = isset($include) ? array_merge($querys, ['include' => $include]) : $querys;
-        $client = $this->getClient();
         try {
-            $response = $client->request(
+            $response = $this->getClient()->request(
                 "GET",
                 '/v1/tenant/' . $tenantKey . '/user',
                 [
@@ -47,12 +44,12 @@ class TenantContent extends ApiClient
             );
         } catch (ClientException $e) {
             $SentRequest = $e->getRequest() ? Message::toString($e->getRequest()) : '';
-            $desc = $e->hasResponse() ? Message::toString($e->getResponse()) : '';
-            $logclient->error(__CLASS__ . "::" . __FUNCTION__ . " - ClientException: " . $e->getMessage() . ' Request: ' . $SentRequest . ' Description: ' . $desc);
-            return false;
+            $errormsg = json_decode($e->getResponse()->getBody()->getContents(), true);
+            $this->config->getLogger()->error(__CLASS__ . "::" . __FUNCTION__ . " - ClientException: " . $e->getMessage() . ' Request: ' . $SentRequest . ' Response: ' . $errormsg['long_message']);
+            throw new \Exception(__CLASS__ . "::" . __FUNCTION__ . ' - Response error: ' . $errormsg['long_message']);
         }
         if ($this->config->getDebug()) {
-            $logclient->debug(__CLASS__ . "::" . __FUNCTION__ . " - Response body: " . $response->getBody()->getContents());
+            $this->config->getLogger()->debug(__CLASS__ . "::" . __FUNCTION__ . " - Response body: " . $response->getBody()->getContents());
             $response->getBody()->rewind();
         }
         return $response;
@@ -75,11 +72,8 @@ class TenantContent extends ApiClient
     {
         $scopeNeeded = "get:kivra.v1.tenant.{tenantKey}.usermatch";
         $this->basicTokenCheck($scopeNeeded);
-        $logclient = $this->config->getLogger();
-        $logclient->debug(__CLASS__ . "::" . __FUNCTION__);
-        $client = $this->getClient();
         try {
-            $response = $client->request(
+            $response = $this->getClient()->request(
                 "POST",
                 '/v1/tenant/' . $tenantkey . '/usermatch',
                 [
@@ -93,12 +87,12 @@ class TenantContent extends ApiClient
             );
         } catch (ClientException $e) {
             $SentRequest = $e->getRequest() ? Message::toString($e->getRequest()) : '';
-            $desc = $e->hasResponse() ? Message::toString($e->getResponse()) : '';
-            $logclient->error(__CLASS__ . "::" . __FUNCTION__ . " - ClientException: " . $e->getMessage() . ' Request: ' . $SentRequest . ' Description: ' . $desc);
-            return false;
+            $errormsg = json_decode($e->getResponse()->getBody()->getContents(), true);
+            $this->config->getLogger()->error(__CLASS__ . "::" . __FUNCTION__ . " - ClientException: " . $e->getMessage() . ' Request: ' . $SentRequest . ' Response: ' . $errormsg['long_message']);
+            throw new \Exception(__CLASS__ . "::" . __FUNCTION__ . ' - Response error: ' . $errormsg['long_message']);
         }
         if ($this->config->getDebug()) {
-            $logclient->debug(__CLASS__ . "::" . __FUNCTION__ . " - Response body: " . $response->getBody()->getContents());
+            $this->config->getLogger()->debug(__CLASS__ . "::" . __FUNCTION__ . " - Response body: " . $response->getBody()->getContents());
             $response->getBody()->rewind();
         }
         return $response;
@@ -113,14 +107,12 @@ class TenantContent extends ApiClient
      * @documentation http://developer.kivra.com/#operation/List%20Companies
      * 
      * @param string $tenantkey The unique Key for a Tenant
-     * @return Response|false
+     * @return Response
      */
-    public function callAPIListCompanies(string $tenantkey, string $vat_number = null): Response|false
+    public function callAPIListCompanies(string $tenantkey, string $vat_number = null): Response
     {
         $scopeNeeded = "get:kivra.v1.tenant.{tenantKey}.company";
         $this->basicTokenCheck($scopeNeeded);
-        $logclient = $this->config->getLogger();
-        $logclient->debug(__CLASS__ . "::" . __FUNCTION__);
         $querys = [];
         $querys = isset($vat_number) ? array_merge($querys, ['vat_number' => $vat_number]) : $querys;
         $client = $this->getClient();
@@ -138,12 +130,12 @@ class TenantContent extends ApiClient
             );
         } catch (ClientException $e) {
             $SentRequest = $e->getRequest() ? Message::toString($e->getRequest()) : '';
-            $desc = $e->hasResponse() ? Message::toString($e->getResponse()) : '';
-            $logclient->error(__CLASS__ . "::" . __FUNCTION__ . " - ClientException: " . $e->getMessage() . ' Request: ' . $SentRequest . ' Description: ' . $desc);
-            return false;
+            $errormsg = json_decode($e->getResponse()->getBody()->getContents(), true);
+            $this->config->getLogger()->error(__CLASS__ . "::" . __FUNCTION__ . " - ClientException: " . $e->getMessage() . ' Request: ' . $SentRequest . ' Response: ' . $errormsg['long_message']);
+            throw new \Exception(__CLASS__ . "::" . __FUNCTION__ . ' - Response error: ' . $errormsg['long_message']);
         }
         if ($this->config->getDebug()) {
-            $logclient->debug(__CLASS__ . "::" . __FUNCTION__ . " - Response body: " . $response->getBody()->getContents());
+            $this->config->getLogger()->debug(__CLASS__ . "::" . __FUNCTION__ . " - Response body: " . $response->getBody()->getContents());
             $response->getBody()->rewind();
         }
         return $response;
@@ -158,18 +150,15 @@ class TenantContent extends ApiClient
      * 
      * @param string $tenantkey The unique Key for a Tenant
      * @param Content_Company|Content_User $content
-     * @return Response|false
+     * @return Response
      */
-    public function callAPISendContent(string $tenantkey, Content_User|Content_Company $contentData): Response|false
+    public function callAPISendContent(string $tenantkey, Content_User|Content_Company $contentData): Response
     {
 
         $scopeNeeded = "post:kivra.v1.tenant.{tenantKey}.content";
         $this->basicTokenCheck($scopeNeeded);
-        $logclient = $this->config->getLogger();
-        $logclient->debug(__CLASS__ . "::" . __FUNCTION__);
-        $client = $this->getClient();
         try {
-            $response = $client->request(
+            $response = $this->getClient()->request(
                 "POST",
                 '/v1/tenant/' . $tenantkey . '/content',
                 [
@@ -182,12 +171,12 @@ class TenantContent extends ApiClient
             );
         } catch (ClientException $e) {
             $SentRequest = $e->getRequest() ? Message::toString($e->getRequest()) : '';
-            $desc = $e->hasResponse() ? Message::toString($e->getResponse()) : '';
-            $logclient->error(__CLASS__ . "::" . __FUNCTION__ . " - ClientException: " . $e->getMessage() . ' Request: ' . $SentRequest . ' Description: ' . $desc);
-            return false;
+            $errormsg = json_decode($e->getResponse()->getBody()->getContents(), true);
+            $this->config->getLogger()->error(__CLASS__ . "::" . __FUNCTION__ . " - ClientException: " . $e->getMessage() . ' Request: ' . $SentRequest . ' Response: ' . $errormsg['long_message']);
+            throw new \Exception(__CLASS__ . "::" . __FUNCTION__ . ' - Response error: ' . $errormsg['long_message']);
         }
         if ($this->config->getDebug()) {
-            $logclient->debug(__CLASS__ . "::" . __FUNCTION__ . " - Response body: " . $response->getBody()->getContents());
+            $this->config->getLogger()->debug(__CLASS__ . "::" . __FUNCTION__ . " - Response body: " . $response->getBody()->getContents());
             $response->getBody()->rewind();
         }
         return $response;

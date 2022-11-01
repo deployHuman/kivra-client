@@ -28,7 +28,7 @@ class ApiClient
             "base_uri" => $this->config->getBaseUrl(),
             'handler' => $this->config->getDebugHandler(),
             'user_agent' => $this->config->getUserAgent(),
-            'http_errors' => false,
+            'http_errors' => true,
         ]);
 
         if (get_parent_class($this) !== false) return;
