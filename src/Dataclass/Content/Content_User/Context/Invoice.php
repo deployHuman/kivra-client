@@ -3,7 +3,7 @@
 namespace DeployHuman\kivra\Dataclass\Content\Content_User\Context;
 
 use DeployHuman\kivra\Dataclass\Content\Content_User\Context\Invoice\Payment;
-use DeployHuman\kivra\Dataclass\PaymentMultipleOptions;
+use DeployHuman\kivra\Dataclass\Content\Content_User\Context\Invoice\PaymentMultipleOptions;
 
 class Invoice
 {
