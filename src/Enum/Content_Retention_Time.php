@@ -2,7 +2,6 @@
 
 namespace DeployHuman\kivra\Enum;
 
-
 enum Content_Retention_Time: string
 {
     /**

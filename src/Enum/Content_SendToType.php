@@ -2,10 +2,8 @@
 
 namespace DeployHuman\kivra\Enum;
 
-
 enum Content_SendToType: string
 {
-
     /**
      * The recipient is a person.
      */

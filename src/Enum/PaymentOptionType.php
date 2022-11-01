@@ -2,7 +2,6 @@
 
 namespace DeployHuman\kivra\Enum;
 
-
 enum PaymentOptionType: string
 {
     /**

@@ -5,11 +5,11 @@ namespace DeployHuman\kivra\Dataclass\Content\Content_User\Context\Invoice\Optio
 use DeployHuman\kivra\Validation;
 
 class Icon
-
 {
-
     protected string $name;
+
     protected string $data;
+
     protected string $content_type = 'image/png';
 
     public function __construct()
@@ -19,12 +19,13 @@ class Icon
     /**
      * Arbritrary file-name that is shown alongside the File in the Kivra GUI
      *
-     * @param string $name
+     * @param  string  $name
      * @return Icon
      */
     public function setName(string $name): self
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -41,14 +42,17 @@ class Icon
      * The sides must be at least 256 pixels long, and at most 512 pixels long.
      * The image must have an alpha channel.
      *
-     * @param string $data
+     * @param  string  $data
      * @return bool
      */
     public function setData(string $data): bool
     {
-        if ($this->validateIcon($data) !== true) return false;  //throw new Exception("Icon data is not not correct formatted");
+        if ($this->validateIcon($data) !== true) {
+            return false;
+        }  //throw new Exception("Icon data is not not correct formatted");
         $this->data = $data;
-        $this->setContentType("image/png");                     //why required a PNG and still makes us set the type
+        $this->setContentType('image/png');                     //why required a PNG and still makes us set the type
+
         return true;
     }
 
@@ -65,27 +69,44 @@ class Icon
     /**
      * Validates an base64 encoded icon data string.
      * Can be used either to get a True if its valid, or fetch returnstring to whats wrong with the image.
-     * 
-     * @param string $data
-     * @return string|boolean True if valid, string with error message if not.
+     *
+     * @param  string  $data
+     * @return string|bool True if valid, string with error message if not.
      */
     public function validateIcon(string $data): string|bool
     {
-        if ($data === '')                               return "Icon data is empty";
-        if (!Validation::base64($data))                 return "base64 is not valid";
+        if ($data === '') {
+            return 'Icon data is empty';
+        }
+        if (! Validation::base64($data)) {
+            return 'base64 is not valid';
+        }
         $data = base64_decode($data);
         //check image Dimensions
         $imagedata = getimagesizefromstring($data);
-        if (!$imagedata)                                return "image is not valid";
-        if ($imagedata[0] != $imagedata[1])             return "image is not quadratic";
-        if ($imagedata[0] < 256 || $imagedata[0] > 512) return "image is not betweeen 256x256 and 512x512";
+        if (! $imagedata) {
+            return 'image is not valid';
+        }
+        if ($imagedata[0] != $imagedata[1]) {
+            return 'image is not quadratic';
+        }
+        if ($imagedata[0] < 256 || $imagedata[0] > 512) {
+            return 'image is not betweeen 256x256 and 512x512';
+        }
         //check if image is png
-        if ($imagedata[2] != IMAGETYPE_PNG)             return "image is not png, found : " . $imagedata[2];
+        if ($imagedata[2] != IMAGETYPE_PNG) {
+            return 'image is not png, found : '.$imagedata[2];
+        }
         //check image fileimagedata
-        if (mb_strlen($data) > 134000)                  return  "image is too big";
+        if (mb_strlen($data) > 134000) {
+            return  'image is too big';
+        }
         //check if image has alpha channel
         $im = imagecreatefromstring($data);
-        if (!imagecolortransparent($im))                return  "image has no alpha channel";
+        if (! imagecolortransparent($im)) {
+            return  'image has no alpha channel';
+        }
+
         return true;
     }
 
@@ -93,20 +114,20 @@ class Icon
      * MIME-type of the file-data
      * The IANA media type corresponding to the file, Always "image/png"
      * Should not be used, as it can only be PNG and its set as default
-     * 
-     * @param string $content_type
+     *
+     * @param  string  $content_type
      * @return Icon
      */
     public function setContentType(string $content_type): self
     {
         $this->content_type = $content_type;
+
         return $this;
     }
 
-
     public function isValid(): bool
     {
-        return !in_array(null, array_values($this->toArray()));
+        return ! in_array(null, array_values($this->toArray()));
     }
 
     public function toArray(): array

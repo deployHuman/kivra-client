@@ -3,9 +3,7 @@
 declare(strict_types=1);
 
 use DeployHuman\kivra\Configuration;
-use DeployHuman\kivra\Exception;
 use PHPUnit\Framework\TestCase;
-
 
 final class ConfigurationTest extends TestCase
 {
@@ -42,15 +40,15 @@ final class ConfigurationTest extends TestCase
     public function testSavingAndRemovingStorage()
     {
         $conf = new Configuration();
-        $this->assertInstanceOf(Configuration::class, $conf->saveToStorage(["testkey" => "testvalue"]));
-        $this->assertEquals(["testkey" => "testvalue"], $conf->getStorage());
-        $this->assertInstanceOf(Configuration::class, $conf->unsetFromStorage(["testkey"]));
+        $this->assertInstanceOf(Configuration::class, $conf->saveToStorage(['testkey' => 'testvalue']));
+        $this->assertEquals(['testkey' => 'testvalue'], $conf->getStorage());
+        $this->assertInstanceOf(Configuration::class, $conf->unsetFromStorage(['testkey']));
         $this->assertEquals([], $conf->getStorage());
-        $this->assertInstanceOf(Configuration::class, $conf->saveToStorage(["testkey" => "testvalue", "testkey2" => "testvalue2"]));
-        $this->assertEquals(["testkey" => "testvalue", "testkey2" => "testvalue2"], $conf->getStorage());
-        $this->assertInstanceOf(Configuration::class, $conf->unsetFromStorage(["testkey2"]));
-        $this->assertEquals(["testkey" => "testvalue"], $conf->getStorage());
-        $this->assertInstanceOf(Configuration::class, $conf->unsetFromStorage(["testkey"]));
+        $this->assertInstanceOf(Configuration::class, $conf->saveToStorage(['testkey' => 'testvalue', 'testkey2' => 'testvalue2']));
+        $this->assertEquals(['testkey' => 'testvalue', 'testkey2' => 'testvalue2'], $conf->getStorage());
+        $this->assertInstanceOf(Configuration::class, $conf->unsetFromStorage(['testkey2']));
+        $this->assertEquals(['testkey' => 'testvalue'], $conf->getStorage());
+        $this->assertInstanceOf(Configuration::class, $conf->unsetFromStorage(['testkey']));
         $this->assertEquals([], $conf->getStorage());
     }
 
@@ -76,9 +74,9 @@ final class ConfigurationTest extends TestCase
     public function testClientIsSent()
     {
         $conf = new Configuration();
-        $conf->setClient_id("test_client_id");
+        $conf->setClient_id('test_client_id');
         $this->assertFalse($conf->isClientAuthSet());
-        $conf->setClient_secret("test_client_secret");
+        $conf->setClient_secret('test_client_secret');
         $this->assertTrue($conf->isClientAuthSet());
     }
 }

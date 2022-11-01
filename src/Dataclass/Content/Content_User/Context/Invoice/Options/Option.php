@@ -5,19 +5,23 @@ namespace DeployHuman\kivra\Dataclass\Content\Content_User\Context\Invoice\Optio
 use DeployHuman\kivra\Enum\PaymentOptionType;
 
 class Option
-
 {
-
     protected string $due_date;
+
     protected string $amount;
+
     protected PaymentOptionType $type;
+
     protected string $reference;
+
     protected string $title;
+
     protected string $description;
+
     protected Icon $icon;
 
     /**
-     * This is a class which is used to create multiple payment option under the PaymentMultipleOptions class 
+     * This is a class which is used to create multiple payment option under the PaymentMultipleOptions class
      */
     public function __construct()
     {
@@ -26,12 +30,13 @@ class Option
     /**
      * Date when this option is due.
      *
-     * @param string $due_date
+     * @param  string  $due_date
      * @return Option
      */
     public function setDueDate(string $due_date): self
     {
         $this->due_date = $due_date;
+
         return $this;
     }
 
@@ -43,12 +48,13 @@ class Option
     /**
      * The payment amount for this option. A positive number.
      *
-     * @param string $amount
+     * @param  string  $amount
      * @return Option
      */
     public function setAmount(string $amount): self
     {
         $this->amount = $amount;
+
         return $this;
     }
 
@@ -60,12 +66,13 @@ class Option
     /**
      * Type of format for the reference
      *
-     * @param PaymentOptionType $type
+     * @param  PaymentOptionType  $type
      * @return Option
      */
     public function setType(PaymentOptionType $type): self
     {
         $this->type = $type;
+
         return $this;
     }
 
@@ -77,12 +84,13 @@ class Option
     /**
      * The reference number used for paying. This can be maximum 25 characters long.
      *
-     * @param string $reference
+     * @param  string  $reference
      * @return Option
      */
     public function setReference(string $reference): self
     {
         $this->reference = $reference;
+
         return $this;
     }
 
@@ -94,12 +102,13 @@ class Option
     /**
      * Title for this option
      *
-     * @param string $title
+     * @param  string  $title
      * @return Option
      */
     public function setTitle(string $title): self
     {
         $this->title = $title;
+
         return $this;
     }
 
@@ -111,12 +120,13 @@ class Option
     /**
      * Optional description for this option
      *
-     * @param string $description
+     * @param  string  $description
      * @return Option
      */
     public function setDescription(string $description): self
     {
         $this->description = $description;
+
         return $this;
     }
 
@@ -128,28 +138,30 @@ class Option
     /**
      * Optional icon for this option
      *
-     * @param Icon $icon
+     * @param  Icon  $icon
      * @return Option
      */
     public function setIcon(Icon $icon): self
     {
         $this->icon = $icon;
+
         return $this;
     }
 
     /**
      * Checks both this and the icon data for validity.
      *
-     * @return boolean
+     * @return bool
      */
     public function isValid(): bool
     {
         if (isset($this->icon)) {
-            if (!$this->icon->isValid()) {
+            if (! $this->icon->isValid()) {
                 return false;
             }
         }
-        return !in_array(null, array_values($this->toArray()));
+
+        return ! in_array(null, array_values($this->toArray()));
     }
 
     public function toArray(): array

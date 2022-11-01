@@ -3,10 +3,10 @@
 namespace DeployHuman\kivra;
 
 use DateTime;
-use DeployHuman\kivra\Enum\ApiMethod;
 use DeployHuman\kivra\Api\Authentication;
 use DeployHuman\kivra\Api\TenantContent;
 use DeployHuman\kivra\Api\TenantManagement;
+use DeployHuman\kivra\Enum\ApiMethod;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\RequestOptions;
@@ -15,40 +15,54 @@ use Monolog\Registry;
 class ApiClient
 {
     protected Client $client;
+
     protected Configuration $config;
 
     public function __construct(null|Configuration &$config = null)
     {
-        if (!isset($this->config)) {
+        if (! isset($this->config)) {
             $this->config = $config ?? new Configuration();
         }
         Registry::addLogger($this->config->getLogger(), $this->config->getLogger()->getName(), true);
 
         $this->client = new Client([
-            "base_uri" => $this->config->getBaseUrl(),
+            'base_uri' => $this->config->getBaseUrl(),
             'handler' => $this->config->getDebugHandler(),
             'user_agent' => $this->config->getUserAgent(),
             'http_errors' => true,
         ]);
 
-        if (get_parent_class($this) !== false) return;
+        if (get_parent_class($this) !== false) {
+            return;
+        }
         $this->config->saveToStorage($this->config->getSettingsArray());
 
-        if (!$this->config->isClientAuthSet()) throw new Exception("Missing Base Creditentials, Check over BaseUrl and Client_id and Client_secret",  $this->config->getLogger()->getName());
-        if ($this->config->getConnectDirectly()) $this->refreshAccessToken($this->config->getForceRefreshToken());
+        if (! $this->config->isClientAuthSet()) {
+            throw new Exception('Missing Base Creditentials, Check over BaseUrl and Client_id and Client_secret', $this->config->getLogger()->getName());
+        }
+        if ($this->config->getConnectDirectly()) {
+            $this->refreshAccessToken($this->config->getForceRefreshToken());
+        }
     }
 
     protected function refreshAccessToken(bool $ForceRefreshToken = false): bool
     {
-        if ($ForceRefreshToken) $this->config->resetAccesToken();
-        if ($this->isTokenValid($this->config->getStorage())) return true;
+        if ($ForceRefreshToken) {
+            $this->config->resetAccesToken();
+        }
+        if ($this->isTokenValid($this->config->getStorage())) {
+            return true;
+        }
 
-        $response =  $this->Authentication()->callAPIAuthToGetAccessToken();
-        if ($response->getStatusCode() !== 200) return false;
+        $response = $this->Authentication()->callAPIAuthToGetAccessToken();
+        if ($response->getStatusCode() !== 200) {
+            return false;
+        }
         $body = json_decode($response->getBody()->getContents(), true);
 
-        if (isset($body["access_token"])) {
+        if (isset($body['access_token'])) {
             $this->config->saveNewAccessToken($body);
+
             return true;
         }
 
@@ -67,25 +81,31 @@ class ApiClient
 
     /**
      * Cleanup of output array from Kivra
-     * Seems like they keep sending empty fields in the form of "[]" which will make it as an array and cause conversion to string error 
+     * Seems like they keep sending empty fields in the form of "[]" which will make it as an array and cause conversion to string error
      *
-     * @param array $arrayToClean
+     * @param  array  $arrayToClean
      * @return array
      */
     protected function cleanUpEmptyFields(array $arrayToClean): array
     {
         foreach ($arrayToClean as $key => $value) {
-            if ($value == "[]") $arrayToClean[$key] = null;
-            if (is_array($value) && count($value) == 0) $arrayToClean[$key] = null;
+            if ($value == '[]') {
+                $arrayToClean[$key] = null;
+            }
+            if (is_array($value) && count($value) == 0) {
+                $arrayToClean[$key] = null;
+            }
         }
+
         return $arrayToClean;
     }
 
     protected function isTokenValid(array $auth): bool
     {
-        if ($this->isSameBaseUrl($auth) && !$this->isTokenExpired($auth)) {
+        if ($this->isSameBaseUrl($auth) && ! $this->isTokenExpired($auth)) {
             return true;
         }
+
         return false;
     }
 
@@ -94,6 +114,7 @@ class ApiClient
         if (isset($auth['expires_at'])) {
             return $auth['expires_at'] < (new DateTime());
         }
+
         return true;
     }
 
@@ -102,18 +123,22 @@ class ApiClient
         if (isset($auth['baseurl'])) {
             return $auth['baseurl'] === $this->config->getBaseUrl();
         }
+
         return false;
     }
 
     protected function basicTokenCheck(string $ScopeNeeded = null): bool|Exception
     {
-        if (!$this->config->isClientAuthSet()) {
-            throw new Exception("Error in Kivra Settings",  $this->config->getLogger()->getName());
+        if (! $this->config->isClientAuthSet()) {
+            throw new Exception('Error in Kivra Settings', $this->config->getLogger()->getName());
         }
-        if (!$this->refreshAccessToken()) throw new Exception("Error in fetching Access Token for basic APi CALL on Kivra",  $this->config->getLogger()->getName());
-        if ($ScopeNeeded != null && !$this->config->hasScope($ScopeNeeded)) {
-            throw new Exception("Error in fetching Access Token for basic APi CALL on Kivra",  $this->config->getLogger()->getName());
+        if (! $this->refreshAccessToken()) {
+            throw new Exception('Error in fetching Access Token for basic APi CALL on Kivra', $this->config->getLogger()->getName());
         }
+        if ($ScopeNeeded != null && ! $this->config->hasScope($ScopeNeeded)) {
+            throw new Exception('Error in fetching Access Token for basic APi CALL on Kivra', $this->config->getLogger()->getName());
+        }
+
         return true;
     }
 
@@ -122,29 +147,37 @@ class ApiClient
         return $this->config->getStorage()['access_token'] ?? null;
     }
 
-
-
     /**
      * Send a request to the Kivra API.
      *
-     * @param ApiMethod $method
-     * @param string    $uri
-     * @param array     $data
-     * @param array     $params
-     * 
+     * @param  ApiMethod  $method
+     * @param  string  $uri
+     * @param  array  $data
+     * @param  array  $params
      * @return Response
+     *
      * @throws Exception
      */
     protected function request(ApiMethod $method = ApiMethod::GET, string $uri = '', array $data = [], array $params = []): Response
     {
-        if (!$this->config->isClientAuthSet()) throw new Exception("Error in Kivra Settings",  $this->config->getLogger()->getName());
-        if (!$this->isTokenValid($this->config->getStorage())) $this->refreshAccessToken(true);
-        if ($this->getAccessToken() == null) throw new Exception("Error in Kivra Settings");
+        if (! $this->config->isClientAuthSet()) {
+            throw new Exception('Error in Kivra Settings', $this->config->getLogger()->getName());
+        }
+        if (! $this->isTokenValid($this->config->getStorage())) {
+            $this->refreshAccessToken(true);
+        }
+        if ($this->getAccessToken() == null) {
+            throw new Exception('Error in Kivra Settings');
+        }
 
         $optionsarray = [];
-        if (!empty($params)) $optionsarray[RequestOptions::QUERY] = $params;
-        if (!empty($data))  $optionsarray[RequestOptions::JSON] = $data;
-        $optionsarray[RequestOptions::HEADERS] = ['Authorization' => 'Bearer ' . $this->getAccessToken()];
+        if (! empty($params)) {
+            $optionsarray[RequestOptions::QUERY] = $params;
+        }
+        if (! empty($data)) {
+            $optionsarray[RequestOptions::JSON] = $data;
+        }
+        $optionsarray[RequestOptions::HEADERS] = ['Authorization' => 'Bearer '.$this->getAccessToken()];
 
         return $this->getClient()->request($method->value, $uri, $optionsarray);
     }
@@ -152,10 +185,9 @@ class ApiClient
     /**
      * Send a GET request to the Kivra API.
      *
-     * @param string $uri
-     * @param array  $data
-     * @param array  $params
-     * 
+     * @param  string  $uri
+     * @param  array  $data
+     * @param  array  $params
      * @return Response
      */
     public function get(string $uri, array $data = [], array $params = []): Response
@@ -166,10 +198,9 @@ class ApiClient
     /**
      * Send a POST request to the Kivra API.
      *
-     * @param string $uri
-     * @param array  $data
-     * @param array  $params
-     * 
+     * @param  string  $uri
+     * @param  array  $data
+     * @param  array  $params
      * @return Response
      */
     public function post(string $uri, array $data = [], array $params = []): Response
@@ -180,10 +211,9 @@ class ApiClient
     /**
      * Send a PUT request to the Kivra API.
      *
-     * @param string $uri
-     * @param array  $data
-     * @param array  $params
-     * 
+     * @param  string  $uri
+     * @param  array  $data
+     * @param  array  $params
      * @return Response
      */
     public function put(string $uri, array $data = [], array $params = []): Response
@@ -194,10 +224,9 @@ class ApiClient
     /**
      * Send a DELETE request to the Kivra API.
      *
-     * @param string $uri
-     * @param array  $data
-     * @param array  $params
-     * 
+     * @param  string  $uri
+     * @param  array  $data
+     * @param  array  $params
      * @return Response
      */
     public function delete(string $uri, array $data = [], array $params = []): Response
@@ -208,10 +237,9 @@ class ApiClient
     /**
      * Send a PATCH request to the Kivra API.
      *
-     * @param string $uri
-     * @param array  $data
-     * @param array  $params
-     * 
+     * @param  string  $uri
+     * @param  array  $data
+     * @param  array  $params
      * @return Response
      */
     public function patch(string $uri, array $data = [], array $params = []): Response
@@ -222,10 +250,9 @@ class ApiClient
     /**
      * Send a OPTIONS request to the Kivra API.
      *
-     * @param string $uri
-     * @param array  $data
-     * @param array  $params
-     * 
+     * @param  string  $uri
+     * @param  array  $data
+     * @param  array  $params
      * @return Response
      */
     public function options(string $uri, array $data = [], array $params = []): Response
@@ -233,12 +260,12 @@ class ApiClient
         return $this->request(ApiMethod::OPTIONS, $uri, $data, $params);
     }
 
-
     /**
      * Tenant API - Tenant Management.
      * Endpoints for creation and administration of tenants (v2)
+     *
      * @documentation http://developer.kivra.com/#tag/Tenant-API-Tenant-Management
-     * 
+     *
      * @return TenantManagement
      */
     public function TenantManagement(): TenantManagement
@@ -250,9 +277,9 @@ class ApiClient
      * API - Authentication.
      * Kivra supports Oauth2 with Client Credentials flow. Each client has a client_id and a client_secret and these need to be base64 encoded and sent to the API via POST to receive an access token which is used for subsequent calls.
      * Create the RFC 2045 base64 encoding to be used for tenant registration, replace client_id and client_secret with real values and make sure there are no trailing newlines (echo -n) and that the string is encoded literally (use single quotes and no escaping)
-     * 
+     *
      * @documentation http://developer.kivra.com/#section/API-Authentication
-     * 
+     *
      * @return Authentication
      */
     public function Authentication(): Authentication
@@ -260,13 +287,13 @@ class ApiClient
         return new Authentication($this->config);
     }
 
-
     /**
      * API - Content.
-     * 
+     *
      * Endpoints for matching users and sending content
+     *
      * @documentation http://developer.kivra.com/#tag/Tenant-API-Content
-     * 
+     *
      * @return TenantContent
      */
     public function TenantContent(): TenantContent

@@ -8,26 +8,36 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\MessageFormatter;
 use GuzzleHttp\Middleware;
 use Monolog\Handler\RotatingFileHandler;
-use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;
 
 class Configuration
 {
     protected bool $ForceRefreshToken = false;
-    protected string $Client_id = '';
-    protected string $Client_secret = '';
-    protected string $BaseUrl = 'https://sender.api.kivra.com';
-    protected string $userAgent = 'DeployHuman/Kivra-PHP-Client/1.0.0';
-    protected string $storage_Default_name = 'kivra_auth';
-    protected string $storage_name = 'kivra_auth';
-    protected array $storage;
-    protected bool $debug = false;
-    protected logger $logstack;
-    protected bool $ConnectDirectly = true;
-    protected string $logpath = __DIR__ . '/../log/';
-    protected bool $Storage_Is_Session = false;
 
+    protected string $Client_id = '';
+
+    protected string $Client_secret = '';
+
+    protected string $BaseUrl = 'https://sender.api.kivra.com';
+
+    protected string $userAgent = 'DeployHuman/Kivra-PHP-Client/1.0.0';
+
+    protected string $storage_Default_name = 'kivra_auth';
+
+    protected string $storage_name = 'kivra_auth';
+
+    protected array $storage;
+
+    protected bool $debug = false;
+
+    protected logger $logstack;
+
+    protected bool $ConnectDirectly = true;
+
+    protected string $logpath = __DIR__.'/../log/';
+
+    protected bool $Storage_Is_Session = false;
 
     public function __construct(bool $StorageInSession = true, bool $ConnectDirectly = true)
     {
@@ -44,27 +54,29 @@ class Configuration
     {
         if (empty($this->logstack)) {
             $logger = new Logger(__CLASS__);
-            $logger->pushHandler(new RotatingFileHandler($this->getLogPath() . DIRECTORY_SEPARATOR . 'api.log', 10, Level::Debug));
+            $logger->pushHandler(new RotatingFileHandler($this->getLogPath().DIRECTORY_SEPARATOR.'api.log', 10, Level::Debug));
             $this->logstack = $logger;
         }
     }
 
-
     public function getLogger(): Logger
     {
         $this->checkLogstack();
+
         return $this->logstack;
     }
 
     public function setLogger(Logger $logstack): self
     {
         $this->logstack = $logstack;
+
         return $this;
     }
 
     public function setConnectDirectly(bool $ConnectDirectly): self
     {
         $this->ConnectDirectly = $ConnectDirectly;
+
         return $this;
     }
 
@@ -78,24 +90,25 @@ class Configuration
                 $this->getDebug() ? 'debug' : 'warning'
             )
         );
+
         return $stack;
     }
 
     public function setLogPath(string $path): self
     {
         $this->logpath = $path;
+
         return $this;
     }
 
     public function getLogPath(): string
     {
-        if (!realpath($this->logpath)) {
+        if (! realpath($this->logpath)) {
             mkdir($this->logpath);
         }
 
         return realpath($this->logpath);
     }
-
 
     public function getConnectDirectly(): bool
     {
@@ -105,6 +118,7 @@ class Configuration
     public function setClient_id(string $Client_id): self
     {
         $this->Client_id = $Client_id;
+
         return $this;
     }
 
@@ -116,6 +130,7 @@ class Configuration
     public function setClient_secret(string $Client_secret): self
     {
         $this->Client_secret = $Client_secret;
+
         return $this;
     }
 
@@ -127,6 +142,7 @@ class Configuration
     public function SetBaseUrl(string $BaseUrl): self
     {
         $this->BaseUrl = $BaseUrl;
+
         return $this;
     }
 
@@ -138,6 +154,7 @@ class Configuration
     public function setUserAgent(string $userAgent): self
     {
         $this->userAgent = $userAgent ?? $this->userAgent;
+
         return $this;
     }
 
@@ -149,6 +166,7 @@ class Configuration
     public function setDebug(bool $debug): self
     {
         $this->debug = $debug;
+
         return $this;
     }
 
@@ -165,12 +183,14 @@ class Configuration
     public function setForceRefreshToken(bool $ForceRefreshToken): self
     {
         $this->ForceRefreshToken = $ForceRefreshToken ?? false;
+
         return $this;
     }
 
     public function setStorageName(string $ArrayName = null): self
     {
         $this->storage_name = $ArrayName ?? $this->storage_Default_name;
+
         return $this;
     }
 
@@ -179,13 +199,14 @@ class Configuration
         $this->initateStorage();
         if ($this->getStorageIsSession()) {
             if (function_exists('session')) {
-                session([$this->storage_name =>  array_merge(session($this->storage_name,[]),  $asocArray)]);
+                session([$this->storage_name => array_merge(session($this->storage_name, []), $asocArray)]);
             } else {
                 $_SESSION[$this->storage_name] = array_merge($_SESSION[$this->storage_name], $asocArray);
             }
         } else {
             $this->storage[$this->storage_name] = array_merge($this->storage[$this->storage_name], $asocArray);
         }
+
         return $this;
     }
 
@@ -194,7 +215,7 @@ class Configuration
         foreach ($UnsetKeys as $key) {
             if ($this->getStorageIsSession()) {
                 if (function_exists('session')) {
-                    session()->forget($this->storage_name . '.' . $key);
+                    session()->forget($this->storage_name.'.'.$key);
                 } else {
                     unset($_SESSION[$this->storage_name][$key]);
                 }
@@ -202,9 +223,9 @@ class Configuration
                 unset($this->storage[$this->storage_name][$key]);
             }
         }
+
         return $this;
     }
-
 
     public function getStorageName(): string
     {
@@ -216,11 +237,12 @@ class Configuration
         $this->initateStorage();
         if ($this->getStorageIsSession()) {
             if (function_exists('session')) {
-                return session($this->storage_name,[]);
+                return session($this->storage_name, []);
             } else {
                 return $_SESSION[$this->storage_name] ?? [];
             }
         }
+
         return $this->storage[$this->storage_name] ?? [];
     }
 
@@ -232,31 +254,36 @@ class Configuration
     public function setStorageIsSession(bool $UseSession = true): self
     {
         $this->Storage_Is_Session = $UseSession;
+
         return $this;
     }
 
     public function initateStorage(): bool
     {
-        if (!isset($this->storage_name)) $this->storage_name = $this->storage_Default_name;
+        if (! isset($this->storage_name)) {
+            $this->storage_name = $this->storage_Default_name;
+        }
 
         if ($this->getStorageIsSession()) {
             if (function_exists('session')) {
                 return true;
             }
-            if (session_status() == PHP_SESSION_NONE && !headers_sent()) {
+            if (session_status() == PHP_SESSION_NONE && ! headers_sent()) {
                 session_start();
             }
 
-            if (!isset($_SESSION[$this->storage_name])) {
+            if (! isset($_SESSION[$this->storage_name])) {
                 $_SESSION[$this->storage_name] = [];
             }
+
             return true;
         }
 
-        if (!$this->getStorageIsSession()) {
-            if (!isset($this->storage[$this->storage_name])) {
+        if (! $this->getStorageIsSession()) {
+            if (! isset($this->storage[$this->storage_name])) {
                 $this->storage[$this->storage_name] = [];
             }
+
             return true;
         }
 
@@ -268,9 +295,9 @@ class Configuration
         if (empty($this->Client_id) || empty($this->Client_secret) || empty($this->BaseUrl)) {
             return false;
         }
+
         return true;
     }
-
 
     public function saveNewAccessToken(array $authBody)
     {
@@ -281,7 +308,7 @@ class Configuration
                 'scope' => $authBody['scope'],
                 'scope_array' => explode(' ', $authBody['scope']),
                 'token_type' => $authBody['token_type'],
-                'expires_at' => (new DateTime())->add(new DateInterval('PT' . $authBody['expires_in'] . 'S')),
+                'expires_at' => (new DateTime())->add(new DateInterval('PT'.$authBody['expires_in'].'S')),
             ]
         );
         $this->saveToStorage($this->getSettingsArray());
@@ -302,14 +329,13 @@ class Configuration
         ];
     }
 
-
     public function hasScope(string $Scope): bool
     {
         return true;
         //Todo Fix this using regex or something
         $scopeMethod = substr($Scope, 0, strpos($Scope, ':'));
-        $fromright = substr($Scope, strpos($Scope, ':'), strlen($Scope) - strpos($Scope, ':') -  strpos(strrev($Scope), '.'));
-        $scopeUri = substr($Scope, strpos($Scope, ':') + 1,);
+        $fromright = substr($Scope, strpos($Scope, ':'), strlen($Scope) - strpos($Scope, ':') - strpos(strrev($Scope), '.'));
+        $scopeUri = substr($Scope, strpos($Scope, ':') + 1);
 
         $scopeArray = $this->getStorage()['scope_array'];
         foreach ($scopeArray as $key => $value) {
@@ -330,6 +356,7 @@ class Configuration
         if (in_array($Scope, $scopeArray)) {
             return true;
         }
+
         return false;
     }
 

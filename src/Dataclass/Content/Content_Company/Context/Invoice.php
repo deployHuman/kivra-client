@@ -6,10 +6,9 @@ use DeployHuman\kivra\Dataclass\Content\Content_Company\Context\Invoice\Payment;
 
 class Invoice
 {
-
     protected Payment $payment_options;
-    protected string $invoice_reference;
 
+    protected string $invoice_reference;
 
     public function __construct()
     {
@@ -18,6 +17,7 @@ class Invoice
     public function setPaymentOptions(Payment $payment_options): self
     {
         $this->payment_options = $payment_options;
+
         return $this;
     }
 
@@ -34,6 +34,7 @@ class Invoice
     public function setInvoiceReference(string $invoice_reference): self
     {
         $this->invoice_reference = $invoice_reference;
+
         return $this;
     }
 
@@ -42,14 +43,13 @@ class Invoice
         return $this->invoice_reference ?? null;
     }
 
-
-
     public function isValid(): bool
     {
-        if (!$this->payment_options->isValid()) {
+        if (! $this->payment_options->isValid()) {
             return false;
         }
-        return !in_array(null, array_values($this->toArray()));
+
+        return ! in_array(null, array_values($this->toArray()));
     }
 
     public function toArray(): array
@@ -58,7 +58,7 @@ class Invoice
             'invoice' => [
                 'payment' => $this->payment_options->toArray(),
                 'invoice_reference' => $this->getInvoiceReference() ?? null,
-            ]
+            ],
         ];
     }
 

@@ -2,8 +2,6 @@
 
 namespace DeployHuman\kivra\Dataclass\Content\Content_User\Context\Invoice;
 
-
-
 use DeployHuman\kivra\Dataclass\Content\Content_User\Context\Invoice\Options\Option;
 use DeployHuman\kivra\Enum\BankPaymentType;
 
@@ -12,18 +10,20 @@ use DeployHuman\kivra\Enum\BankPaymentType;
  */
 class PaymentMultipleOptions
 {
-
     protected bool $payable;
+
     protected BankPaymentType $method;
+
     protected string $account;
+
     protected string $currency;
+
     protected array $options;
-
-
 
     public function setPayable(bool $payable): self
     {
         $this->payable = $payable;
+
         return $this;
     }
 
@@ -35,12 +35,13 @@ class PaymentMultipleOptions
     /**
      * The payment method for this option.
      *
-     * @param BankPaymentType $method
+     * @param  BankPaymentType  $method
      * @return PaymentMultipleOptions
      */
     public function setMethod(BankPaymentType $method): self
     {
         $this->method = $method;
+
         return $this;
     }
 
@@ -52,12 +53,13 @@ class PaymentMultipleOptions
     /**
      * The account number for this option.
      *
-     * @param string $account
+     * @param  string  $account
      * @return PaymentMultipleOptions
      */
     public function setAccount(string $account): self
     {
         $this->account = $account;
+
         return $this;
     }
 
@@ -69,12 +71,13 @@ class PaymentMultipleOptions
     /**
      * The currency for this option.
      *
-     * @param string $currency
+     * @param  string  $currency
      * @return PaymentMultipleOptions
      */
     public function setCurrency(string $currency): self
     {
         $this->currency = $currency;
+
         return $this;
     }
 
@@ -85,26 +88,29 @@ class PaymentMultipleOptions
 
     public function addOption(Option $option): self
     {
-        if ($option->isValid()) $this->options[] = $option;
+        if ($option->isValid()) {
+            $this->options[] = $option;
+        }
+
         return $this;
     }
 
     /**
      * Checks both this and all options and subsets to see if they are valid.
      *
-     * @return boolean
+     * @return bool
      */
     public function isValid(): bool
     {
-
         if (isset($this->options)) {
             foreach ($this->options as $key => $value) {
-                if (!$value->isValid()) {
+                if (! $value->isValid()) {
                     return false;
                 }
             }
         }
-        return !in_array(null, array_values($this->toArray()));
+
+        return ! in_array(null, array_values($this->toArray()));
     }
 
     public function toArray(): array

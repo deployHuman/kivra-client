@@ -2,18 +2,19 @@
 
 namespace DeployHuman\kivra\Dataclass\Content\Content_User\Context;
 
-
 class Booking
 {
-
-
     protected string $title;
-    protected string $start_time;
-    protected string $end_time;
-    protected string $location;
-    protected string $description;
-    protected string $info_url;
 
+    protected string $start_time;
+
+    protected string $end_time;
+
+    protected string $location;
+
+    protected string $description;
+
+    protected string $info_url;
 
     public function __construct()
     {
@@ -22,12 +23,14 @@ class Booking
     /**
      * Booking name that is shown in the Kivra GUI
      * `required`
-     * @param string $title
+     *
+     * @param  string  $title
      * @return self
      */
     public function setTitle(string $title): self
     {
         $this->title = $title;
+
         return $this;
     }
 
@@ -39,12 +42,14 @@ class Booking
     /**
      * Date and time for the booking to start. Must be in the future.
      *  `required`
-     * @param string $start_time
+     *
+     * @param  string  $start_time
      * @return self
      */
     public function setStartTime(string $start_time): self
     {
         $this->start_time = $start_time;
+
         return $this;
     }
 
@@ -55,17 +60,17 @@ class Booking
 
     /**
      * Date and time for the booking to end. If present must be after start_time.
-     * 
      *
-     * @param string $end_time
+     *
+     * @param  string  $end_time
      * @return self
      */
     public function setEndTime(string $end_time): self
     {
         $this->end_time = $end_time;
+
         return $this;
     }
-
 
     public function getEndTime(): string|null
     {
@@ -80,6 +85,7 @@ class Booking
     public function setLocation(string $location): self
     {
         $this->location = $location;
+
         return $this;
     }
 
@@ -91,12 +97,13 @@ class Booking
     /**
      * Additional information
      *
-     * @param string $description
+     * @param  string  $description
      * @return self
      */
     public function setDescription(string $description): self
     {
         $this->description = $description;
+
         return $this;
     }
 
@@ -108,12 +115,13 @@ class Booking
     /**
      * Link to page with additional information
      *
-     * @param string $info_url
+     * @param  string  $info_url
      * @return self
      */
     public function setInfoUrl(string $info_url): self
     {
         $this->info_url = $info_url;
+
         return $this;
     }
 
@@ -122,8 +130,6 @@ class Booking
         return $this->info_url ?? null;
     }
 
-
-
     public function isValid(): bool
     {
         if (isset($this->start_time) && isset($this->end_time)) {
@@ -131,9 +137,10 @@ class Booking
                 return false;
             }
         }
-        return !in_array(null, array_values([
+
+        return ! in_array(null, array_values([
             'title' => $this->title,
-            'start_time' => $this->start_time
+            'start_time' => $this->start_time,
         ]));
     }
 
@@ -146,8 +153,8 @@ class Booking
                 'end_time' => $this->end_time,
                 'location' => $this->location,
                 'description' => $this->description,
-                'info_url' => $this->info_url
-            ]
+                'info_url' => $this->info_url,
+            ],
         ];
     }
 

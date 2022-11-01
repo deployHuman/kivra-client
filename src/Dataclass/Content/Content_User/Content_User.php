@@ -2,8 +2,8 @@
 
 namespace DeployHuman\kivra\Dataclass\Content\Content_User;
 
-use DeployHuman\kivra\Dataclass\Content\Content_User\Context\Invoice;
 use DeployHuman\kivra\Dataclass\Content\Content_User\Context\Booking;
+use DeployHuman\kivra\Dataclass\Content\Content_User\Context\Invoice;
 use DeployHuman\kivra\Dataclass\Content\Files\File;
 use DeployHuman\kivra\Enum\Content_Retention_Time;
 use DeployHuman\kivra\Enum\User_Content_Type;
@@ -12,30 +12,37 @@ use DeployHuman\kivra\Validation;
 class Content_User
 {
     protected string $ssn;
-    protected string $subject;
-    protected string $generated_at;
-    protected User_Content_Type $type;
-    protected bool $retain = false;
-    protected Content_Retention_Time $retention_time;
-    protected string $tenant_info;
-    protected array $files;
-    protected Booking|Invoice $context;
 
+    protected string $subject;
+
+    protected string $generated_at;
+
+    protected User_Content_Type $type;
+
+    protected bool $retain = false;
+
+    protected Content_Retention_Time $retention_time;
+
+    protected string $tenant_info;
+
+    protected array $files;
+
+    protected Booking|Invoice $context;
 
     public function __construct()
     {
     }
 
-
     /**
      * User's unique SSN, according to the YYYYMMDDnnnn format
      *
-     * @param string $ssn
+     * @param  string  $ssn
      * @return self
      */
     public function setSsn(string $ssn): self
     {
-        $this->ssn =  $ssn;
+        $this->ssn = $ssn;
+
         return $this;
     }
 
@@ -47,12 +54,13 @@ class Content_User
     /**
      * This Subject/Title will be visibile in the Recipients Inbox.
      *
-     * @param string $subject
+     * @param  string  $subject
      * @return self
      */
     public function setSubject(string $subject): self
     {
         $this->subject = $subject;
+
         return $this;
     }
 
@@ -64,12 +72,13 @@ class Content_User
     /**
      * The date and time when the content was generated.
      *
-     * @param string $generated_at
+     * @param  string  $generated_at
      * @return self
      */
     public function setGeneratedAt(string $generated_at): self
     {
         $this->generated_at = $generated_at;
+
         return $this;
     }
 
@@ -81,12 +90,13 @@ class Content_User
     /**
      * Optional attribute providing information about the type of content being sent. The type of a content may influence how the user interacts with the content and how the user is notified about the content. Allowed values are:
      *
-     * @param User_Content_Type $type
+     * @param  User_Content_Type  $type
      * @return self
      */
     public function setType(User_Content_Type $type): self
     {
         $this->type = $type;
+
         return $this;
     }
 
@@ -96,16 +106,17 @@ class Content_User
     }
 
     /**
-     * Boolean denoting if Kivra should try and retain this Content if it can´t be delivered. 
-     * Default false. 
+     * Boolean denoting if Kivra should try and retain this Content if it can´t be delivered.
+     * Default false.
      * Please note that retain must never be set to true for payable content.
      *
-     * @param boolean $retain
+     * @param  bool  $retain
      * @return self
      */
     public function setRetain(bool $retain): self
     {
         $this->retain = $retain;
+
         return $this;
     }
 
@@ -117,12 +128,13 @@ class Content_User
     /**
      * How long to retain a Content. Supported values: "30" and "390"
      *
-     * @param Content_Retention_Time $retention_time
+     * @param  Content_Retention_Time  $retention_time
      * @return self
      */
     public function setRetantion_time(Content_Retention_Time $retention_time): self
     {
         $this->retention_time = $retention_time;
+
         return $this;
     }
 
@@ -134,12 +146,13 @@ class Content_User
     /**
      * An arbitrary string defined by the tenant, used to group content for administrative tasks
      *
-     * @param string $tenant_info
+     * @param  string  $tenant_info
      * @return self
      */
     public function setTenant_Info(string $tenant_info): self
     {
         $this->tenant_info = $tenant_info;
+
         return $this;
     }
 
@@ -151,12 +164,13 @@ class Content_User
     /**
      * Array of file Objects
      *
-     * @param File $file
+     * @param  File  $file
      * @return self
      */
     public function addFile(File $file): self
     {
         $this->files[] = $file;
+
         return $this;
     }
 
@@ -167,14 +181,15 @@ class Content_User
 
     /**
      * Sets the main Contect of this send.
-     * 
      *
-     * @param Invoice|Booking $context
+     *
+     * @param  Invoice|Booking  $context
      * @return self
      */
     public function setContext(Invoice|Booking $context): self
     {
         $this->context = $context;
+
         return $this;
     }
 
@@ -183,21 +198,21 @@ class Content_User
         return $this->context;
     }
 
-
     public function isValid(): bool
     {
-        if (!Validation::personnummer($this->ssn)) {
+        if (! Validation::personnummer($this->ssn)) {
             return false;
         }
         if (isset($this->context)) {
-            if (!$this->context->isValid()) {
+            if (! $this->context->isValid()) {
                 return false;
             }
         }
-        return !in_array(null, array_values([
+
+        return ! in_array(null, array_values([
             'ssn' => $this->ssn,
             'files' => $this->files,
-            'context' => $this->context
+            'context' => $this->context,
         ]));
     }
 
@@ -219,6 +234,7 @@ class Content_User
         (isset($this->tenant_info)) ? $returnarray['tenant_info'] = $this->tenant_info : null;
         (isset($this->files)) ? $returnarray['files'] = $files : null;
         (isset($this->context)) ? $returnarray['context'] = $this->context->toArray() : null;
+
         return $returnarray;
     }
 
