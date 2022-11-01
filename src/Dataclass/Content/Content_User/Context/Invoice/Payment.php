@@ -222,8 +222,8 @@ class Payment
             'currency' => $this->currency ?? null,
             'due_date' => $this->due_date ?? null,
             'total_owed' => $this->total_owed ?? null,
-            'type' => $this->type ?? null,
-            'method' => $this->method ?? null,
+            'type' => $this->type->value ?? null,
+            'method' => $this->method->value ?? null,
             'account' => $this->account ?? null,
             'reference' => $this->reference ?? null,
         ]));
@@ -231,13 +231,16 @@ class Payment
 
     public function toArray(): array
     {
-        $returnarray = [];
-        foreach ($this as $key => $value) {
-            if ($value !== null) {
-                $returnarray[$key] = $value;
-            }
-        }
-        return $returnarray;
+        return [
+            'payable' => $this->payable ?? null,
+            'currency' => $this->currency ?? null,
+            'due_date' => $this->due_date ?? null,
+            'total_owed' => $this->total_owed ?? null,
+            'type' => $this->type->value ?? null,
+            'method' => $this->method->value ?? null,
+            'account' => $this->account ?? null,
+            'reference' => $this->reference ?? null,
+        ];
     }
 
     public function __toString()

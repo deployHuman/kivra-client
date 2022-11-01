@@ -213,7 +213,7 @@ class Content_User
         (isset($this->ssn)) ? $returnarray['ssn'] = $this->ssn : null;
         (isset($this->subject)) ? $returnarray['subject'] = $this->subject : null;
         (isset($this->generated_at)) ? $returnarray['generated_at'] = $this->generated_at : null;
-        (isset($this->type)) ? $returnarray['type'] = $this->type : null;
+        (isset($this->type)) ? $returnarray['type'] = $this->type->value : null;
         (isset($this->retain)) ? $returnarray['retain'] = $this->retain : null;
         (isset($this->retention_time)) ? $returnarray['retention_time'] = $this->retention_time : null;
         (isset($this->tenant_info)) ? $returnarray['tenant_info'] = $this->tenant_info : null;
