@@ -179,7 +179,7 @@ class Configuration
         $this->initateStorage();
         if ($this->getStorageIsSession()) {
             if (function_exists('session')) {
-                session([$this->storage_name =>  array_merge(session($this->storage_name),  $asocArray)]);
+                session([$this->storage_name =>  array_merge(session($this->storage_name,[]),  $asocArray)]);
             } else {
                 $_SESSION[$this->storage_name] = array_merge($_SESSION[$this->storage_name], $asocArray);
             }
