@@ -61,12 +61,12 @@ class Payment
     /**
      * Date when this Invoice is due.
      *
-     * @param string $due_date ISO8601 date format ( will be parsed from regular date format )
+     * @param string $due_date ISO8601 date format 
      * @return Payment
      */
     public function setDueDate(string $due_date): self
     {
-        $this->due_date = \DateTime::createFromFormat(\DateTime::ISO8601, $due_date) ?? null;
+        $this->due_date = $due_date ?? null;
         return $this;
     }
 
