@@ -8,7 +8,6 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\MessageFormatter;
 use GuzzleHttp\Middleware;
 use Monolog\Handler\RotatingFileHandler;
-use Monolog\Level;
 use Monolog\Logger;
 
 class Configuration
@@ -54,7 +53,7 @@ class Configuration
     {
         if (empty($this->logstack)) {
             $logger = new Logger(__CLASS__);
-            $logger->pushHandler(new RotatingFileHandler($this->getLogPath().DIRECTORY_SEPARATOR.'api.log', 10, Level::Debug));
+            $logger->pushHandler(new RotatingFileHandler($this->getLogPath().DIRECTORY_SEPARATOR.'api.log', 10, Logger::DEBUG));
             $this->logstack = $logger;
         }
     }
