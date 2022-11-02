@@ -102,29 +102,25 @@ class ApiClient
 
     protected function isTokenValid(array $auth): bool
     {
-        if ($this->isSameBaseUrl($auth) && ! $this->isTokenExpired($auth)) {
-            return true;
-        }
-
-        return false;
+        return $this->isSameBaseUrl($auth) && ! $this->isTokenExpired($auth);
     }
 
     protected function isTokenExpired(array $auth): bool
     {
-        if (isset($auth['expires_at'])) {
-            return $auth['expires_at'] < (new DateTime());
+        if (! isset($auth['expires_at'])) {
+            return false;
         }
 
-        return true;
+        return $auth['expires_at'] < (new DateTime());
     }
 
     protected function isSameBaseUrl(array $auth): bool
     {
-        if (isset($auth['baseurl'])) {
-            return $auth['baseurl'] === $this->config->getBaseUrl();
+        if (isset($auth['BaseUrl'])) {
+            return false;
         }
 
-        return false;
+        return $auth['BaseUrl'] == $this->config->getBaseUrl();
     }
 
     protected function basicTokenCheck(string $ScopeNeeded = null): bool|Exception
