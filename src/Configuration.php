@@ -305,28 +305,11 @@ class Configuration
             [
                 'expires_in' => $authBody['expires_in'],
                 'access_token' => $authBody['access_token'],
-                'scope' => $authBody['scope'],
                 'scope_array' => explode(' ', $authBody['scope']),
-                'token_type' => $authBody['token_type'],
                 'expires_at' => (new DateTime())->add(new DateInterval('PT'.$authBody['expires_in'].'S')),
+                'BaseUrl' => $this->getBaseUrl(),
             ]
         );
-        $this->saveToStorage($this->getSettingsArray());
-    }
-
-    public function getSettingsArray(): array
-    {
-        return [
-            'Client_id' => $this->getClient_id(),
-            'Client_secret' => $this->getClient_secret(),
-            'BaseUrl' => $this->getBaseUrl(),
-            'UserAgent' => $this->getUserAgent(),
-            'debug' => $this->getDebug(),
-            'ForceRefreshToken' => $this->getForceRefreshToken(),
-            'StorageName' => $this->getStorageName(),
-            'StorageIsSession' => $this->getStorageIsSession(),
-            'LoggerName' => $this->getLogger()->getName(),
-        ];
     }
 
     public function hasScope(string $Scope): bool
