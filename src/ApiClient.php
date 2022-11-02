@@ -115,7 +115,7 @@ class ApiClient
 
     protected function isSameBaseUrl(array $auth): bool
     {
-        if (isset($auth['BaseUrl'])) {
+        if (! isset($auth['BaseUrl'])) {
             return false;
         }
 
