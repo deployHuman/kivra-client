@@ -4,6 +4,7 @@ namespace DeployHuman\kivra\Api;
 
 use DeployHuman\kivra\ApiClient;
 use DeployHuman\kivra\Dataclass\CompanyId;
+use DeployHuman\kivra\Enum\RequestAccessTenantStatus;
 use GuzzleHttp\Psr7\Response;
 
 class TenantManagement extends ApiClient
@@ -16,9 +17,9 @@ class TenantManagement extends ApiClient
      * @documentation http://developer.kivra.com/#operation/List%20all%20tenants%20accessible%20to%20the%20client
      *
      * @param  ?string  $QueryParamOrgnr Optional Perform a search to see if a specific Company is available
-     * @return Response|false
+     * @return Response
      */
-    public function callAPIListAllTenantsAccessibleToTheClient(string $QueryParamOrgnr = null): Response|false
+    public function callAPIListAllTenantsAccessibleToTheClient(string $QueryParamOrgnr = null): Response
     {
         $querys = isset($QueryParamOrgnr) ? ['query' => ['orgnr' => $QueryParamOrgnr]] : [];
 
@@ -37,11 +38,12 @@ class TenantManagement extends ApiClient
      * @documentation http://developer.kivra.com/#operation/Request%20access
      *
      * @param  string  $vat_number the VAT number of the company you want Tenant Access to
-     * @return Response|false
+     * @return Response|RequestAccessTenantStatus
      */
-    public function callAPIRequestAccess(string $vat_number): Response|false
+    public function callAPIRequestAccess(string $vat_number): Response|RequestAccessTenantStatus
     {
-        return $this->post('/v2/tenant/request_access', ['json' => ['vat_number' => $vat_number]]);
+        $response = $this->post('/v2/tenant/request_access', ['json' => ['vat_number' => $vat_number]]);
+        return $this->helpCheckRequestAccessResponse($response);
     }
 
     /**
@@ -53,11 +55,29 @@ class TenantManagement extends ApiClient
      *
      * @param  string  $tenantkey The unique Key for a Tenant
      * @param  string  $requestKey
-     * @return array|false
+     * @return Response|RequestAccessTenantStatus
      */
-    public function callAPIRequestAccessStatus(string $requestKey): response|false
+    public function callAPIRequestAccessStatus(string $requestKey): Response|RequestAccessTenantStatus
     {
-        return $this->get('/v2/tenant/request_access/'.$requestKey);
+        $response = $this->get('/v2/tenant/request_access/' . $requestKey);
+        return $this->helpCheckRequestAccessResponse($response);
+    }
+
+    /**
+     * helper method to check response status 
+     *
+     * @param Response $response
+     * @return Response|RequestAccessTenantStatus
+     */
+    private function helpCheckRequestAccessResponse(Response $response): Response|RequestAccessTenantStatus
+    {
+        if ($response->getStatusCode() == '201') {
+            $enumResponse = RequestAccessTenantStatus::tryFrom(mb_strtolower($response->getBody()['status']));
+            if (empty($enumResponse) == false) {
+                return $enumResponse;
+            }
+        }
+        return $response;
     }
 
     /**
@@ -68,15 +88,16 @@ class TenantManagement extends ApiClient
      * @documentation http://developer.kivra.com/#operation/Get%20information%20on%20tenant
      *
      * @param  string  $tenantkey The unique Key for a Tenant
-     * @return Response|false
+     * @return Response
      */
-    public function apiGetInformationOnTenant(string $tenantkey): Response|false
+    public function apiGetInformationOnTenant(string $tenantkey): Response
     {
-        return $this->get('/v2/tenant/'.$tenantkey);
+        return $this->get('/v2/tenant/' . $tenantkey);
     }
 
     /**
      * Create Tenant.
+     * Add a new company ID for a tenant. A tenant can be associated with one or several company ids (Vat number and company name)
      * Creation of tenants via API allows clients to create new tenants in an efficient manner. The created tenant is automatically added to the client scope. The client needs to re-authenticate to have the new scope in effect.
      * Note: Creation of tenants via API is only allowed in certain specific cases and its usage needs to be regulated in the business relationship between the sender party and Kivra.
      *
@@ -86,7 +107,7 @@ class TenantManagement extends ApiClient
     public function apiCreateTenant(CompanyId $companyObjects): Response
     {
         $response = $this->post('/v2/tenant', $companyObjects->toArray());
-        if (in_array($response->getStatusCode(), [200, 201])) {
+        if (in_array($response->getStatusCode(), [200, 201, 204])) {
             $this->refreshAccessToken(true);
         }
 
