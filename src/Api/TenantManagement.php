@@ -38,12 +38,11 @@ class TenantManagement extends ApiClient
      * @documentation http://developer.kivra.com/#operation/Request%20access
      *
      * @param  string  $vat_number the VAT number of the company you want Tenant Access to
-     * @return Response|RequestAccessTenantStatus
+     * @return Response
      */
-    public function callAPIRequestAccess(string $vat_number): Response|RequestAccessTenantStatus
+    public function callAPIRequestAccess(string $vat_number): Response
     {
-        $response = $this->post('/v2/tenant/request_access', ['json' => ['vat_number' => $vat_number]]);
-        return $this->helpCheckRequestAccessResponse($response);
+        return $this->post('/v2/tenant/request_access', ['json' => ['vat_number' => $vat_number]]);
     }
 
     /**
@@ -55,29 +54,11 @@ class TenantManagement extends ApiClient
      *
      * @param  string  $tenantkey The unique Key for a Tenant
      * @param  string  $requestKey
-     * @return Response|RequestAccessTenantStatus
+     * @return Response
      */
-    public function callAPIRequestAccessStatus(string $requestKey): Response|RequestAccessTenantStatus
+    public function callAPIRequestAccessStatus(string $requestKey): Response
     {
-        $response = $this->get('/v2/tenant/request_access/' . $requestKey);
-        return $this->helpCheckRequestAccessResponse($response);
-    }
-
-    /**
-     * helper method to check response status 
-     *
-     * @param Response $response
-     * @return Response|RequestAccessTenantStatus
-     */
-    private function helpCheckRequestAccessResponse(Response $response): Response|RequestAccessTenantStatus
-    {
-        if ($response->getStatusCode() == '201') {
-            $enumResponse = RequestAccessTenantStatus::tryFrom(mb_strtolower($response->getBody()['status']));
-            if (empty($enumResponse) == false) {
-                return $enumResponse;
-            }
-        }
-        return $response;
+        return $this->get('/v2/tenant/request_access/' . $requestKey);
     }
 
     /**
