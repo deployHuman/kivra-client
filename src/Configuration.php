@@ -85,7 +85,7 @@ class Configuration
         $stack->push(
             Middleware::log(
                 $this->getLogger(),
-                new MessageFormatter('{code}:{method}:{uri}: ' .  ($this->getDebug() ? 'request: {request} response: {response}' : '')),
+                new MessageFormatter('{code}:{method}:{uri}: ' . ($this->getDebug() ? 'request: {request}' : '')),
                 $this->getDebug() ? 'debug' : 'warning'
             )
         );
