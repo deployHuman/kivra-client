@@ -95,7 +95,7 @@ class Icon
         }
         //check if image is png
         if ($imagedata[2] != IMAGETYPE_PNG) {
-            return 'image is not png, found : '.$imagedata[2];
+            return 'image is not png, found : ' . $imagedata[2];
         }
         //check image fileimagedata
         if (mb_strlen($data) > 134000) {

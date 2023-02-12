@@ -13,10 +13,10 @@ class Exception extends \Exception
         if ($loggername == null || ! Registry::hasLogger($loggername)) {
             $logger = new Logger(__CLASS__);
             $loggername = $logger->getName();
-            $logger->pushHandler(new StreamHandler(__DIR__.DIRECTORY_SEPARATOR.'apiError.log', Logger::DEBUG));
+            $logger->pushHandler(new StreamHandler(__DIR__ . DIRECTORY_SEPARATOR . 'apiError.log', Logger::DEBUG));
             Registry::addLogger($logger, $loggername, true);
         }
-        Registry::getInstance($loggername)->error('Exception thrown:'.$message);
+        Registry::getInstance($loggername)->error('Exception thrown:' . $message);
         parent::__construct($message);
     }
 }

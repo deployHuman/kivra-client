@@ -172,7 +172,7 @@ class ApiClient
         if (! empty($data)) {
             $optionsarray[RequestOptions::JSON] = $data;
         }
-        $optionsarray[RequestOptions::HEADERS] = ['Authorization' => 'Bearer '.$this->getAccessToken()];
+        $optionsarray[RequestOptions::HEADERS] = ['Authorization' => 'Bearer ' . $this->getAccessToken()];
 
         return $this->getClient()->request($method->value, $uri, $optionsarray);
     }

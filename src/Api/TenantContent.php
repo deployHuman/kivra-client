@@ -31,13 +31,14 @@ class TenantContent extends ApiClient
         $querys = [];
         $querys = isset($ssn) ? array_merge($querys, ['ssn' => $ssn]) : $querys;
         $querys = isset($include) ? array_merge($querys, ['include' => $include]) : $querys;
+
         try {
             $response = $this->getClient()->request(
                 'GET',
-                '/v1/tenant/'.$tenantKey.'/user',
+                '/v1/tenant/' . $tenantKey . '/user',
                 [
                     'headers' => [
-                        'Authorization' => 'Bearer '.$this->getAccessToken(),
+                        'Authorization' => 'Bearer ' . $this->getAccessToken(),
                     ],
                     'query' => $querys,
                 ]
@@ -45,11 +46,12 @@ class TenantContent extends ApiClient
         } catch (ClientException $e) {
             $SentRequest = $e->getRequest() ? Message::toString($e->getRequest()) : '';
             $errormsg = json_decode($e->getResponse()->getBody()->getContents(), true);
-            $this->config->getLogger()->error(__CLASS__.'::'.__FUNCTION__.' - ClientException: '.$e->getMessage().' Request: '.$SentRequest.' Response: '.$errormsg['long_message']);
-            throw new \Exception(__CLASS__.'::'.__FUNCTION__.' - Response error: '.$errormsg['long_message']);
+            $this->config->getLogger()->error(__CLASS__ . '::' . __FUNCTION__ . ' - ClientException: ' . $e->getMessage() . ' Request: ' . $SentRequest . ' Response: ' . $errormsg['long_message']);
+
+            throw new \Exception(__CLASS__ . '::' . __FUNCTION__ . ' - Response error: ' . $errormsg['long_message']);
         }
         if ($this->config->getDebug()) {
-            $this->config->getLogger()->debug(__CLASS__.'::'.__FUNCTION__.' - Response body: '.$response->getBody()->getContents());
+            $this->config->getLogger()->debug(__CLASS__ . '::' . __FUNCTION__ . ' - Response body: ' . $response->getBody()->getContents());
             $response->getBody()->rewind();
         }
 
@@ -72,13 +74,14 @@ class TenantContent extends ApiClient
     {
         $scopeNeeded = 'get:kivra.v1.tenant.{tenantKey}.usermatch';
         $this->basicTokenCheck($scopeNeeded);
+
         try {
             $response = $this->getClient()->request(
                 'POST',
-                '/v1/tenant/'.$tenantkey.'/usermatch',
+                '/v1/tenant/' . $tenantkey . '/usermatch',
                 [
                     'headers' => [
-                        'Authorization' => 'Bearer '.$this->getAccessToken(),
+                        'Authorization' => 'Bearer ' . $this->getAccessToken(),
                     ],
                     'json' => [
                         'ssns' => $ssns,
@@ -88,11 +91,12 @@ class TenantContent extends ApiClient
         } catch (ClientException $e) {
             $SentRequest = $e->getRequest() ? Message::toString($e->getRequest()) : '';
             $errormsg = json_decode($e->getResponse()->getBody()->getContents(), true);
-            $this->config->getLogger()->error(__CLASS__.'::'.__FUNCTION__.' - ClientException: '.$e->getMessage().' Request: '.$SentRequest.' Response: '.$errormsg['long_message']);
-            throw new \Exception(__CLASS__.'::'.__FUNCTION__.' - Response error: '.$errormsg['long_message']);
+            $this->config->getLogger()->error(__CLASS__ . '::' . __FUNCTION__ . ' - ClientException: ' . $e->getMessage() . ' Request: ' . $SentRequest . ' Response: ' . $errormsg['long_message']);
+
+            throw new \Exception(__CLASS__ . '::' . __FUNCTION__ . ' - Response error: ' . $errormsg['long_message']);
         }
         if ($this->config->getDebug()) {
-            $this->config->getLogger()->debug(__CLASS__.'::'.__FUNCTION__.' - Response body: '.$response->getBody()->getContents());
+            $this->config->getLogger()->debug(__CLASS__ . '::' . __FUNCTION__ . ' - Response body: ' . $response->getBody()->getContents());
             $response->getBody()->rewind();
         }
 
@@ -117,13 +121,14 @@ class TenantContent extends ApiClient
         $querys = [];
         $querys = isset($vat_number) ? array_merge($querys, ['vat_number' => $vat_number]) : $querys;
         $client = $this->getClient();
+
         try {
             $response = $client->request(
                 'POST',
-                '/v1/tenant/'.$tenantkey.'/company',
+                '/v1/tenant/' . $tenantkey . '/company',
                 [
                     'headers' => [
-                        'Authorization' => 'Bearer '.$this->getAccessToken(),
+                        'Authorization' => 'Bearer ' . $this->getAccessToken(),
                     ],
                     'query' => $querys,
 
@@ -132,11 +137,12 @@ class TenantContent extends ApiClient
         } catch (ClientException $e) {
             $SentRequest = $e->getRequest() ? Message::toString($e->getRequest()) : '';
             $errormsg = json_decode($e->getResponse()->getBody()->getContents(), true);
-            $this->config->getLogger()->error(__CLASS__.'::'.__FUNCTION__.' - ClientException: '.$e->getMessage().' Request: '.$SentRequest.' Response: '.$errormsg['long_message']);
-            throw new \Exception(__CLASS__.'::'.__FUNCTION__.' - Response error: '.$errormsg['long_message']);
+            $this->config->getLogger()->error(__CLASS__ . '::' . __FUNCTION__ . ' - ClientException: ' . $e->getMessage() . ' Request: ' . $SentRequest . ' Response: ' . $errormsg['long_message']);
+
+            throw new \Exception(__CLASS__ . '::' . __FUNCTION__ . ' - Response error: ' . $errormsg['long_message']);
         }
         if ($this->config->getDebug()) {
-            $this->config->getLogger()->debug(__CLASS__.'::'.__FUNCTION__.' - Response body: '.$response->getBody()->getContents());
+            $this->config->getLogger()->debug(__CLASS__ . '::' . __FUNCTION__ . ' - Response body: ' . $response->getBody()->getContents());
             $response->getBody()->rewind();
         }
 
@@ -158,13 +164,14 @@ class TenantContent extends ApiClient
     {
         $scopeNeeded = 'post:kivra.v1.tenant.{tenantKey}.content';
         $this->basicTokenCheck($scopeNeeded);
+
         try {
             $response = $this->getClient()->request(
                 'POST',
-                '/v1/tenant/'.$tenantkey.'/content',
+                '/v1/tenant/' . $tenantkey . '/content',
                 [
                     'headers' => [
-                        'Authorization' => 'Bearer '.$this->getAccessToken(),
+                        'Authorization' => 'Bearer ' . $this->getAccessToken(),
                     ],
                     'json' => $contentData->toArray(),
 
@@ -173,11 +180,12 @@ class TenantContent extends ApiClient
         } catch (ClientException $e) {
             $SentRequest = $e->getRequest() ? Message::toString($e->getRequest()) : '';
             $errormsg = json_decode($e->getResponse()->getBody()->getContents(), true);
-            $this->config->getLogger()->error(__CLASS__.'::'.__FUNCTION__.' - ClientException: '.$e->getMessage().' Request: '.$SentRequest.' Response: '.$errormsg['long_message']);
-            throw new \Exception(__CLASS__.'::'.__FUNCTION__.' - Response error: '.$errormsg['long_message']);
+            $this->config->getLogger()->error(__CLASS__ . '::' . __FUNCTION__ . ' - ClientException: ' . $e->getMessage() . ' Request: ' . $SentRequest . ' Response: ' . $errormsg['long_message']);
+
+            throw new \Exception(__CLASS__ . '::' . __FUNCTION__ . ' - Response error: ' . $errormsg['long_message']);
         }
         if ($this->config->getDebug()) {
-            $this->config->getLogger()->debug(__CLASS__.'::'.__FUNCTION__.' - Response body: '.$response->getBody()->getContents());
+            $this->config->getLogger()->debug(__CLASS__ . '::' . __FUNCTION__ . ' - Response body: ' . $response->getBody()->getContents());
             $response->getBody()->rewind();
         }
 

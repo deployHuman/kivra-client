@@ -36,7 +36,7 @@ class Authentication extends ApiClient
             ]
         );
         if ($this->config->getDebug()) {
-            $this->config->getLogger()->debug(__CLASS__.'::'.__FUNCTION__.' - Response body: '.$response->getBody()->getContents());
+            $this->config->getLogger()->debug(__CLASS__ . '::' . __FUNCTION__ . ' - Response body: ' . $response->getBody()->getContents());
             $response->getBody()->rewind();
         }
 

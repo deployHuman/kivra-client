@@ -34,7 +34,7 @@ class Configuration
 
     protected bool $ConnectDirectly = true;
 
-    protected string $logpath = __DIR__.'/../log/';
+    protected string $logpath = __DIR__ . '/../log/';
 
     protected bool $Storage_Is_Session = false;
 
@@ -53,7 +53,7 @@ class Configuration
     {
         if (empty($this->logstack)) {
             $logger = new Logger(__CLASS__);
-            $logger->pushHandler(new RotatingFileHandler($this->getLogPath().DIRECTORY_SEPARATOR.'api.log', 10, Logger::DEBUG));
+            $logger->pushHandler(new RotatingFileHandler($this->getLogPath() . DIRECTORY_SEPARATOR . 'api.log', 10, Logger::DEBUG));
             $this->logstack = $logger;
         }
     }
@@ -214,7 +214,7 @@ class Configuration
         foreach ($UnsetKeys as $key) {
             if ($this->getStorageIsSession()) {
                 if (function_exists('session')) {
-                    session()->forget($this->storage_name.'.'.$key);
+                    session()->forget($this->storage_name . '.' . $key);
                 } else {
                     unset($_SESSION[$this->storage_name][$key]);
                 }
