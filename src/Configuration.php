@@ -305,7 +305,7 @@ class Configuration
                 'expires_in' => $authBody['expires_in'],
                 'access_token' => $authBody['access_token'],
                 'scope_array' => explode(' ', $authBody['scope']),
-                'expires_at' => (new DateTime())->add(new DateInterval('PT'.$authBody['expires_in'].'S')),
+                'expires_at' => (new DateTime())->add(new DateInterval('PT' . $authBody['expires_in'] . 'S')),
                 'BaseUrl' => $this->getBaseUrl(),
             ]
         );
