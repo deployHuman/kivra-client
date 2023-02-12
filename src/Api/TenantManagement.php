@@ -21,9 +21,9 @@ class TenantManagement extends ApiClient
      */
     public function callAPIListAllTenantsAccessibleToTheClient(string $QueryParamOrgnr = null): Response
     {
-        $querys = isset($QueryParamOrgnr) ? ['query' => ['orgnr' => $QueryParamOrgnr]] : [];
+        $querys = isset($QueryParamOrgnr) ? ['orgnr' => $QueryParamOrgnr] : [];
 
-        return $this->get('/v2/tenant', $querys);
+        return $this->get('/v2/tenant', params: $querys);
     }
 
     /**
@@ -42,7 +42,7 @@ class TenantManagement extends ApiClient
      */
     public function callAPIRequestAccess(string $vat_number): Response
     {
-        return $this->post('/v2/tenant/request_access', ['json' => ['vat_number' => $vat_number]]);
+        return $this->post('/v2/tenant/request_access', ['vat_number' => $vat_number]);
     }
 
     /**
