@@ -4,7 +4,6 @@ namespace DeployHuman\kivra\Api;
 
 use DeployHuman\kivra\ApiClient;
 use DeployHuman\kivra\Dataclass\CompanyId;
-use DeployHuman\kivra\Enum\RequestAccessTenantStatus;
 use GuzzleHttp\Psr7\Response;
 
 class TenantManagement extends ApiClient
