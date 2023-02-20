@@ -18,9 +18,6 @@ class Icon
 
     /**
      * Arbritrary file-name that is shown alongside the File in the Kivra GUI
-     *
-     * @param  string  $name
-     * @return Icon
      */
     public function setName(string $name): self
     {
@@ -41,9 +38,6 @@ class Icon
      * The image must be quadratic (that is, width and height must be the same).
      * The sides must be at least 256 pixels long, and at most 512 pixels long.
      * The image must have an alpha channel.
-     *
-     * @param  string  $data
-     * @return bool
      */
     public function setData(string $data): bool
     {
@@ -58,8 +52,6 @@ class Icon
 
     /**
      * Returns the base64 encoded file-data.
-     *
-     * @return string
      */
     public function getData(): string
     {
@@ -70,7 +62,6 @@ class Icon
      * Validates an base64 encoded icon data string.
      * Can be used either to get a True if its valid, or fetch returnstring to whats wrong with the image.
      *
-     * @param  string  $data
      * @return string|bool True if valid, string with error message if not.
      */
     public function validateIcon(string $data): string|bool
@@ -114,9 +105,6 @@ class Icon
      * MIME-type of the file-data
      * The IANA media type corresponding to the file, Always "image/png"
      * Should not be used, as it can only be PNG and its set as default
-     *
-     * @param  string  $content_type
-     * @return Icon
      */
     public function setContentType(string $content_type): self
     {

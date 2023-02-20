@@ -19,9 +19,6 @@ class CompanyId
 
     /**
      * Name of the Tenant, this name shows up in the Users Inbox.
-     *
-     * @param  string  $DisplayName
-     * @return self
      */
     public function setDisplayName(string $DisplayName): self
     {
@@ -35,7 +32,6 @@ class CompanyId
      *
      * @param  string  $company_name Legal name of Company
      * @param  string  $company_orgnr Vat number of Company
-     * @return self
      */
     public function addCompanyId(string $company_name, string $company_orgnr): self
     {

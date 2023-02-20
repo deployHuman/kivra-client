@@ -17,7 +17,6 @@ class File
     /**
      * Arbritrary file-name that is shown alongside the File in the Kivra GUI
      *
-     * @param  string  $name
      * @return Content_File
      */
     public function setName(string $name): self
@@ -35,7 +34,6 @@ class File
     /**
      * Base64 encoded file-data
      *
-     * @param  string  $data
      * @return Content_File
      */
     public function setData(string $data): self
@@ -54,7 +52,6 @@ class File
      * MIME-type of the file-data
      * The IANA media type corresponding to the file, e.g. "application/pdf"
      *
-     * @param  string  $content_type
      * @return Content_File
      */
     public function setContentType(string $content_type): self

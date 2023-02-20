@@ -46,8 +46,6 @@ class Configuration
 
     /**
      * Making sure there is a Logger set.
-     *
-     * @return void
      */
     private function checkLogstack(): void
     {

@@ -24,8 +24,6 @@ class Invoice
 
     /**
      * Tenant´s own Invoice Reference
-     *
-     * @return PaymentMultipleOptions|Payment|null
      */
     public function getPaymentOptions(): PaymentMultipleOptions|Payment|null
     {

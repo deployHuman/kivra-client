@@ -23,9 +23,6 @@ class Booking
     /**
      * Booking name that is shown in the Kivra GUI
      * `required`
-     *
-     * @param  string  $title
-     * @return self
      */
     public function setTitle(string $title): self
     {
@@ -42,9 +39,6 @@ class Booking
     /**
      * Date and time for the booking to start. Must be in the future.
      *  `required`
-     *
-     * @param  string  $start_time
-     * @return self
      */
     public function setStartTime(string $start_time): self
     {
@@ -60,10 +54,6 @@ class Booking
 
     /**
      * Date and time for the booking to end. If present must be after start_time.
-     *
-     *
-     * @param  string  $end_time
-     * @return self
      */
     public function setEndTime(string $end_time): self
     {
@@ -96,9 +86,6 @@ class Booking
 
     /**
      * Additional information
-     *
-     * @param  string  $description
-     * @return self
      */
     public function setDescription(string $description): self
     {
@@ -114,9 +101,6 @@ class Booking
 
     /**
      * Link to page with additional information
-     *
-     * @param  string  $info_url
-     * @return self
      */
     public function setInfoUrl(string $info_url): self
     {

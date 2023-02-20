@@ -35,9 +35,6 @@ class Content_User
 
     /**
      * User's unique SSN, according to the YYYYMMDDnnnn format
-     *
-     * @param  string  $ssn
-     * @return self
      */
     public function setSsn(string $ssn): self
     {
@@ -53,9 +50,6 @@ class Content_User
 
     /**
      * This Subject/Title will be visibile in the Recipients Inbox.
-     *
-     * @param  string  $subject
-     * @return self
      */
     public function setSubject(string $subject): self
     {
@@ -71,9 +65,6 @@ class Content_User
 
     /**
      * The date and time when the content was generated.
-     *
-     * @param  string  $generated_at
-     * @return self
      */
     public function setGeneratedAt(string $generated_at): self
     {
@@ -89,9 +80,6 @@ class Content_User
 
     /**
      * Optional attribute providing information about the type of content being sent. The type of a content may influence how the user interacts with the content and how the user is notified about the content. Allowed values are:
-     *
-     * @param  User_Content_Type  $type
-     * @return self
      */
     public function setType(User_Content_Type $type): self
     {
@@ -109,9 +97,6 @@ class Content_User
      * Boolean denoting if Kivra should try and retain this Content if it can´t be delivered.
      * Default false.
      * Please note that retain must never be set to true for payable content.
-     *
-     * @param  bool  $retain
-     * @return self
      */
     public function setRetain(bool $retain): self
     {
@@ -127,9 +112,6 @@ class Content_User
 
     /**
      * How long to retain a Content. Supported values: "30" and "390"
-     *
-     * @param  Content_Retention_Time  $retention_time
-     * @return self
      */
     public function setRetantion_time(Content_Retention_Time $retention_time): self
     {
@@ -145,9 +127,6 @@ class Content_User
 
     /**
      * An arbitrary string defined by the tenant, used to group content for administrative tasks
-     *
-     * @param  string  $tenant_info
-     * @return self
      */
     public function setTenant_Info(string $tenant_info): self
     {
@@ -163,9 +142,6 @@ class Content_User
 
     /**
      * Array of file Objects
-     *
-     * @param  File  $file
-     * @return self
      */
     public function addFile(File $file): self
     {
@@ -181,10 +157,6 @@ class Content_User
 
     /**
      * Sets the main Contect of this send.
-     *
-     *
-     * @param  Invoice|Booking  $context
-     * @return self
      */
     public function setContext(Invoice|Booking $context): self
     {

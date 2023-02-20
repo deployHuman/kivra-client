@@ -29,9 +29,6 @@ class Option
 
     /**
      * Date when this option is due.
-     *
-     * @param  string  $due_date
-     * @return Option
      */
     public function setDueDate(string $due_date): self
     {
@@ -47,9 +44,6 @@ class Option
 
     /**
      * The payment amount for this option. A positive number.
-     *
-     * @param  string  $amount
-     * @return Option
      */
     public function setAmount(string $amount): self
     {
@@ -65,9 +59,6 @@ class Option
 
     /**
      * Type of format for the reference
-     *
-     * @param  PaymentOptionType  $type
-     * @return Option
      */
     public function setType(PaymentOptionType $type): self
     {
@@ -83,9 +74,6 @@ class Option
 
     /**
      * The reference number used for paying. This can be maximum 25 characters long.
-     *
-     * @param  string  $reference
-     * @return Option
      */
     public function setReference(string $reference): self
     {
@@ -101,9 +89,6 @@ class Option
 
     /**
      * Title for this option
-     *
-     * @param  string  $title
-     * @return Option
      */
     public function setTitle(string $title): self
     {
@@ -119,9 +104,6 @@ class Option
 
     /**
      * Optional description for this option
-     *
-     * @param  string  $description
-     * @return Option
      */
     public function setDescription(string $description): self
     {
@@ -137,9 +119,6 @@ class Option
 
     /**
      * Optional icon for this option
-     *
-     * @param  Icon  $icon
-     * @return Option
      */
     public function setIcon(Icon $icon): self
     {
@@ -150,8 +129,6 @@ class Option
 
     /**
      * Checks both this and the icon data for validity.
-     *
-     * @return bool
      */
     public function isValid(): bool
     {

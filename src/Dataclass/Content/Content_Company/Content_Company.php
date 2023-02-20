@@ -35,9 +35,6 @@ class Content_Company
      *
      * A valid VAT-identifier, Swedish format: SE[xxxxxxxxxx]01
      * Will not set vat number if not valid.
-     *
-     * @param  string  $vat_number
-     * @return self
      */
     public function setVatNumber(string $vat_number): self
     {
@@ -56,9 +53,6 @@ class Content_Company
 
     /**
      * This Subject/Title will be visibile in the Recipients Inbox.
-     *
-     * @param  string  $subject
-     * @return self
      */
     public function setSubject(string $subject): self
     {
@@ -74,9 +68,6 @@ class Content_Company
 
     /**
      * Optional attribute providing information about the type of content being sent. The type of a content may influence how the user interacts with the content and how the user is notified about the content. Allowed values are:
-     *
-     * @param  Company_Content_Type  $type
-     * @return self
      */
     public function setType(Company_Content_Type $type): self
     {
@@ -92,9 +83,6 @@ class Content_Company
 
     /**
      * An arbitrary string defined by the tenant, used to group content for administrative tasks
-     *
-     * @param  string  $tenant_info
-     * @return self
      */
     public function setTenant_Info(string $tenant_info): self
     {
@@ -110,9 +98,6 @@ class Content_Company
 
     /**
      * Array of file Objects
-     *
-     * @param  File  $file
-     * @return self
      */
     public function addFile(File $file): self
     {

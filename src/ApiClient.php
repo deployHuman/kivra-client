@@ -70,8 +70,6 @@ class ApiClient
 
     /**
      * gets an API Client with all configuration set
-     *
-     * @return Client
      */
     public function getClient(): Client
     {
@@ -81,9 +79,6 @@ class ApiClient
     /**
      * Cleanup of output array from Kivra
      * Seems like they keep sending empty fields in the form of "[]" which will make it as an array and cause conversion to string error
-     *
-     * @param  array  $arrayToClean
-     * @return array
      */
     protected function cleanUpEmptyFields(array $arrayToClean): array
     {
@@ -145,11 +140,6 @@ class ApiClient
     /**
      * Send a request to the Kivra API.
      *
-     * @param  ApiMethod  $method
-     * @param  string  $uri
-     * @param  array  $data
-     * @param  array  $params
-     * @return Response
      *
      * @throws Exception
      */
@@ -179,11 +169,6 @@ class ApiClient
 
     /**
      * Send a GET request to the Kivra API.
-     *
-     * @param  string  $uri
-     * @param  array  $data
-     * @param  array  $params
-     * @return Response
      */
     public function get(string $uri, array $data = [], array $params = []): Response
     {
@@ -192,11 +177,6 @@ class ApiClient
 
     /**
      * Send a POST request to the Kivra API.
-     *
-     * @param  string  $uri
-     * @param  array  $data
-     * @param  array  $params
-     * @return Response
      */
     public function post(string $uri, array $data = [], array $params = []): Response
     {
@@ -205,11 +185,6 @@ class ApiClient
 
     /**
      * Send a PUT request to the Kivra API.
-     *
-     * @param  string  $uri
-     * @param  array  $data
-     * @param  array  $params
-     * @return Response
      */
     public function put(string $uri, array $data = [], array $params = []): Response
     {
@@ -218,11 +193,6 @@ class ApiClient
 
     /**
      * Send a DELETE request to the Kivra API.
-     *
-     * @param  string  $uri
-     * @param  array  $data
-     * @param  array  $params
-     * @return Response
      */
     public function delete(string $uri, array $data = [], array $params = []): Response
     {
@@ -231,11 +201,6 @@ class ApiClient
 
     /**
      * Send a PATCH request to the Kivra API.
-     *
-     * @param  string  $uri
-     * @param  array  $data
-     * @param  array  $params
-     * @return Response
      */
     public function patch(string $uri, array $data = [], array $params = []): Response
     {
@@ -244,11 +209,6 @@ class ApiClient
 
     /**
      * Send a OPTIONS request to the Kivra API.
-     *
-     * @param  string  $uri
-     * @param  array  $data
-     * @param  array  $params
-     * @return Response
      */
     public function options(string $uri, array $data = [], array $params = []): Response
     {
@@ -260,8 +220,6 @@ class ApiClient
      * Endpoints for creation and administration of tenants (v2)
      *
      * @documentation http://developer.kivra.com/#tag/Tenant-API-Tenant-Management
-     *
-     * @return TenantManagement
      */
     public function TenantManagement(): TenantManagement
     {
@@ -274,8 +232,6 @@ class ApiClient
      * Create the RFC 2045 base64 encoding to be used for tenant registration, replace client_id and client_secret with real values and make sure there are no trailing newlines (echo -n) and that the string is encoded literally (use single quotes and no escaping)
      *
      * @documentation http://developer.kivra.com/#section/API-Authentication
-     *
-     * @return Authentication
      */
     public function Authentication(): Authentication
     {
@@ -288,8 +244,6 @@ class ApiClient
      * Endpoints for matching users and sending content
      *
      * @documentation http://developer.kivra.com/#tag/Tenant-API-Content
-     *
-     * @return TenantContent
      */
     public function TenantContent(): TenantContent
     {

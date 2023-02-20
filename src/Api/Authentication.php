@@ -13,9 +13,8 @@ class Authentication extends ApiClient
      * To Get Bearer Token from Client ID and Client Secret
      *
      * @url /v2/auth
-     * @Documentation http://developer.kivra.com/#section/API-Authentication
      *
-     * @return response
+     * @Documentation http://developer.kivra.com/#section/API-Authentication
      *
      * @throws GuzzleException
      */

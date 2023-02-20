@@ -36,9 +36,6 @@ class Payment
 
     /**
      * Toggles whether this content should be payable through Kivra´s payment platform
-     *
-     * @param  bool  $payable
-     * @return self
      */
     public function setPayable(bool $payable): self
     {
@@ -54,9 +51,6 @@ class Payment
 
     /**
      * Currency used in specifying ´total_owed´
-     *
-     * @param  string  $currency
-     * @return self
      */
     public function setCurrency(string $currency): self
     {
@@ -72,9 +66,6 @@ class Payment
 
     /**
      * Date when this Invoice is due
-     *
-     * @param  string  $due_date
-     * @return Payment
      */
     public function setDueDate(string $due_date): self
     {
@@ -91,9 +82,6 @@ class Payment
     /**
      * The total amount owed according to the invoice.
      * If payable equals true this must be a non negative number that`s greater than "0"
-     *
-     * @param  string  $total_owed
-     * @return self
      */
     public function setTotal_owed(string $total_owed): self
     {
@@ -110,9 +98,6 @@ class Payment
     /**
      * Enum: "SE_OCR" "TENANT_REF"
      * Type of format for the reference
-     *
-     * @param  PaymentOptionType  $type
-     * @return Payment
      */
     public function setType(PaymentOptionType $type): self
     {
@@ -128,9 +113,6 @@ class Payment
 
     /**
      * Use Enum, represents int 1 or 2
-     *
-     * @param  BankPaymentType  $method
-     * @return Payment
      */
     public function setMethod(BankPaymentType $method): self
     {
@@ -147,9 +129,6 @@ class Payment
     /**
      * Tenant`s account number
      * where to transfer money
-     *
-     * @param  string  $account
-     * @return Payment
      */
     public function setAccount(string $account): self
     {
@@ -166,9 +145,6 @@ class Payment
     /**
      * The reference number used for paying.
      * This can be maximum 25 characters long.
-     *
-     * @param  string  $reference
-     * @return Payment
      */
     public function setReference(string $reference): self
     {
@@ -184,9 +160,6 @@ class Payment
 
     /**
      * Toggles whether this content should be payable through Kivra´s payment platform
-     *
-     * @param  bool  $variable_amount
-     * @return self
      */
     public function setVariableAmount(bool $variable_amount): self
     {
@@ -207,9 +180,6 @@ class Payment
      * Note that this is a soft limit, so whenever variable_amount is true the user will be able to choose freely the amount to be paid,
      *  but it may be warned if the amount paid is inferior to min_amount.
      *  min_amount must be greater than "0" and less than "total_owed".
-     *
-     * @param  string  $min_amount
-     * @return self
      */
     public function setMinAmount(string $min_amount): self
     {

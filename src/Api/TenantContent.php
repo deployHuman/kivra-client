@@ -18,11 +18,11 @@ class TenantContent extends ApiClient
      * Access to this resource might be enabled or disabled via agreement. To match a given list of users, please use the `usermatch` resource.
      *
      * @url /v1/tenant/{tenantKey}/user //missmatch in documentation
+     *
      * @documentation http://developer.kivra.com/#operation/List%20Users
      *
      * @param  ?string  $ssn Example: ssn=191212121212 - Perform a search to see if specific Users are available
      * @param  ?string  $include Value: "ssn" Example: include=ssn - List of fields that are returned for each user object
-     * @return response|false
      */
     public function callAPIListUsers(string $tenantKey, string $ssn = null, string $include = null): response|false
     {
@@ -64,11 +64,11 @@ class TenantContent extends ApiClient
      * If none of the provided SSNs are eligible to receive content from this tenant, an empty list will be returned.
      *
      * @url /v2/tenant/{tenantKey}/usermatch
+     *
      * @documentation http://developer.kivra.com/#operation/Match%20Users
      *
      * @param  string  $tenantkey The unique Key for a Tenant
      * @param  array  $ssns A list of SSNs to be matched, in string format
-     * @return Response|false
      */
     public function callAPIMatchUsers(string $tenantkey, array $ssns): Response|false
     {
@@ -109,10 +109,10 @@ class TenantContent extends ApiClient
      * If a search is done and the Company doesn´t exist or have Opt-ed out of receiving Content from the Tenant an empty list will be returned.
      *
      * @url /v1/tenant/{tenantKey}/company
+     *
      * @documentation http://developer.kivra.com/#operation/List%20Companies
      *
      * @param  string  $tenantkey The unique Key for a Tenant
-     * @return Response
      */
     public function callAPIListCompanies(string $tenantkey, string $vat_number = null): Response
     {
@@ -154,11 +154,11 @@ class TenantContent extends ApiClient
      * Metadata is data that Kivra needs to send the Content to the right User. It may also determine how a User can interact with the Content.
      *
      * @url /v1/tenant/{tenantKey}/company
+     *
      * @documentation http://developer.kivra.com/#operation/Send%20content
      *
      * @param  string  $tenantkey The unique Key for a Tenant
      * @param  Content_Company|Content_User  $content
-     * @return Response
      */
     public function callAPISendContent(string $tenantkey, Content_User|Content_Company $contentData): Response
     {

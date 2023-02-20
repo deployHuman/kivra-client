@@ -13,10 +13,10 @@ class TenantManagement extends ApiClient
      * Lists all tenants that are manageable by the current client
      *
      * @url /v2/tenant[?orgnnr=SE556840226601]
+     *
      * @documentation http://developer.kivra.com/#operation/List%20all%20tenants%20accessible%20to%20the%20client
      *
      * @param  ?string  $QueryParamOrgnr Optional Perform a search to see if a specific Company is available
-     * @return Response
      */
     public function callAPIListAllTenantsAccessibleToTheClient(string $QueryParamOrgnr = null): Response
     {
@@ -34,10 +34,10 @@ class TenantManagement extends ApiClient
      * `If the client posts a new identical request (requesting the same OrgNr for the same client), the same object will be returned with an updated status.`
      *
      * @url /v2/tenant/request_access
+     *
      * @documentation http://developer.kivra.com/#operation/Request%20access
      *
      * @param  string  $vat_number the VAT number of the company you want Tenant Access to
-     * @return Response
      */
     public function callAPIRequestAccess(string $vat_number): Response
     {
@@ -49,11 +49,10 @@ class TenantManagement extends ApiClient
      * Gets the updated status for a request generate using the request_access endpoint.
      *
      * @url /v2/tenant/request_access/{requestKey}
+     *
      * @documentation http://developer.kivra.com/#operation/Request%20access%20status
      *
      * @param  string  $tenantkey The unique Key for a Tenant
-     * @param  string  $requestKey
-     * @return Response
      */
     public function callAPIRequestAccessStatus(string $requestKey): Response
     {
@@ -65,10 +64,10 @@ class TenantManagement extends ApiClient
      * Get detailed information on a tenant
      *
      * @url /v2/tenant/{tenantKey}
+     *
      * @documentation http://developer.kivra.com/#operation/Get%20information%20on%20tenant
      *
      * @param  string  $tenantkey The unique Key for a Tenant
-     * @return Response
      */
     public function apiGetInformationOnTenant(string $tenantkey): Response
     {
@@ -80,9 +79,6 @@ class TenantManagement extends ApiClient
      * Add a new company ID for a tenant. A tenant can be associated with one or several company ids (Vat number and company name)
      * Creation of tenants via API allows clients to create new tenants in an efficient manner. The created tenant is automatically added to the client scope. The client needs to re-authenticate to have the new scope in effect.
      * Note: Creation of tenants via API is only allowed in certain specific cases and its usage needs to be regulated in the business relationship between the sender party and Kivra.
-     *
-     * @param  CompanyId  $companyObjects
-     * @return Response
      */
     public function apiCreateTenant(CompanyId $companyObjects): Response
     {

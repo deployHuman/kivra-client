@@ -34,9 +34,6 @@ class PaymentMultipleOptions
 
     /**
      * The payment method for this option.
-     *
-     * @param  BankPaymentType  $method
-     * @return PaymentMultipleOptions
      */
     public function setMethod(BankPaymentType $method): self
     {
@@ -52,9 +49,6 @@ class PaymentMultipleOptions
 
     /**
      * The account number for this option.
-     *
-     * @param  string  $account
-     * @return PaymentMultipleOptions
      */
     public function setAccount(string $account): self
     {
@@ -70,9 +64,6 @@ class PaymentMultipleOptions
 
     /**
      * The currency for this option.
-     *
-     * @param  string  $currency
-     * @return PaymentMultipleOptions
      */
     public function setCurrency(string $currency): self
     {
@@ -97,8 +88,6 @@ class PaymentMultipleOptions
 
     /**
      * Checks both this and all options and subsets to see if they are valid.
-     *
-     * @return bool
      */
     public function isValid(): bool
     {

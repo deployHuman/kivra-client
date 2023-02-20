@@ -31,7 +31,6 @@ class Validation
      * Validate Organisation number in the form of SE[xxxxxxxxxx]01
      *
      * @param  string  $vatnumber 10 digit
-     * @return bool
      */
     public static function vatnumber($vatnumber): bool
     {
@@ -129,7 +128,6 @@ class Validation
      * Validate that a date is in ISO8601 format
      *
      * @param  string  $value
-     * @return bool
      */
     public static function ISO8601Date(string $date): bool
     {
