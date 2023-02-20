@@ -58,8 +58,8 @@ class Configuration
             $this->logstack = $logger;
         }
 
-        if (! Registry::hasLogger($this->getLogger()->getName())) {
-            Registry::addLogger($this->getLogger(), $this->getLogger()->getName(), true);
+        if (! Registry::hasLogger($this->logstack->getName())) {
+            Registry::addLogger($this->logstack, $this->logstack->getName(), true);
         }
     }
 
