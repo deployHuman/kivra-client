@@ -10,7 +10,6 @@ use DeployHuman\kivra\Enum\ApiMethod;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\RequestOptions;
-use Monolog\Registry;
 
 class ApiClient
 {
@@ -20,17 +19,13 @@ class ApiClient
 
     public function __construct(null|Configuration &$config = null)
     {
-        if (! isset($this->config)) {
+        if (empty($this->config)) {
             $this->config = $config ?? new Configuration();
         }
-        Registry::addLogger($this->config->getLogger(), $this->config->getLogger()->getName(), true);
 
-        $this->client = new Client([
-            'base_uri' => $this->config->getBaseUrl(),
-            'handler' => $this->config->getDebugHandler(),
-            'user_agent' => $this->config->getUserAgent(),
-            'http_errors' => true,
-        ]);
+        if (empty($this->client)) {
+            $this->setClient();
+        }
 
         if (get_parent_class($this) !== false) {
             return;
@@ -39,9 +34,24 @@ class ApiClient
         if (! $this->config->isClientAuthSet()) {
             throw new Exception('Missing Base Creditentials, Check over BaseUrl and Client_id and Client_secret', $this->config->getLogger()->getName());
         }
+
         if ($this->config->getConnectDirectly()) {
             $this->refreshAccessToken($this->config->getForceRefreshToken());
         }
+    }
+
+    protected function setClient(): void
+    {
+        $configs = [
+            'base_uri' => $this->config->getBaseUrl(),
+            'user_agent' => $this->config->getUserAgent(),
+            'http_errors' => true,
+        ];
+        if ($this->config->getDebug()) {
+            $configs['handler'] = $this->config->getDebugHandler();
+        }
+
+        $this->client = new Client($configs);
     }
 
     protected function refreshAccessToken(bool $ForceRefreshToken = false): bool

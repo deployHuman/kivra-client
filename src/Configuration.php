@@ -9,6 +9,7 @@ use GuzzleHttp\MessageFormatter;
 use GuzzleHttp\Middleware;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Logger;
+use Monolog\Registry;
 
 class Configuration
 {
@@ -38,6 +39,8 @@ class Configuration
 
     protected bool $Storage_Is_Session = false;
 
+    public string $LoggerName = 'Kivra_Client';
+
     public function __construct(bool $StorageInSession = true, bool $ConnectDirectly = true)
     {
         $this->setStorageIsSession($StorageInSession);
@@ -50,9 +53,13 @@ class Configuration
     private function checkLogstack(): void
     {
         if (empty($this->logstack)) {
-            $logger = new Logger(__CLASS__);
-            $logger->pushHandler(new RotatingFileHandler($this->getLogPath() . DIRECTORY_SEPARATOR . 'api.log', 10, Logger::DEBUG));
+            $logger = new Logger($this->LoggerName);
+            $logger->pushHandler(new RotatingFileHandler($this->getLogPath() . DIRECTORY_SEPARATOR . 'Kivra_api.log', 10, Logger::DEBUG));
             $this->logstack = $logger;
+        }
+
+        if (! Registry::hasLogger($this->getLogger()->getName())) {
+            Registry::addLogger($this->getLogger(), $this->getLogger()->getName(), true);
         }
     }
 
@@ -83,8 +90,8 @@ class Configuration
         $stack->push(
             Middleware::log(
                 $this->getLogger(),
-                new MessageFormatter('{code}:{method}:{uri}: ' . ($this->getDebug() ? 'request: {request}' : '')),
-                $this->getDebug() ? 'debug' : 'warning'
+                new MessageFormatter('{code}:{method}:{uri}: request: {request}'),
+                'debug'
             )
         );
 
@@ -150,7 +157,7 @@ class Configuration
 
     public function setUserAgent(string $userAgent): self
     {
-        $this->userAgent = $userAgent ?? $this->userAgent;
+        $this->userAgent = $userAgent;
 
         return $this;
     }
@@ -179,14 +186,14 @@ class Configuration
 
     public function setForceRefreshToken(bool $ForceRefreshToken): self
     {
-        $this->ForceRefreshToken = $ForceRefreshToken ?? false;
+        $this->ForceRefreshToken = ($ForceRefreshToken ?? false);
 
         return $this;
     }
 
     public function setStorageName(string $ArrayName = null): self
     {
-        $this->storage_name = $ArrayName ?? $this->storage_Default_name;
+        $this->storage_name = ($ArrayName ?? $this->storage_Default_name);
 
         return $this;
     }
@@ -309,33 +316,27 @@ class Configuration
         );
     }
 
+    /**
+     * Compare given scope to the saved scope from when we got the access token.
+     *
+     * @documentation http://developer.kivra.com/#section/API-Authentication/Authorization-with-limited-access-scope
+     */
     public function hasScope(string $Scope): bool
     {
         return true;
-        //Todo Fix this using regex or something
-        $scopeMethod = substr($Scope, 0, strpos($Scope, ':'));
-        $fromright = substr($Scope, strpos($Scope, ':'), strlen($Scope) - strpos($Scope, ':') - strpos(strrev($Scope), '.'));
-        $scopeUri = substr($Scope, strpos($Scope, ':') + 1);
+        // Scopes are specified as one or a commaseparated list of methods with a path appended and separated by :.
+        // Method is a lower case string of one or more of the allowed methods, valid examples:
 
-        $scopeArray = $this->getStorage()['scope_array'];
-        foreach ($scopeArray as $key => $value) {
-            $pos = strpos($value, ':');
-            if ($pos === false) {
-                //no : found
-                if ($value == $Scope) {
-                    return true;
-                }
-            } else {
-                //: found
-                $scope = substr($value, 0, $pos);
-                if ($scope == $Scope) {
-                    return true;
-                }
-            }
-        }
-        if (in_array($Scope, $scopeArray)) {
-            return true;
-        }
+        // Example	Details
+        // post:path	Allows POST for the given path
+        // get,put:path	Allows GET and PUT for the given path
+        // Path is a lower case string starting with the keyword kivra and the path appended and interspersed with . instead of the path-separator / such as: kivra.v1.example. There is also the possibility to use wildcards:
+
+        // Wildcard	Details
+        // *	Marks a scope as valid for any keyword on current-level
+        // **	Marks a scope as valid for any keyword on current-level and recursively
+
+        //check if input scope is valid scope
 
         return false;
     }
