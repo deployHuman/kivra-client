@@ -2,8 +2,7 @@
 
 namespace DeployHuman\kivra\Dataclass\Content\Content_User;
 
-use DeployHuman\kivra\Dataclass\Content\Content_User\Context\Booking;
-use DeployHuman\kivra\Dataclass\Content\Content_User\Context\Invoice;
+use DeployHuman\kivra\Dataclass\Content\Content_User\Context\Invoice\PaymentMultipleOptions;
 use DeployHuman\kivra\Dataclass\Content\Files\File;
 use DeployHuman\kivra\Enum\Content_Retention_Time;
 use DeployHuman\kivra\Enum\User_Content_Type;
@@ -25,9 +24,9 @@ class Content_User
 
     protected string $tenant_info;
 
-    protected array $files;
+    protected array $parts;
 
-    protected Booking|Invoice $context;
+    protected PaymentMultipleOptions $payment_options;
 
     public function __construct()
     {
@@ -49,7 +48,9 @@ class Content_User
     }
 
     /**
-     * This Subject/Title will be visibile in the Recipients Inbox.
+     * The subject/title will be visibile in the Recipients Inbox.
+     * Keep the subject short and concise (i.e. up to 30-35 characters) to make sure that is fully visible on most screen sizes.
+     * Avoid using personal and sensitive information in the subject.
      */
     public function setSubject(string $subject): self
     {
@@ -64,7 +65,8 @@ class Content_User
     }
 
     /**
-     * The date and time when the content was generated.
+     * Optional attribute which denotes when a specific Content was generated at the tenant/integrator’s site. 
+     * The attribute will be used for sorting in the Kivra user interface, which makes it possible for a tenant or integrator to control the sorting.
      */
     public function setGeneratedAt(string $generated_at): self
     {
@@ -79,7 +81,8 @@ class Content_User
     }
 
     /**
-     * Optional attribute providing information about the type of content being sent. The type of a content may influence how the user interacts with the content and how the user is notified about the content. Allowed values are:
+     * Optional attribute providing information about the type of content being sent. 
+     * The type of a content may influence how the user interacts with the content and how the user is notified about the content.
      */
     public function setType(User_Content_Type $type): self
     {
@@ -143,69 +146,66 @@ class Content_User
     /**
      * Array of file Objects
      */
-    public function addFile(File $file): self
+    public function addPart(File $SinglePart): self
     {
-        $this->files[] = $file;
+        $this->parts[] = $SinglePart;
 
         return $this;
     }
 
-    public function getFiles()
+    public function getParts()
     {
-        return $this->files;
+        return $this->parts;
+    }
+
+    public function setPaymentOptions(PaymentMultipleOptions $payment_options): self
+    {
+        $this->payment_options = $payment_options;
+
+        return $this;
     }
 
     /**
-     * Sets the main Contect of this send.
+     * Tenant´s own Invoice Reference
      */
-    public function setContext(Invoice|Booking $context): self
+    public function getPaymentOptions(): PaymentMultipleOptions|null
     {
-        $this->context = $context;
-
-        return $this;
-    }
-
-    public function getContext()
-    {
-        return $this->context;
+        return $this->payment_options ?? null;
     }
 
     public function isValid(): bool
     {
-        if (! Validation::personnummer($this->ssn)) {
+        if (!Validation::personnummer($this->ssn)) {
             return false;
         }
-        if (isset($this->context)) {
-            if (! $this->context->isValid()) {
-                return false;
-            }
-        }
 
-        return ! in_array(null, array_values([
+        return !in_array(null, array_values([
             'ssn' => $this->ssn,
-            'files' => $this->files,
-            'context' => $this->context,
+            'subject' => $this->subject,
+            'parts' => $this->parts,
+            'payment_multiple_options' => $this->payment_options,
         ]));
     }
 
     public function toArray(): array
     {
-        if (isset($this->files)) {
-            $files = [];
-            foreach ($this->files as $file) {
-                $files[] = $file->toArray();
+
+        if (isset($this->parts)) {
+            $parts = [];
+            foreach ($this->parts as $file) {
+                $parts[] = $file->toArray();
             }
         }
+
         $returnarray = [];
-        (isset($this->ssn)) ? $returnarray['ssn'] = $this->ssn : null;
-        (isset($this->subject)) ? $returnarray['subject'] = $this->subject : null;
-        (isset($this->generated_at)) ? $returnarray['generated_at'] = $this->generated_at : null;
-        (isset($this->type)) ? $returnarray['type'] = $this->type->value : null;
-        (isset($this->retain)) ? $returnarray['retain'] = $this->retain : null;
-        (isset($this->retention_time)) ? $returnarray['retention_time'] = $this->retention_time : null;
-        (isset($this->tenant_info)) ? $returnarray['tenant_info'] = $this->tenant_info : null;
-        (isset($this->files)) ? $returnarray['files'] = $files : null;
-        (isset($this->context)) ? $returnarray['context'] = $this->context->toArray() : null;
+        !empty($this->ssn) ? $returnarray['ssn'] = $this->ssn : null;
+        !empty($this->subject) ? $returnarray['subject'] = $this->subject : null;
+        !empty($this->type) ? ($returnarray['type'] = $this->type->value) : null;
+        !empty($this->retain) ? ($returnarray['retain'] = $this->retain) : null;
+        !empty($this->retention_time) ? ($returnarray['retention_time'] = $this->retention_time) : null;
+        !empty($this->tenant_info) ? ($returnarray['tenant_info'] = $this->tenant_info) : null;
+        !empty($this->parts) ? ($returnarray['parts'] = $parts) : null;
+        !empty($this->payment_options) ? ($returnarray['payment_multiple_options'] = $this->payment_options->toArray()) : null;
 
         return $returnarray;
     }

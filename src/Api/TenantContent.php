@@ -162,7 +162,7 @@ class TenantContent extends ApiClient
      */
     public function callAPISendContent(string $tenantkey, Content_User|Content_Company $contentData): Response
     {
-        $scopeNeeded = 'post:kivra.v1.tenant.{tenantKey}.content';
+        $scopeNeeded = 'post:kivra.v2.tenant.{tenantKey}.content';
         $this->basicTokenCheck($scopeNeeded);
 
         try {
@@ -174,7 +174,6 @@ class TenantContent extends ApiClient
                         'Authorization' => 'Bearer ' . $this->getAccessToken(),
                     ],
                     'json' => $contentData->toArray(),
-
                 ]
             );
         } catch (ClientException $e) {

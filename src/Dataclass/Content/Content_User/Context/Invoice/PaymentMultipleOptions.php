@@ -16,7 +16,7 @@ class PaymentMultipleOptions
 
     protected string $account;
 
-    protected string $currency;
+    protected string $currency = 'SEK';
 
     protected array $options;
 
@@ -64,6 +64,8 @@ class PaymentMultipleOptions
 
     /**
      * The currency for this option.
+     * Value: "SEK"
+     * Currency used in specifying amount. In Sweden, only SEK is allowed.
      */
     public function setCurrency(string $currency): self
     {
@@ -93,27 +95,33 @@ class PaymentMultipleOptions
     {
         if (isset($this->options)) {
             foreach ($this->options as $key => $value) {
-                if (! $value->isValid()) {
+                if (!$value->isValid()) {
                     return false;
                 }
             }
         }
 
-        return ! in_array(null, array_values($this->toArray()));
+        return !in_array(null, array_values($this->toArray()));
     }
 
     public function toArray(): array
     {
-        return [
+        $returnArray =  [
             'payable' => $this->payable ?? null,
-            'due_date' => $this->due_date ?? null,
-            'amount' => $this->amount ?? null,
-            'type' => $this->type ?? null,
-            'reference' => $this->reference ?? null,
-            'title' => $this->title ?? null,
-            'description' => $this->description ?? null,
-            'icon' => $this->icon ?? null,
+            'method' => $this->method->value ?? null,
+            'account' => $this->account ?? null,
+            'currency' => $this->currency ?? null,
         ];
+
+        if (!empty($this->options)) {
+            $options = [];
+            foreach ($this->options as $option) {
+                $options[] = $option->toArray();
+            }
+            $returnArray['options'] = $options;
+        }
+
+        return $returnArray;
     }
 
     public function __toString()
