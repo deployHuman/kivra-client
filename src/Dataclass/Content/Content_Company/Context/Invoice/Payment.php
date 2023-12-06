@@ -44,7 +44,7 @@ class Payment
         return $this;
     }
 
-    public function getPayable(): bool|null
+    public function getPayable(): ?bool
     {
         return $this->payable ?? null;
     }
@@ -59,7 +59,7 @@ class Payment
         return $this;
     }
 
-    public function getCurrency(): string|null
+    public function getCurrency(): ?string
     {
         return $this->currency ?? null;
     }
@@ -74,7 +74,7 @@ class Payment
         return $this;
     }
 
-    public function getDueDate(): string|null
+    public function getDueDate(): ?string
     {
         return $this->due_date ?? null;
     }
@@ -90,7 +90,7 @@ class Payment
         return $this;
     }
 
-    public function getTotal_owed(): string|null
+    public function getTotal_owed(): ?string
     {
         return $this->total_owed ?? null;
     }
@@ -106,7 +106,7 @@ class Payment
         return $this;
     }
 
-    public function getType(): PaymentOptionType|null
+    public function getType(): ?PaymentOptionType
     {
         return $this->type ?? null;
     }
@@ -121,7 +121,7 @@ class Payment
         return $this;
     }
 
-    public function getMethod(): BankPaymentType|null
+    public function getMethod(): ?BankPaymentType
     {
         return $this->method ?? null;
     }
@@ -137,7 +137,7 @@ class Payment
         return $this;
     }
 
-    public function getAccount(): string|null
+    public function getAccount(): ?string
     {
         return $this->account ?? null;
     }
@@ -153,7 +153,7 @@ class Payment
         return $this;
     }
 
-    public function getReference(): string|null
+    public function getReference(): ?string
     {
         return $this->reference ?? null;
     }
@@ -168,7 +168,7 @@ class Payment
         return $this;
     }
 
-    public function getVariableAmount(): bool|null
+    public function getVariableAmount(): ?bool
     {
         return $this->variable_amount ?? null;
     }
@@ -188,7 +188,7 @@ class Payment
         return $this;
     }
 
-    public function getMinAmount(): string|null
+    public function getMinAmount(): ?string
     {
         return $this->min_amount ?? null;
     }

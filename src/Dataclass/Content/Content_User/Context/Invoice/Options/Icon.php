@@ -90,12 +90,12 @@ class Icon
         }
         //check image fileimagedata
         if (mb_strlen($data) > 134000) {
-            return  'image is too big';
+            return 'image is too big';
         }
         //check if image has alpha channel
         $im = imagecreatefromstring($data);
         if (! imagecolortransparent($im)) {
-            return  'image has no alpha channel';
+            return 'image has no alpha channel';
         }
 
         return true;

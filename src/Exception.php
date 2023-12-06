@@ -8,7 +8,7 @@ use Monolog\Registry;
 
 class Exception extends \Exception
 {
-    public function __construct($message = '', string $loggername = null)
+    public function __construct($message = '', ?string $loggername = null)
     {
         if ($loggername == null || ! Registry::hasLogger($loggername)) {
             $logger = new Logger(__CLASS__);

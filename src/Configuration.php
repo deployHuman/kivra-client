@@ -191,7 +191,7 @@ class Configuration
         return $this;
     }
 
-    public function setStorageName(string $ArrayName = null): self
+    public function setStorageName(?string $ArrayName = null): self
     {
         $this->storage_name = ($ArrayName ?? $this->storage_Default_name);
 

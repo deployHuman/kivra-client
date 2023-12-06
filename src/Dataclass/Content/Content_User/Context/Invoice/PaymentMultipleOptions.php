@@ -27,7 +27,7 @@ class PaymentMultipleOptions
         return $this;
     }
 
-    public function getPayable(): bool|null
+    public function getPayable(): ?bool
     {
         return $this->payable ?? null;
     }
@@ -42,7 +42,7 @@ class PaymentMultipleOptions
         return $this;
     }
 
-    public function getMethod(): BankPaymentType|null
+    public function getMethod(): ?BankPaymentType
     {
         return $this->method ?? null;
     }
@@ -57,7 +57,7 @@ class PaymentMultipleOptions
         return $this;
     }
 
-    public function getAccount(): string|null
+    public function getAccount(): ?string
     {
         return $this->account ?? null;
     }
@@ -74,7 +74,7 @@ class PaymentMultipleOptions
         return $this;
     }
 
-    public function getCurrency(): string|null
+    public function getCurrency(): ?string
     {
         return $this->currency ?? null;
     }
@@ -95,25 +95,25 @@ class PaymentMultipleOptions
     {
         if (isset($this->options)) {
             foreach ($this->options as $key => $value) {
-                if (!$value->isValid()) {
+                if (! $value->isValid()) {
                     return false;
                 }
             }
         }
 
-        return !in_array(null, array_values($this->toArray()));
+        return ! in_array(null, array_values($this->toArray()));
     }
 
     public function toArray(): array
     {
-        $returnArray =  [
+        $returnArray = [
             'payable' => $this->payable ?? null,
             'method' => $this->method->value ?? null,
             'account' => $this->account ?? null,
             'currency' => $this->currency ?? null,
         ];
 
-        if (!empty($this->options)) {
+        if (! empty($this->options)) {
             $options = [];
             foreach ($this->options as $option) {
                 $options[] = $option->toArray();

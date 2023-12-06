@@ -21,7 +21,7 @@ class Invoice
         return $this;
     }
 
-    public function getPaymentOptions(): Payment|null
+    public function getPaymentOptions(): ?Payment
     {
         return $this->payment_options ?? null;
     }
@@ -38,7 +38,7 @@ class Invoice
         return $this;
     }
 
-    public function getInvoiceReference(): string|null
+    public function getInvoiceReference(): ?string
     {
         return $this->invoice_reference ?? null;
     }

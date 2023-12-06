@@ -65,7 +65,7 @@ class Content_User
     }
 
     /**
-     * Optional attribute which denotes when a specific Content was generated at the tenant/integrator’s site. 
+     * Optional attribute which denotes when a specific Content was generated at the tenant/integrator’s site.
      * The attribute will be used for sorting in the Kivra user interface, which makes it possible for a tenant or integrator to control the sorting.
      */
     public function setGeneratedAt(string $generated_at): self
@@ -81,7 +81,7 @@ class Content_User
     }
 
     /**
-     * Optional attribute providing information about the type of content being sent. 
+     * Optional attribute providing information about the type of content being sent.
      * The type of a content may influence how the user interacts with the content and how the user is notified about the content.
      */
     public function setType(User_Content_Type $type): self
@@ -168,18 +168,18 @@ class Content_User
     /**
      * Tenant´s own Invoice Reference
      */
-    public function getPaymentOptions(): PaymentMultipleOptions|null
+    public function getPaymentOptions(): ?PaymentMultipleOptions
     {
         return $this->payment_options ?? null;
     }
 
     public function isValid(): bool
     {
-        if (!Validation::personnummer($this->ssn)) {
+        if (! Validation::personnummer($this->ssn)) {
             return false;
         }
 
-        return !in_array(null, array_values([
+        return ! in_array(null, array_values([
             'ssn' => $this->ssn,
             'subject' => $this->subject,
             'parts' => $this->parts,
@@ -198,14 +198,14 @@ class Content_User
         }
 
         $returnarray = [];
-        !empty($this->ssn) ? $returnarray['ssn'] = $this->ssn : null;
-        !empty($this->subject) ? $returnarray['subject'] = $this->subject : null;
-        !empty($this->type) ? ($returnarray['type'] = $this->type->value) : null;
-        !empty($this->retain) ? ($returnarray['retain'] = $this->retain) : null;
-        !empty($this->retention_time) ? ($returnarray['retention_time'] = $this->retention_time) : null;
-        !empty($this->tenant_info) ? ($returnarray['tenant_info'] = $this->tenant_info) : null;
-        !empty($this->parts) ? ($returnarray['parts'] = $parts) : null;
-        !empty($this->payment_options) ? ($returnarray['payment_multiple_options'] = $this->payment_options->toArray()) : null;
+        ! empty($this->ssn) ? $returnarray['ssn'] = $this->ssn : null;
+        ! empty($this->subject) ? $returnarray['subject'] = $this->subject : null;
+        ! empty($this->type) ? ($returnarray['type'] = $this->type->value) : null;
+        ! empty($this->retain) ? ($returnarray['retain'] = $this->retain) : null;
+        ! empty($this->retention_time) ? ($returnarray['retention_time'] = $this->retention_time) : null;
+        ! empty($this->tenant_info) ? ($returnarray['tenant_info'] = $this->tenant_info) : null;
+        ! empty($this->parts) ? ($returnarray['parts'] = $parts) : null;
+        ! empty($this->payment_options) ? ($returnarray['payment_multiple_options'] = $this->payment_options->toArray()) : null;
 
         return $returnarray;
     }

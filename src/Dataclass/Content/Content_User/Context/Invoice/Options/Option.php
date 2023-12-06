@@ -37,7 +37,7 @@ class Option
         return $this;
     }
 
-    public function getDueDate(): string|null
+    public function getDueDate(): ?string
     {
         return $this->due_date ?? null;
     }
@@ -52,7 +52,7 @@ class Option
         return $this;
     }
 
-    public function getAmount(): string|null
+    public function getAmount(): ?string
     {
         return $this->amount ?? null;
     }
@@ -67,7 +67,7 @@ class Option
         return $this;
     }
 
-    public function getType(): PaymentOptionType|null
+    public function getType(): ?PaymentOptionType
     {
         return $this->type ?? null;
     }

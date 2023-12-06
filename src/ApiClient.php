@@ -17,7 +17,7 @@ class ApiClient
 
     protected Configuration $config;
 
-    public function __construct(null|Configuration &$config = null)
+    public function __construct(?Configuration &$config = null)
     {
         if (empty($this->config)) {
             $this->config = $config ?? new Configuration();
@@ -127,7 +127,7 @@ class ApiClient
         return $auth['BaseUrl'] == $this->config->getBaseUrl();
     }
 
-    protected function basicTokenCheck(string $ScopeNeeded = null): bool|Exception
+    protected function basicTokenCheck(?string $ScopeNeeded = null): bool|Exception
     {
         if (! $this->config->isClientAuthSet()) {
             throw new Exception('Error in Kivra Settings', $this->config->getLogger()->getName());
@@ -142,7 +142,7 @@ class ApiClient
         return true;
     }
 
-    protected function getAccessToken(): string|null
+    protected function getAccessToken(): ?string
     {
         return $this->config->getStorage()['access_token'] ?? null;
     }

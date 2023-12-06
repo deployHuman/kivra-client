@@ -24,7 +24,7 @@ class TenantContent extends ApiClient
      * @param  ?string  $ssn Example: ssn=191212121212 - Perform a search to see if specific Users are available
      * @param  ?string  $include Value: "ssn" Example: include=ssn - List of fields that are returned for each user object
      */
-    public function callAPIListUsers(string $tenantKey, string $ssn = null, string $include = null): response|false
+    public function callAPIListUsers(string $tenantKey, ?string $ssn = null, ?string $include = null): response|false
     {
         $scopeNeeded = 'get:kivra.v1.tenant.{tenantKey}.user';
         $this->basicTokenCheck($scopeNeeded);
@@ -114,7 +114,7 @@ class TenantContent extends ApiClient
      *
      * @param  string  $tenantkey The unique Key for a Tenant
      */
-    public function callAPIListCompanies(string $tenantkey, string $vat_number = null): Response
+    public function callAPIListCompanies(string $tenantkey, ?string $vat_number = null): Response
     {
         $scopeNeeded = 'get:kivra.v1.tenant.{tenantKey}.company';
         $this->basicTokenCheck($scopeNeeded);

@@ -18,7 +18,7 @@ class TenantManagement extends ApiClient
      *
      * @param  ?string  $QueryParamOrgnr Optional Perform a search to see if a specific Company is available
      */
-    public function callAPIListAllTenantsAccessibleToTheClient(string $QueryParamOrgnr = null): Response
+    public function callAPIListAllTenantsAccessibleToTheClient(?string $QueryParamOrgnr = null): Response
     {
         $querys = isset($QueryParamOrgnr) ? ['orgnr' => $QueryParamOrgnr] : [];
 

@@ -46,7 +46,7 @@ class Content_Company
         return $this;
     }
 
-    public function getVatNumber(): string|null
+    public function getVatNumber(): ?string
     {
         return $this->vat_number ?? null;
     }
@@ -61,7 +61,7 @@ class Content_Company
         return $this;
     }
 
-    public function getSubject(): string|null
+    public function getSubject(): ?string
     {
         return $this->subject ?? null;
     }
@@ -91,7 +91,7 @@ class Content_Company
         return $this;
     }
 
-    public function getTenant_Info(): string|null
+    public function getTenant_Info(): ?string
     {
         return $this->tenant_info ?? null;
     }
@@ -106,7 +106,7 @@ class Content_Company
         return $this;
     }
 
-    public function getFiles(): array|null
+    public function getFiles(): ?array
     {
         return $this->files ?? null;
     }
@@ -118,7 +118,7 @@ class Content_Company
         return $this;
     }
 
-    public function getContext(): string|null
+    public function getContext(): ?string
     {
         return $this->context ?? null;
     }
