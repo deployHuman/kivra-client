@@ -1,8 +1,8 @@
 <?php
 
-namespace DeployHuman\kivra\Dataclass\Content\Content_User\Context\Invoice;
+namespace DeployHuman\kivra\Dataclass\Content;
 
-use DeployHuman\kivra\Dataclass\Content\Content_User\Context\Invoice\Options\Option;
+use DeployHuman\kivra\Dataclass\Content\Options\Option;
 use DeployHuman\kivra\Enum\BankPaymentType;
 
 /**
@@ -95,13 +95,13 @@ class PaymentMultipleOptions
     {
         if (isset($this->options)) {
             foreach ($this->options as $key => $value) {
-                if (! $value->isValid()) {
+                if (!$value->isValid()) {
                     return false;
                 }
             }
         }
 
-        return ! in_array(null, array_values($this->toArray()));
+        return !in_array(null, array_values($this->toArray()));
     }
 
     public function toArray(): array
@@ -113,7 +113,7 @@ class PaymentMultipleOptions
             'currency' => $this->currency ?? null,
         ];
 
-        if (! empty($this->options)) {
+        if (!empty($this->options)) {
             $options = [];
             foreach ($this->options as $option) {
                 $options[] = $option->toArray();

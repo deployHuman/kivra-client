@@ -15,7 +15,7 @@ namespace DeployHuman\kivra\Enum;
  * "invoice.debtcollection": | indicating that the content is a debt collection claim (in Swedish: "inkassokrav"). A valid "payment" object needs to be provided and the "payable" attribute must be set to true.
  * "booking": indicating that the content is a booking/appointement.
  */
-enum User_Content_Type: string
+enum Content_Type: string
 {
     /**
      * indicating that the content is an information letter. This is the default type for all non-payable content

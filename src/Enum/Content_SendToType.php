@@ -13,4 +13,9 @@ enum Content_SendToType: string
      * The recipient is a company.
      */
     case VAT_NUMBER = 'VAT_NUMBER';
+
+    /**
+     * The recipient is just an email address.
+     */
+    case EMAIL = 'EMAIL';
 }

@@ -3,8 +3,7 @@
 namespace DeployHuman\kivra\Api;
 
 use DeployHuman\kivra\ApiClient;
-use DeployHuman\kivra\Dataclass\Content\Content_Company\Content_Company;
-use DeployHuman\kivra\Dataclass\Content\Content_User\Content_User;
+use DeployHuman\kivra\Dataclass\Content\Content;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Message;
 use GuzzleHttp\Psr7\Response;
@@ -63,7 +62,7 @@ class TenantContent extends ApiClient
      * This resource is used to match a list of users to check that they are eligible for receiving Content from the specific Tenant. The request contains a list of SSNs to be matched, and the response is a filtered list containing only the SSNs that are eligible to receive content from the tenant.
      * If none of the provided SSNs are eligible to receive content from this tenant, an empty list will be returned.
      *
-     * @url /v2/tenant/{tenantKey}/usermatch
+     * @url /v1/tenant/{tenantKey}/usermatch
      *
      * @documentation http://developer.kivra.com/#operation/Match%20Users
      *
@@ -153,14 +152,14 @@ class TenantContent extends ApiClient
      * Send content to a recipient (user or company).
      * Metadata is data that Kivra needs to send the Content to the right User. It may also determine how a User can interact with the Content.
      *
-     * @url /v1/tenant/{tenantKey}/company
+     * @url /v2/tenant/{tenantKey}/company
      *
      * @documentation http://developer.kivra.com/#operation/Send%20content
      *
      * @param  string  $tenantkey The unique Key for a Tenant
-     * @param  Content_Company|Content_User  $content
+     * @param  Content  $content
      */
-    public function callAPISendContent(string $tenantkey, Content_User|Content_Company $contentData): Response
+    public function callAPISendContent(string $tenantkey, Content $contentData): Response
     {
         $scopeNeeded = 'post:kivra.v2.tenant.{tenantKey}.content';
         $this->basicTokenCheck($scopeNeeded);
@@ -168,7 +167,7 @@ class TenantContent extends ApiClient
         try {
             $response = $this->getClient()->request(
                 'POST',
-                '/v1/tenant/' . $tenantkey . '/content',
+                '/v2/tenant/' . $tenantkey . '/content',
                 [
                     'headers' => [
                         'Authorization' => 'Bearer ' . $this->getAccessToken(),

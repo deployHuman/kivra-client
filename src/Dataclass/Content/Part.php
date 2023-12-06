@@ -1,8 +1,8 @@
 <?php
 
-namespace DeployHuman\kivra\Dataclass\Content\Files;
+namespace DeployHuman\kivra\Dataclass\Content;
 
-class File
+class Part
 {
     protected string $name;
 

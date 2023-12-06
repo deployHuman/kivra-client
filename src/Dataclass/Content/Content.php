@@ -1,22 +1,27 @@
 <?php
 
-namespace DeployHuman\kivra\Dataclass\Content\Content_User;
+namespace DeployHuman\kivra\Dataclass\Content;
 
-use DeployHuman\kivra\Dataclass\Content\Content_User\Context\Invoice\PaymentMultipleOptions;
-use DeployHuman\kivra\Dataclass\Content\Files\File;
 use DeployHuman\kivra\Enum\Content_Retention_Time;
-use DeployHuman\kivra\Enum\User_Content_Type;
+use DeployHuman\kivra\Enum\Content_SendToType;
+use DeployHuman\kivra\Enum\Content_Type;
 use DeployHuman\kivra\Validation;
 
-class Content_User
+class Content
 {
     protected string $ssn;
+
+    protected string $VAT_number;
+
+    protected string $email;
+
+    protected Content_SendToType $send_to_type;
 
     protected string $subject;
 
     protected string $generated_at;
 
-    protected User_Content_Type $type;
+    protected Content_Type $type;
 
     protected bool $retain = false;
 
@@ -27,10 +32,6 @@ class Content_User
     protected array $parts;
 
     protected PaymentMultipleOptions $payment_options;
-
-    public function __construct()
-    {
-    }
 
     /**
      * User's unique SSN, according to the YYYYMMDDnnnn format
@@ -46,6 +47,55 @@ class Content_User
     {
         return $this->ssn;
     }
+
+    /**
+     * User's unique VAT number, according to the SE999999999901 format
+     */
+    public function setVAT_Number(string $VAT_number): self
+    {
+        $this->VAT_number = $VAT_number;
+
+        return $this;
+    }
+
+    public function getVAT_Number()
+    {
+        return $this->VAT_number;
+    }
+
+    /**
+     * User's unique email address
+     */
+    public function setEmail(string $email): self
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * The type of recipient identifier that is used to send the content to the recipient.
+     * The type of recipient identifier must match the type of identifier that is used in the ssn or vat_number attribute.
+     * If the type is not set, the type will be inferred from the ssn or vat_number attribute.
+     */
+    public function setSendToType(Content_SendToType $send_to_type): self
+    {
+        $this->send_to_type = $send_to_type;
+
+        return $this;
+    }
+
+    public function getSendToType()
+    {
+        return $this->send_to_type;
+    }
+
+
 
     /**
      * The subject/title will be visibile in the Recipients Inbox.
@@ -84,7 +134,7 @@ class Content_User
      * Optional attribute providing information about the type of content being sent.
      * The type of a content may influence how the user interacts with the content and how the user is notified about the content.
      */
-    public function setType(User_Content_Type $type): self
+    public function setType(Content_Type $type): self
     {
         $this->type = $type;
 
@@ -146,7 +196,7 @@ class Content_User
     /**
      * Array of file Objects
      */
-    public function addPart(File $SinglePart): self
+    public function addPart(Part $SinglePart): self
     {
         $this->parts[] = $SinglePart;
 
@@ -175,11 +225,23 @@ class Content_User
 
     public function isValid(): bool
     {
-        if (! Validation::personnummer($this->ssn)) {
+        if (!isset($this->type)) {
             return false;
         }
 
-        return ! in_array(null, array_values([
+        if (!isset($this->send_to_type)) {
+            return false;
+        }
+
+        if ($this->send_to_type == Content_SendToType::SSN && !Validation::personnummer($this->ssn)) {
+            return false;
+        }
+
+        if ($this->send_to_type == Content_SendToType::VAT_NUMBER && !Validation::vatnumber($this->VAT_number)) {
+            return false;
+        }
+
+        return !in_array(null, array_values([
             'ssn' => $this->ssn,
             'subject' => $this->subject,
             'parts' => $this->parts,
@@ -190,6 +252,13 @@ class Content_User
     public function toArray(): array
     {
 
+        $returnarray = [];
+
+        if (!$this->isValid()) {
+            return $returnarray;
+        }
+
+
         if (isset($this->parts)) {
             $parts = [];
             foreach ($this->parts as $file) {
@@ -197,15 +266,20 @@ class Content_User
             }
         }
 
-        $returnarray = [];
-        ! empty($this->ssn) ? $returnarray['ssn'] = $this->ssn : null;
-        ! empty($this->subject) ? $returnarray['subject'] = $this->subject : null;
-        ! empty($this->type) ? ($returnarray['type'] = $this->type->value) : null;
-        ! empty($this->retain) ? ($returnarray['retain'] = $this->retain) : null;
-        ! empty($this->retention_time) ? ($returnarray['retention_time'] = $this->retention_time) : null;
-        ! empty($this->tenant_info) ? ($returnarray['tenant_info'] = $this->tenant_info) : null;
-        ! empty($this->parts) ? ($returnarray['parts'] = $parts) : null;
-        ! empty($this->payment_options) ? ($returnarray['payment_multiple_options'] = $this->payment_options->toArray()) : null;
+        if ($this->send_to_type == Content_SendToType::SSN) {
+            $returnarray['ssn'] = $this->ssn;
+        } elseif ($this->send_to_type == Content_SendToType::VAT_NUMBER) {
+            $returnarray['vat_number'] = $this->VAT_number;
+        } elseif ($this->send_to_type == Content_SendToType::EMAIL) {
+            $returnarray['email'] = $this->email;
+        }
+        !empty($this->subject) ? $returnarray['subject'] = $this->subject : null;
+        !empty($this->type) ? ($returnarray['type'] = $this->type->value) : null;
+        !empty($this->retain) ? ($returnarray['retain'] = $this->retain) : null;
+        !empty($this->retention_time) ? ($returnarray['retention_time'] = $this->retention_time) : null;
+        !empty($this->tenant_info) ? ($returnarray['tenant_info'] = $this->tenant_info) : null;
+        !empty($parts) ? ($returnarray['parts'] = $parts) : null;
+        !empty($this->payment_options) ? ($returnarray['payment_multiple_options'] = $this->payment_options->toArray()) : null;
 
         return $returnarray;
     }
