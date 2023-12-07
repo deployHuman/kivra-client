@@ -31,6 +31,10 @@ class TenantContent extends ApiClient
         $querys = isset($ssn) ? array_merge($querys, ['ssn' => $ssn]) : $querys;
         $querys = isset($include) ? array_merge($querys, ['include' => $include]) : $querys;
 
+        if ($this->config->getDebug()) {
+            $this->config->getLogger()->debug(__CLASS__ . '::' . __FUNCTION__ . ' - Posting body: ' . json_encode($querys));
+        }
+
         try {
             $response = $this->getClient()->request(
                 'GET',
@@ -73,6 +77,10 @@ class TenantContent extends ApiClient
     {
         $scopeNeeded = 'get:kivra.v1.tenant.{tenantKey}.usermatch';
         $this->basicTokenCheck($scopeNeeded);
+
+        if ($this->config->getDebug()) {
+            $this->config->getLogger()->debug(__CLASS__ . '::' . __FUNCTION__ . ' - Posting body: ' . json_encode($ssns));
+        }
 
         try {
             $response = $this->getClient()->request(
@@ -121,6 +129,10 @@ class TenantContent extends ApiClient
         $querys = isset($vat_number) ? array_merge($querys, ['vat_number' => $vat_number]) : $querys;
         $client = $this->getClient();
 
+        if ($this->config->getDebug()) {
+            $this->config->getLogger()->debug(__CLASS__ . '::' . __FUNCTION__ . ' - Posting body: ' . json_encode($querys));
+        }
+
         try {
             $response = $client->request(
                 'POST',
@@ -152,7 +164,7 @@ class TenantContent extends ApiClient
      * Send content to a recipient (user or company).
      * Metadata is data that Kivra needs to send the Content to the right User. It may also determine how a User can interact with the Content.
      *
-     * @url /v2/tenant/{tenantKey}/company
+     * @url /v2/tenant/{tenantKey}/content
      *
      * @documentation http://developer.kivra.com/#operation/Send%20content
      *
@@ -163,6 +175,10 @@ class TenantContent extends ApiClient
     {
         $scopeNeeded = 'post:kivra.v2.tenant.{tenantKey}.content';
         $this->basicTokenCheck($scopeNeeded);
+
+        if ($this->config->getDebug()) {
+            $this->config->getLogger()->debug(__CLASS__ . '::' . __FUNCTION__ . ' - Posting body: ' . json_encode($contentData->toArray()));
+        }
 
         try {
             $response = $this->getClient()->request(
