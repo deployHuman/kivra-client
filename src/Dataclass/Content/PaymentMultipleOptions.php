@@ -4,6 +4,7 @@ namespace DeployHuman\kivra\Dataclass\Content;
 
 use DeployHuman\kivra\Dataclass\Content\Options\Option;
 use DeployHuman\kivra\Enum\BankPaymentType;
+use DeployHuman\kivra\Helper;
 
 /**
  * This is a class which is used to create multiple payment option under the PaymentMultipleOptions class
@@ -81,9 +82,7 @@ class PaymentMultipleOptions
 
     public function addOption(Option $option): self
     {
-        if ($option->isValid()) {
-            $this->options[] = $option;
-        }
+        $this->options[] = $option;
 
         return $this;
     }
@@ -95,31 +94,23 @@ class PaymentMultipleOptions
     {
         if (isset($this->options)) {
             foreach ($this->options as $key => $value) {
-                if (!$value->isValid()) {
+                if (! $value->isValid()) {
                     return false;
                 }
             }
         }
 
-        return !in_array(null, array_values($this->toArray()));
+        return ! in_array(null, array_values($this->toArray()));
     }
 
     public function toArray(): array
     {
-        $returnArray = [
-            'payable' => $this->payable ?? null,
-            'method' => $this->method->value ?? null,
-            'account' => $this->account ?? null,
-            'currency' => $this->currency ?? null,
-        ];
-
-        if (!empty($this->options)) {
-            $options = [];
-            foreach ($this->options as $option) {
-                $options[] = $option->toArray();
-            }
-            $returnArray['options'] = $options;
-        }
+        $returnArray = [];
+        Helper::addIfNotEmpty($returnArray, 'payable', $this->payable);
+        Helper::addIfNotEmpty($returnArray, 'method', $this->method->value);
+        Helper::addIfNotEmpty($returnArray, 'account', $this->account);
+        Helper::addIfNotEmpty($returnArray, 'currency', $this->currency);
+        Helper::addIfNotEmpty($returnArray, 'options', $this->options);
 
         return $returnArray;
     }

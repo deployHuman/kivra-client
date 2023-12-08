@@ -3,6 +3,7 @@
 namespace DeployHuman\kivra\Dataclass\Content\Options;
 
 use DeployHuman\kivra\Enum\PaymentOptionType;
+use DeployHuman\kivra\Helper;
 
 class Option
 {
@@ -143,15 +144,16 @@ class Option
 
     public function toArray(): array
     {
-        return [
-            'due_date' => $this->due_date ?? null,
-            'amount' => $this->amount ?? null,
-            'type' => $this->type ?? null,
-            'reference' => $this->reference ?? null,
-            'title' => $this->title ?? null,
-            'description' => $this->description ?? null,
-            'icon' => $this->icon ?? null,
-        ];
+        $returnarray = [];
+        Helper::addIfNotEmpty($returnarray, 'due_date', $this->due_date);
+        Helper::addIfNotEmpty($returnarray, 'amount', $this->amount);
+        Helper::addIfNotEmpty($returnarray, 'type', $this->type->value);
+        Helper::addIfNotEmpty($returnarray, 'reference', $this->reference);
+        Helper::addIfNotEmpty($returnarray, 'title', $this->title);
+        Helper::addIfNotEmpty($returnarray, 'description', $this->description);
+        Helper::addIfNotEmpty($returnarray, 'icon', $this->icon);
+
+        return $returnarray;
     }
 
     public function __toString()

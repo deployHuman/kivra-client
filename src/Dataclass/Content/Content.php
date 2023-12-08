@@ -5,6 +5,7 @@ namespace DeployHuman\kivra\Dataclass\Content;
 use DeployHuman\kivra\Enum\Content_Retention_Time;
 use DeployHuman\kivra\Enum\Content_SendToType;
 use DeployHuman\kivra\Enum\Content_Type;
+use DeployHuman\kivra\Helper;
 use DeployHuman\kivra\Validation;
 
 class Content
@@ -94,8 +95,6 @@ class Content
     {
         return $this->send_to_type;
     }
-
-
 
     /**
      * The subject/title will be visibile in the Recipients Inbox.
@@ -225,23 +224,23 @@ class Content
 
     public function isValid(): bool
     {
-        if (!isset($this->type)) {
+        if (! isset($this->type)) {
             return false;
         }
 
-        if (!isset($this->send_to_type)) {
+        if (! isset($this->send_to_type)) {
             return false;
         }
 
-        if ($this->send_to_type == Content_SendToType::SSN && !Validation::personnummer($this->ssn)) {
+        if ($this->send_to_type == Content_SendToType::SSN && ! Validation::personnummer($this->ssn)) {
             return false;
         }
 
-        if ($this->send_to_type == Content_SendToType::VAT_NUMBER && !Validation::vatnumber($this->VAT_number)) {
+        if ($this->send_to_type == Content_SendToType::VAT_NUMBER && ! Validation::vatnumber($this->VAT_number)) {
             return false;
         }
 
-        return !in_array(null, array_values([
+        return ! in_array(null, array_values([
             'ssn' => $this->ssn,
             'subject' => $this->subject,
             'parts' => $this->parts,
@@ -253,33 +252,27 @@ class Content
     {
 
         $returnarray = [];
+        $parts = [];
 
-        if (!$this->isValid()) {
+        if (! $this->isValid()) {
             return $returnarray;
         }
 
-
-        if (isset($this->parts)) {
-            $parts = [];
-            foreach ($this->parts as $file) {
-                $parts[] = $file->toArray();
-            }
-        }
-
         if ($this->send_to_type == Content_SendToType::SSN) {
-            $returnarray['ssn'] = $this->ssn;
+            Helper::addIfNotEmpty($returnarray, 'ssn', $this->ssn);
         } elseif ($this->send_to_type == Content_SendToType::VAT_NUMBER) {
-            $returnarray['vat_number'] = $this->VAT_number;
+            Helper::addIfNotEmpty($returnarray, 'vat_number', $this->VAT_number);
         } elseif ($this->send_to_type == Content_SendToType::EMAIL) {
-            $returnarray['email'] = $this->email;
+            Helper::addIfNotEmpty($returnarray, 'email', $this->email);
         }
-        !empty($this->subject) ? $returnarray['subject'] = $this->subject : null;
-        !empty($this->type) ? ($returnarray['type'] = $this->type->value) : null;
-        !empty($this->retain) ? ($returnarray['retain'] = $this->retain) : null;
-        !empty($this->retention_time) ? ($returnarray['retention_time'] = $this->retention_time) : null;
-        !empty($this->tenant_info) ? ($returnarray['tenant_info'] = $this->tenant_info) : null;
-        !empty($parts) ? ($returnarray['parts'] = $parts) : null;
-        !empty($this->payment_options) ? ($returnarray['payment_multiple_options'] = $this->payment_options->toArray()) : null;
+
+        Helper::addIfNotEmpty($returnarray, 'subject', $this->subject);
+        Helper::addIfNotEmpty($returnarray, 'type', $this->type->value);
+        Helper::addIfNotEmpty($returnarray, 'retain', $this->retain);
+        Helper::addIfNotEmpty($returnarray, 'retention_time', $this->retention_time);
+        Helper::addIfNotEmpty($returnarray, 'tenant_info', $this->tenant_info);
+        Helper::addIfNotEmpty($returnarray, 'parts', $parts);
+        Helper::addIfNotEmpty($returnarray, 'payment_multiple_options', $this->payment_options);
 
         return $returnarray;
     }
