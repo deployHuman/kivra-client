@@ -10,29 +10,29 @@ use DeployHuman\kivra\Validation;
 
 class Content
 {
-    protected string $ssn;
+    protected ?string $ssn = null;
 
-    protected string $VAT_number;
+    protected ?string $VAT_number = null;
 
-    protected string $email;
+    protected ?string $email = null;
 
-    protected Content_SendToType $send_to_type;
+    protected ?Content_SendToType $send_to_type = null;
 
-    protected string $subject;
+    protected ?string $subject = null;
 
-    protected string $generated_at;
+    protected ?string $generated_at = null;
 
-    protected Content_Type $type;
+    protected ?Content_Type $type = null;
 
     protected bool $retain = false;
 
-    protected Content_Retention_Time $retention_time;
+    protected ?Content_Retention_Time $retention_time = null;
 
-    protected string $tenant_info;
+    protected ?string $tenant_info = null;
 
-    protected array $parts;
+    protected ?array $parts = null;
 
-    protected PaymentMultipleOptions $payment_options;
+    protected ?PaymentMultipleOptions $payment_options = null;
 
     /**
      * User's unique SSN, according to the YYYYMMDDnnnn format
@@ -252,7 +252,6 @@ class Content
     {
 
         $returnarray = [];
-        $parts = [];
 
         if (! $this->isValid()) {
             return $returnarray;
@@ -271,7 +270,7 @@ class Content
         Helper::addIfNotEmpty($returnarray, 'retain', $this->retain);
         Helper::addIfNotEmpty($returnarray, 'retention_time', $this->retention_time);
         Helper::addIfNotEmpty($returnarray, 'tenant_info', $this->tenant_info);
-        Helper::addIfNotEmpty($returnarray, 'parts', $parts);
+        Helper::addIfNotEmpty($returnarray, 'parts', $this->parts);
         Helper::addIfNotEmpty($returnarray, 'payment_multiple_options', $this->payment_options);
 
         return $returnarray;
