@@ -7,19 +7,19 @@ use DeployHuman\kivra\Helper;
 
 class Option
 {
-    protected string $due_date;
+    protected ?string $due_date = null;
 
-    protected string $amount;
+    protected ?string $amount = null;
 
-    protected PaymentOptionType $type;
+    protected ?PaymentOptionType $type = null;
 
-    protected string $reference;
+    protected ?string $reference = null;
 
-    protected string $title;
+    protected ?string $title = null;
 
-    protected string $description;
+    protected ?string $description = null;
 
-    protected Icon $icon;
+    protected ?Icon $icon = null;
 
     /**
      * This is a class which is used to create multiple payment option under the PaymentMultipleOptions class
